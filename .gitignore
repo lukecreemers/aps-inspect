@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# output
+dist/
+build/
+out/
+
+# cache
+.nx/
+.vite/
+.turbo/
+.next/
+.expo/
+.parcel-cache/
+
+# misc
+*.log
+.env
+.env.*.local
+.DS_Store
