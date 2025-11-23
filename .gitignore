@@ -1,21 +1,33 @@
-# dependencies
+# ignore relevant stuff please
+# Node.js dependencies and outputs
 node_modules/
-
-# output
 dist/
-build/
-out/
+npm-debug.log*
 
-# cache
-.nx/
-.vite/
-.turbo/
-.next/
-.expo/
-.parcel-cache/
+# TypeScript
+*.tsbuildinfo
 
-# misc
-*.log
+# Environment files
 .env
-.env.*.local
+.env.*
+
+# Logs
+logs/
+*.log
+
+# Build & coverage
+coverage/
+build/
+
+# IDE related
+.vscode/
+.idea/
 .DS_Store
+
+# Others
+*.swp
+# Ignore package lock if using pnpm or yarn only
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+

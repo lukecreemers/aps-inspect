@@ -1,0 +1,16 @@
+name: APS Inspect
+
+services:
+  # PostgreSQL Service
+  postgres:
+    image: postgres:16
+    container_name: postgres_db
+    restart: always
+
+    # Simply load the file; variables inside are passed to the container
+    env_file:
+      - .env
+
+    # You can remove the explicit 'environment' block if the .env file
+    # already contains POSTGRES_USER, POSTGRES_PASSWORD, etc.
+    ports: ['5432:5432']
