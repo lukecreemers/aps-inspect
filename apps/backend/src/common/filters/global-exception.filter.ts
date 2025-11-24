@@ -5,9 +5,9 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
-  Logger, // Add Logger
+  Logger,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client'; // Import Prisma types
+import { Prisma } from '@prisma/client';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -34,7 +34,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         const r = responseData as any;
         message = r.message || message;
         error = r.error || error;
-        details = r.details || r.issues || null; // Capture Zod issues if present
+        details = r.details || r.issues || null;
       }
     }
 
@@ -52,24 +52,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         statusCode = HttpStatus.NOT_FOUND;
         error = 'Not Found';
         message = 'Record not found';
-      }
-      // Add more Prisma codes as needed...
-      else {
-        // Log unknown Prisma errors for debugging
+      } else {
         this.logger.error(
           `Prisma Error ${exception.code}: ${exception.message}`,
         );
       }
     }
 
-    // 3. Handle Zod Errors (if not wrapped in BadRequestException already)
-    // (Your pipe currently wraps them, so this might not be needed directly here)
-
-    // 4. Handle Generic Errors
+    // 3. Handle Generic Errors
     else if (exception instanceof Error) {
       this.logger.error(exception.message, exception.stack);
-      // Don't expose raw system errors in production!
-      // message = exception.message; // Be careful with this in prod
     }
 
     const errorResponse: ApiResponse<null> = {
