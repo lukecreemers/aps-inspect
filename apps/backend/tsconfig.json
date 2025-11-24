@@ -1,38 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ES2023",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "moduleDetection": "force",
-
-    "lib": ["ES2023"],
-    "types": ["node"],
-
-    "resolvePackageJsonExports": true,
-    "esModuleInterop": true,
+    "target": "ES2021",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2021", "DOM"],
+    "types": ["node", "jest"],
     "allowSyntheticDefaultImports": true,
-
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-
-    "isolatedModules": true,
-    "strictNullChecks": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-
-    "sourceMap": true,
-    "removeComments": true,
-
-    "declaration": true,
-    "incremental": true,
-
+    "strictNullChecks": true,
     "baseUrl": "./",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "paths": {
+      "@aps/shared-types": ["../../packages/shared-types/src/index.ts"],
+      "@aps/shared-utils": ["../../packages/shared-utils/src/index.ts"]
+    }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src", "../../packages/shared-types/src"]
 }

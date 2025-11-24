@@ -1,10 +1,13 @@
-export interface ExampleType {
-  id: string;
-  name: string;
+export interface ApiResponse<T> {
+  success: boolean;
+  statusCode: number;
+  message: string | null;
+  error: string | null;
+  path: string;
+  method: string;
+  timestamp: string;
+  data?: T;
+  details?: string;
 }
 
-export interface APIResponse<T> {
-  data: T;
-  success: boolean;
-  message?: string;
-}
+export * from "./dtos/client";

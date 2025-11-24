@@ -6,11 +6,12 @@
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../node_modules/@prisma/client"
 }
 
 model Client {
@@ -56,4 +57,3 @@ model Building {
   client            Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
   location          Location?   @relation(fields: [locationId], references: [id], onDelete: SetNull)
 }
-
