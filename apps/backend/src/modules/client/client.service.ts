@@ -20,15 +20,9 @@ export class ClientService {
   }
 
   async findOne(id: string) {
-    const client = await this.prisma.client.findUnique({
+    return this.prisma.client.findUniqueOrThrow({
       where: { id },
     });
-
-    if (!client) {
-      throw new NotFoundException('Client not found');
-    }
-
-    return client;
   }
 
   async update(id: string, data: UpdateClientDto) {

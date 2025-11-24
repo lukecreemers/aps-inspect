@@ -5,41 +5,71 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger, // Add Logger
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client'; // Import Prisma types
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(GlobalExceptionFilter.name);
+
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
     const request = ctx.getRequest();
 
-    // Default values
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     let error = 'Internal Server Error';
     let message = 'An unexpected error occurred';
     let details: any = null;
 
-    // Handle Nest HttpExceptions (BadRequestException, ForbiddenException, etc.)
+    // 1. Handle Nest HttpExceptions
     if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
       const responseData = exception.getResponse();
 
-      // responseData can be a string OR an object
       if (typeof responseData === 'string') {
         message = responseData;
       } else if (typeof responseData === 'object') {
         const r = responseData as any;
         message = r.message || message;
         error = r.error || error;
-        details = r.details || null;
+        details = r.details || r.issues || null; // Capture Zod issues if present
       }
     }
 
-    // Handle generic errors safely
+    // 2. Handle Prisma Errors
+    else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
+      // P2002: Unique constraint failed
+      if (exception.code === 'P2002') {
+        statusCode = HttpStatus.CONFLICT;
+        error = 'Conflict';
+        const target = (exception.meta?.target as string[])?.join(', ');
+        message = `Unique constraint failed on: ${target || 'unknown field'}`;
+      }
+      // P2025: Record not found
+      else if (exception.code === 'P2025') {
+        statusCode = HttpStatus.NOT_FOUND;
+        error = 'Not Found';
+        message = 'Record not found';
+      }
+      // Add more Prisma codes as needed...
+      else {
+        // Log unknown Prisma errors for debugging
+        this.logger.error(
+          `Prisma Error ${exception.code}: ${exception.message}`,
+        );
+      }
+    }
+
+    // 3. Handle Zod Errors (if not wrapped in BadRequestException already)
+    // (Your pipe currently wraps them, so this might not be needed directly here)
+
+    // 4. Handle Generic Errors
     else if (exception instanceof Error) {
-      message = exception.message;
-      // Optional: log stack for debugging
+      this.logger.error(exception.message, exception.stack);
+      // Don't expose raw system errors in production!
+      // message = exception.message; // Be careful with this in prod
     }
 
     const errorResponse: ApiResponse<null> = {
@@ -54,7 +84,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       details,
     };
 
-    // Build clean JSON response
     response.status(statusCode).json(errorResponse);
   }
 }

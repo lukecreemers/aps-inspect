@@ -10,7 +10,6 @@ export const ClientBaseSchema = z.object({
 });
 
 export const ClientResponseSchema = ClientBaseSchema.omit({
-  id: true,
   createdAt: true,
   updatedAt: true,
 });
