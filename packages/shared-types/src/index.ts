@@ -10,4 +10,4 @@ export interface ApiResponse<T> {
   details?: string;
 }
 
-export * from "./dtos/client";
+export * from "./client";

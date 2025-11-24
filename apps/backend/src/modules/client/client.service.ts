@@ -1,5 +1,5 @@
-import { CreateClientDto, UpdateClientDto } from '@aps/shared-types';
-import { Injectable } from '@nestjs/common';
+import type { CreateClientDto, UpdateClientDto } from '@aps/shared-types';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -20,9 +20,15 @@ export class ClientService {
   }
 
   async findOne(id: string) {
-    return this.prisma.client.findUnique({
+    const client = await this.prisma.client.findUnique({
       where: { id },
     });
+
+    if (!client) {
+      throw new NotFoundException('Client not found');
+    }
+
+    return client;
   }
 
   async update(id: string, data: UpdateClientDto) {
