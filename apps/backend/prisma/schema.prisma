@@ -16,6 +16,44 @@ generator client {
 model Client {
   id        String    @id @default(uuid())
   name      String
+  metadata  Json?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  // Relations
+  locations Location[]
+  buildings Building[]
 }
+
+model Location {
+  id        String      @id @default(uuid())
+  clientId  String
+  isActive  Boolean     @default(true)
+  name      String
+  address   String?
+  metadata  Json?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations
+  client    Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  buildings Building[]
+}
+
+model Building {
+  id                String      @id @default(uuid())
+  clientId          String
+  locationId        String?
+  isActive          Boolean     @default(true)
+  name              String
+  facilityNumber    String?
+  accessInformation String?
+  metadata          Json?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  // Relations
+  client            Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  location          Location?   @relation(fields: [locationId], references: [id], onDelete: SetNull)
+}
+
