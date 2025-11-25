@@ -17,6 +17,17 @@ export class BuildingService extends BasePrismaService<
     super(prisma.building as any, 'Building');
   }
 
+  async findAllByLocation(locationId: string): Promise<Building[]> {
+    await this.prisma.location.findUniqueOrThrow({
+      where: { id: locationId },
+    });
+    return this.prisma.building.findMany({
+      where: {
+        locationId,
+      },
+    });
+  }
+
   async findAllByClient(clientId: string): Promise<Building[]> {
     await this.prisma.client.findUniqueOrThrow({
       where: { id: clientId },

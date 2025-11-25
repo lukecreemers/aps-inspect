@@ -6,5 +6,4 @@ export const BuildingResponseSchema = BuildingSchema.omit({
   updatedAt: true,
 });
 
-export type Building = z.infer<typeof BuildingSchema>;
 export type BuildingResponse = z.infer<typeof BuildingResponseSchema>;

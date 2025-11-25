@@ -12,7 +12,6 @@ import {
 import { BuildingService } from './building.service';
 import { ZodResponse } from 'src/common/decorators/zod-response.decorator';
 import {
-  Building,
   BuildingResponseSchema,
   CreateBuildingDto,
   CreateBuildingSchema,
@@ -20,6 +19,7 @@ import {
   UpdateBuildingSchema,
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
+import { Building } from '@aps/shared-types/src/generated/zod';
 
 @Controller('buildings')
 export class BuildingController {
@@ -31,6 +31,14 @@ export class BuildingController {
     @Param('clientId') clientId: string,
   ): Promise<Building[]> {
     return this.buildingService.findAllByClient(clientId);
+  }
+
+  @Get('location/:locationId')
+  @ZodResponse(BuildingResponseSchema.array())
+  async findAllByLocation(
+    @Param('locationId') locationId: string,
+  ): Promise<Building[]> {
+    return this.buildingService.findAllByLocation(locationId);
   }
 
   @Post()

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { BuildingSchema } from "../../generated/zod";
 
 export const UpdateBuildingSchema = z.object({
   locationId: z.string().uuid().nullable().optional(),

@@ -12,3 +12,5 @@ export interface ApiResponse<T> {
 
 export * from "./client";
 export * from "./building";
+export * from "./location";
+export * from "./generated/zod";

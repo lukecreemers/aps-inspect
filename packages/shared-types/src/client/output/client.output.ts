@@ -6,5 +6,4 @@ export const ClientResponseSchema = ClientSchema.omit({
   updatedAt: true,
 });
 
-export type Client = z.infer<typeof ClientSchema>;
 export type ClientResponse = z.infer<typeof ClientResponseSchema>;
