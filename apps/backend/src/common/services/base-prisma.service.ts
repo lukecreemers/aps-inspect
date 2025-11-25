@@ -22,10 +22,6 @@ export abstract class BasePrismaService<T, CreateDto, UpdateDto> {
     });
   }
 
-  async findAll(): Promise<T[]> {
-    return this.modelDelegate.findMany();
-  }
-
   async findOne(id: string): Promise<T> {
     return this.modelDelegate.findUniqueOrThrow({
       where: { id },

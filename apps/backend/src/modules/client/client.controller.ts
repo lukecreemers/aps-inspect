@@ -15,7 +15,11 @@ import type {
   UpdateClientDto,
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
-import { CreateClientSchema, ClientResponseSchema } from '@aps/shared-types';
+import {
+  CreateClientSchema,
+  ClientResponseSchema,
+  UpdateClientSchema,
+} from '@aps/shared-types';
 import { ZodResponse } from 'src/common/decorators/zod-response.decorator';
 
 @Controller('clients')
@@ -43,7 +47,7 @@ export class ClientController {
 
   @Patch(':id')
   @ZodResponse(ClientResponseSchema)
-  @UsePipes(new ZodValidationPipe(ClientResponseSchema))
+  @UsePipes(new ZodValidationPipe(UpdateClientSchema))
   async update(
     @Param('id') id: string,
     @Body() updateClientDto: UpdateClientDto,
@@ -52,6 +56,7 @@ export class ClientController {
   }
 
   @Delete(':id')
+  @ZodResponse(ClientResponseSchema)
   async delete(@Param('id') id: string) {
     return this.clientService.delete(id);
   }

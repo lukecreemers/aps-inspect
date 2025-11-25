@@ -3,7 +3,7 @@ import type {
   CreateClientDto,
   UpdateClientDto,
 } from '@aps/shared-types';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { BasePrismaService } from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -14,6 +14,10 @@ export class ClientService extends BasePrismaService<
   UpdateClientDto
 > {
   constructor(private prisma: PrismaService) {
-    super(prisma.client, 'Client');
+    super(prisma.client as any, 'Client');
+  }
+
+  async findAll(): Promise<Client[]> {
+    return this.prisma.client.findMany();
   }
 }

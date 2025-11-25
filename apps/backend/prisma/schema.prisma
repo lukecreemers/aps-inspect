@@ -14,6 +14,14 @@ generator client {
   output   = "../node_modules/@prisma/client"
 }
 
+generator zod {
+  provider       = "zod-prisma-types"
+  output         = "../../../packages/shared-types/src/generated/zod" // Output directly to shared-types
+  createInputTypes = false // default is true, creates schemas for create inputs
+  addIncludeType = false   // default is true
+  addSelectType  = false   // default is true
+}
+
 model Client {
   id        String    @id @default(uuid())
   name      String
