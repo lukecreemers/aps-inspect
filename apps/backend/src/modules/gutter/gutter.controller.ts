@@ -50,4 +50,12 @@ export class GutterController {
   async softDelete(@Param('id') id: string) {
     return this.gutterService.softDelete(id);
   }
+
+  @Get('active/building/:buildingId')
+  @ZodResponse(GutterResponseSchema.array())
+  async findAllActiveByBuilding(
+    @Param('buildingId') buildingId: string,
+  ): Promise<Gutter[]> {
+    return this.gutterService.findAllActiveByBuilding(buildingId);
+  }
 }

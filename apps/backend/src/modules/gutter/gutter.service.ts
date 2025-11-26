@@ -22,6 +22,12 @@ export class GutterService extends BasePrismaService<
     });
   }
 
+  async findAllActiveByBuilding(buildingId: string): Promise<Gutter[]> {
+    return this.prisma.gutter.findMany({
+      where: { buildingId, removedAt: null },
+    });
+  }
+
   async softDelete(id: string): Promise<Gutter> {
     return this.prisma.gutter.update({
       where: { id },
