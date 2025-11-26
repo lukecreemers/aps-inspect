@@ -17,6 +17,27 @@ export class BuildingService extends BasePrismaService<
     super(prisma.building as any, 'Building');
   }
 
+  async create(createBuildingDto: CreateBuildingDto): Promise<Building> {
+    return this.prisma.building.create({
+      data: {
+        ...createBuildingDto,
+
+        roofs: {
+          create: [{}],
+        },
+        gutters: {
+          create: [{}],
+        },
+        substrates: {
+          create: [{}],
+        },
+        windows: {
+          create: [{}],
+        },
+      },
+    });
+  }
+
   async findAllByLocation(locationId: string): Promise<Building[]> {
     await this.prisma.location.findUniqueOrThrow({
       where: { id: locationId },

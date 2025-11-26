@@ -45,16 +45,6 @@ export class WindowController {
     return this.windowService.findOne(id);
   }
 
-  @Patch(':id')
-  @ZodResponse(WindowResponseSchema)
-  @UsePipes(new ZodValidationPipe(UpdateWindowSchema))
-  async update(
-    @Param('id') id: string,
-    @Body() updateWindowDto: UpdateWindowDto,
-  ): Promise<Window> {
-    return this.windowService.update(id, updateWindowDto);
-  }
-
   @Patch(':id/deactivate')
   @ZodResponse(WindowResponseSchema)
   async softDelete(@Param('id') id: string) {
