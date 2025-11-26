@@ -23,15 +23,30 @@ generator zod {
 }
 
 model Client {
-  id        String    @id @default(uuid())
-  name      String
-  metadata  Json?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                String      @id @default(uuid())
+  name              String
+  metadata          Json?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 
   // Relations
-  locations Location[]
-  buildings Building[]
+  locations         Location[]
+  buildings         Building[]
+  maps              Map[]
+}
+
+model Map {
+  id                String      @id @default(uuid())
+  clientId          String
+  name              String
+  width             Int
+  height            Int
+  metadata          Json?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  // Relations
+  client            Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
 model Location {
@@ -113,3 +128,4 @@ model Window {
   // Relations
   building          Building    @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 }
+

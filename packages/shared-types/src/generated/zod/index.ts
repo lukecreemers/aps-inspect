@@ -58,6 +58,8 @@ export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCo
 
 export const ClientScalarFieldEnumSchema = z.enum(['id','name','metadata','createdAt','updatedAt']);
 
+export const MapScalarFieldEnumSchema = z.enum(['id','clientId','name','width','height','metadata','createdAt','updatedAt']);
+
 export const LocationScalarFieldEnumSchema = z.enum(['id','clientId','isActive','name','address','metadata','createdAt','updatedAt']);
 
 export const BuildingScalarFieldEnumSchema = z.enum(['id','clientId','locationId','isActive','name','facilityNumber','accessInformation','metadata','createdAt','updatedAt']);
@@ -96,6 +98,23 @@ export const ClientSchema = z.object({
 })
 
 export type Client = z.infer<typeof ClientSchema>
+
+/////////////////////////////////////////
+// MAP SCHEMA
+/////////////////////////////////////////
+
+export const MapSchema = z.object({
+  id: z.string(),
+  clientId: z.string(),
+  name: z.string(),
+  width: z.number().int(),
+  height: z.number().int(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Map = z.infer<typeof MapSchema>
 
 /////////////////////////////////////////
 // LOCATION SCHEMA
