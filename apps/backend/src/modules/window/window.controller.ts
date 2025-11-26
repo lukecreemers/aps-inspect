@@ -50,4 +50,12 @@ export class WindowController {
   async softDelete(@Param('id') id: string) {
     return this.windowService.softDelete(id);
   }
+
+  @Get('active/building/:buildingId')
+  @ZodResponse(WindowResponseSchema.array())
+  async findAllActiveByBuilding(
+    @Param('buildingId') buildingId: string,
+  ): Promise<Window[]> {
+    return this.windowService.findAllActiveByBuilding(buildingId);
+  }
 }

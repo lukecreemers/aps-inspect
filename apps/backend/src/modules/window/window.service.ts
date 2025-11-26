@@ -22,6 +22,12 @@ export class WindowService extends BasePrismaService<
     });
   }
 
+  async findAllActiveByBuilding(buildingId: string): Promise<Window[]> {
+    return this.prisma.window.findMany({
+      where: { buildingId, removedAt: null },
+    });
+  }
+
   async softDelete(id: string): Promise<Window> {
     return this.prisma.window.update({
       where: { id },
