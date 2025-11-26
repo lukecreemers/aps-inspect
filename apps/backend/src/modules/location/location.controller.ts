@@ -62,4 +62,12 @@ export class LocationController {
   async softDelete(@Param('id') id: string): Promise<Location> {
     return this.locationService.softDelete(id);
   }
+
+  @Get('active/client/:clientId')
+  @ZodResponse(LocationResponseSchema.array())
+  async findAllActiveByClient(
+    @Param('clientId') clientId: string,
+  ): Promise<Location[]> {
+    return this.locationService.findAllActiveByClient(clientId);
+  }
 }

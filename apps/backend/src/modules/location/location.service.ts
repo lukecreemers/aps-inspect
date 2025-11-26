@@ -29,6 +29,15 @@ export class LocationService extends BasePrismaService<
     });
   }
 
+  async findAllActiveByClient(clientId: string): Promise<Location[]> {
+    return this.prisma.location.findMany({
+      where: {
+        clientId,
+        isActive: true,
+      },
+    });
+  }
+
   async softDelete(id: string): Promise<Location> {
     return this.prisma.location.update({
       where: { id },
