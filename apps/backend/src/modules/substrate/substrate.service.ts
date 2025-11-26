@@ -25,5 +25,11 @@ export class SubstrateService extends BasePrismaService<
       where: { buildingId },
     });
   }
-}
 
+  async softDelete(id: string): Promise<Substrate> {
+    return this.prisma.substrate.update({
+      where: { id },
+      data: { removedAt: new Date() },
+    });
+  }
+}

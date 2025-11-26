@@ -35,9 +35,7 @@ export class WindowController {
   @Post()
   @ZodResponse(WindowResponseSchema)
   @UsePipes(new ZodValidationPipe(CreateWindowSchema))
-  async create(
-    @Body() createWindowDto: CreateWindowDto,
-  ): Promise<Window> {
+  async create(@Body() createWindowDto: CreateWindowDto): Promise<Window> {
     return this.windowService.create(createWindowDto);
   }
 
@@ -57,9 +55,9 @@ export class WindowController {
     return this.windowService.update(id, updateWindowDto);
   }
 
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.windowService.delete(id);
+  @Patch(':id/deactivate')
+  @ZodResponse(WindowResponseSchema)
+  async softDelete(@Param('id') id: string) {
+    return this.windowService.softDelete(id);
   }
 }
-

@@ -21,4 +21,11 @@ export class GutterService extends BasePrismaService<
       where: { buildingId },
     });
   }
+
+  async softDelete(id: string): Promise<Gutter> {
+    return this.prisma.gutter.update({
+      where: { id },
+      data: { removedAt: new Date() },
+    });
+  }
 }

@@ -21,4 +21,11 @@ export class RoofService extends BasePrismaService<
       where: { buildingId },
     });
   }
+
+  async softDelete(id: string): Promise<Roof> {
+    return this.prisma.roof.update({
+      where: { id },
+      data: { removedAt: new Date() },
+    });
+  }
 }

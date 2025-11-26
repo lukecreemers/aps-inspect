@@ -52,11 +52,4 @@ export class MapController {
   ): Promise<Map> {
     return this.mapService.update(id, updateMapDto);
   }
-
-  @Delete(':id')
-  @ZodResponse(MapResponseSchema)
-  async delete(@Param('id') id: string) {
-    return this.mapService.delete(id);
-  }
 }
-

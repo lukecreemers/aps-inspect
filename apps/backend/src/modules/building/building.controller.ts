@@ -66,7 +66,7 @@ export class BuildingController {
     return this.buildingService.update(id, updateBuildingDto);
   }
 
-  @Patch('delete/:id')
+  @Patch(':id/deactivate')
   @ZodResponse(BuildingResponseSchema)
   async softDelete(@Param('id') id: string): Promise<Building> {
     return this.buildingService.softDelete(id);

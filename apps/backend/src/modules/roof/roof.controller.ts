@@ -45,19 +45,9 @@ export class RoofController {
     return this.roofService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(':id/deactivate')
   @ZodResponse(RoofResponseSchema)
-  @UsePipes(new ZodValidationPipe(UpdateRoofSchema))
-  async update(
-    @Param('id') id: string,
-    @Body() updateRoofDto: UpdateRoofDto,
-  ): Promise<Roof> {
-    return this.roofService.update(id, updateRoofDto);
-  }
-
-  @Delete(':id')
-  @ZodResponse(RoofResponseSchema)
-  async delete(@Param('id') id: string) {
-    return this.roofService.delete(id);
+  async softDelete(@Param('id') id: string) {
+    return this.roofService.softDelete(id);
   }
 }

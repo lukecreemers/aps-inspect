@@ -54,10 +54,4 @@ export class MapImageController {
   ): Promise<MapImage> {
     return this.mapImageService.update(id, updateMapImageDto);
   }
-
-  @Delete(':id')
-  @ZodResponse(MapImageResponseSchema)
-  async delete(@Param('id') id: string) {
-    return this.mapImageService.delete(id);
-  }
 }

@@ -45,18 +45,9 @@ export class GutterController {
     return this.gutterService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(':id/deactivate')
   @ZodResponse(GutterResponseSchema)
-  @UsePipes(new ZodValidationPipe(UpdateGutterSchema))
-  async update(
-    @Param('id') id: string,
-    @Body() updateGutterDto: UpdateGutterDto,
-  ): Promise<Gutter> {
-    return this.gutterService.update(id, updateGutterDto);
-  }
-
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.gutterService.delete(id);
+  async softDelete(@Param('id') id: string) {
+    return this.gutterService.softDelete(id);
   }
 }

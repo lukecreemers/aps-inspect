@@ -57,9 +57,9 @@ export class LocationController {
     return this.locationService.update(id, updateLocationDto);
   }
 
-  @Delete(':id')
+  @Patch(':id/deactivate')
   @ZodResponse(LocationResponseSchema)
-  async delete(@Param('id') id: string): Promise<Location> {
-    return this.locationService.delete(id);
+  async softDelete(@Param('id') id: string): Promise<Location> {
+    return this.locationService.softDelete(id);
   }
 }

@@ -28,4 +28,11 @@ export class LocationService extends BasePrismaService<
       },
     });
   }
+
+  async softDelete(id: string): Promise<Location> {
+    return this.prisma.location.update({
+      where: { id },
+      data: { isActive: false },
+    });
+  }
 }

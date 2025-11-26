@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { BasePrismaService } from 'src/common/services/base-prisma.service';
-import {
-  Window,
-  CreateWindowDto,
-  UpdateWindowDto,
-} from '@aps/shared-types';
+import { Window, CreateWindowDto, UpdateWindowDto } from '@aps/shared-types';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -25,5 +21,11 @@ export class WindowService extends BasePrismaService<
       where: { buildingId },
     });
   }
-}
 
+  async softDelete(id: string): Promise<Window> {
+    return this.prisma.window.update({
+      where: { id },
+      data: { removedAt: new Date() },
+    });
+  }
+}

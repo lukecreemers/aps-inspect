@@ -47,19 +47,9 @@ export class SubstrateController {
     return this.substrateService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(':id/deactivate')
   @ZodResponse(SubstrateResponseSchema)
-  @UsePipes(new ZodValidationPipe(UpdateSubstrateSchema))
-  async update(
-    @Param('id') id: string,
-    @Body() updateSubstrateDto: UpdateSubstrateDto,
-  ): Promise<Substrate> {
-    return this.substrateService.update(id, updateSubstrateDto);
-  }
-
-  @Delete(':id')
-  async delete(@Param('id') id: string) {
-    return this.substrateService.delete(id);
+  async softDelete(@Param('id') id: string) {
+    return this.substrateService.softDelete(id);
   }
 }
-
