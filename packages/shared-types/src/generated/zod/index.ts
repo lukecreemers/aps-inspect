@@ -60,6 +60,8 @@ export const ClientScalarFieldEnumSchema = z.enum(['id','name','metadata','creat
 
 export const MapScalarFieldEnumSchema = z.enum(['id','clientId','name','width','height','metadata','createdAt','updatedAt']);
 
+export const MapImageScalarFieldEnumSchema = z.enum(['id','mapId','imageUrl','imageType','createdAt','updatedAt']);
+
 export const LocationScalarFieldEnumSchema = z.enum(['id','clientId','isActive','name','address','metadata','createdAt','updatedAt']);
 
 export const BuildingScalarFieldEnumSchema = z.enum(['id','clientId','locationId','isActive','name','facilityNumber','accessInformation','metadata','createdAt','updatedAt']);
@@ -81,6 +83,11 @@ export const QueryModeSchema = z.enum(['default','insensitive']);
 export const JsonNullValueFilterSchema = z.enum(['DbNull','JsonNull','AnyNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value === 'AnyNull' ? Prisma.AnyNull : value);
 
 export const NullsOrderSchema = z.enum(['first','last']);
+
+export const MapImageTypeSchema = z.enum(['BASE','WIREFRAME','ANNOTATED','BLUEPRINT']);
+
+export type MapImageTypeType = `${z.infer<typeof MapImageTypeSchema>}`
+
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -115,6 +122,21 @@ export const MapSchema = z.object({
 })
 
 export type Map = z.infer<typeof MapSchema>
+
+/////////////////////////////////////////
+// MAP IMAGE SCHEMA
+/////////////////////////////////////////
+
+export const MapImageSchema = z.object({
+  imageType: MapImageTypeSchema,
+  id: z.string(),
+  mapId: z.string(),
+  imageUrl: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type MapImage = z.infer<typeof MapImageSchema>
 
 /////////////////////////////////////////
 // LOCATION SCHEMA

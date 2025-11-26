@@ -22,12 +22,19 @@ generator zod {
   addSelectType  = false   // default is true
 }
 
+enum MapImageType {
+  BASE
+  WIREFRAME
+  ANNOTATED
+  BLUEPRINT
+}
+
 model Client {
-  id                String      @id @default(uuid())
+  id                String        @id @default(uuid())
   name              String
   metadata          Json?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
   locations         Location[]
@@ -36,49 +43,62 @@ model Client {
 }
 
 model Map {
-  id                String      @id @default(uuid())
+  id                String        @id @default(uuid())
   clientId          String
   name              String
   width             Int
   height            Int
   metadata          Json?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
-  client            Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  images            MapImage[]
+}
+
+model MapImage {
+  id                String        @id @default(uuid())
+  mapId             String
+  imageUrl          String
+  imageType         MapImageType  @default(BASE)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  map               Map            @relation(fields: [mapId], references: [id], onDelete: Cascade)
 }
 
 model Location {
-  id                String      @id @default(uuid())
+  id                String        @id @default(uuid())
   clientId          String
-  isActive          Boolean     @default(true)
+  isActive          Boolean       @default(true)
   name              String
   address           String?
   metadata          Json?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
-  client            Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
   buildings         Building[]
 }
 
 model Building {
-  id                String      @id @default(uuid())
+  id                String        @id @default(uuid())
   clientId          String
   locationId        String?
-  isActive          Boolean     @default(true)
+  isActive          Boolean       @default(true)
   name              String
   facilityNumber    String?
   accessInformation String?
   metadata          Json?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
-  client            Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  location          Location?   @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  location          Location?     @relation(fields: [locationId], references: [id], onDelete: SetNull)
   roofs             Roof[]
   gutters           Gutter[]
   substrates        Substrate[]
@@ -86,46 +106,46 @@ model Building {
 }
 
 model Roof {
-  id                String      @id @default(uuid())
+  id                String        @id @default(uuid())
   buildingId        String
   removedAt         DateTime?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
-  building          Building    @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 }
 
 model Gutter {
-  id                String      @id @default(uuid())
+  id                String        @id @default(uuid())
   buildingId        String
   removedAt         DateTime?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
-  building          Building    @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 }
 
 model Substrate {
-  id                String      @id @default(uuid())
+  id                String        @id @default(uuid())
   buildingId        String
   removedAt         DateTime?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
-  building          Building    @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 }
 
 model Window {
-  id                String      @id @default(uuid())
+  id                String        @id @default(uuid())
   buildingId        String
   removedAt         DateTime?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Relations
-  building          Building    @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 }
 
