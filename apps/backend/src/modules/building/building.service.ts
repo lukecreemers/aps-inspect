@@ -48,6 +48,30 @@ export class BuildingService extends BasePrismaService<
     });
   }
 
+  // Updaes a building, if it updating a location, it must belong to the same client.
+  async update(id: string, data: UpdateBuildingDto): Promise<Building> {
+    const { locationId } = data;
+    const building = await this.prisma.building.findUniqueOrThrow({
+      where: { id },
+    });
+
+    if (locationId) {
+      const location = await this.prisma.location.findUnique({
+        where: { id: locationId },
+      });
+      if (location && building.clientId !== location.clientId) {
+        throw new BadRequestException(
+          'Location does not belong to same client',
+        );
+      }
+    }
+
+    return this.prisma.building.update({
+      where: { id },
+      data: data as any,
+    });
+  }
+
   async findAllByLocation(locationId: string): Promise<Building[]> {
     await this.prisma.location.findUniqueOrThrow({
       where: { id: locationId },
