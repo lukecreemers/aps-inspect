@@ -7,6 +7,7 @@ import {
 import { BasePrismaService } from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
 import { BuildingCreatorService } from './building-creator.service';
+import { GetBuildingsQueryDto } from '@aps/shared-types/src/building/dto/get-building-query.dto';
 
 @Injectable()
 export class BuildingService extends BasePrismaService<
@@ -60,26 +61,15 @@ export class BuildingService extends BasePrismaService<
     });
   }
 
-  async findAllByLocation(locationId: string): Promise<Building[]> {
-    await this.prisma.location.findUniqueOrThrow({
-      where: { id: locationId },
-    });
+  async findBuildings(query: GetBuildingsQueryDto): Promise<Building[]> {
     return this.prisma.building.findMany({
       where: {
-        locationId,
+        clientId: query.clientId,
+        locationId: query.locationId,
+        isActive: query.isActive,
       },
-    });
-  }
-
-  async findAllByClient(clientId: string): Promise<Building[]> {
-    await this.prisma.client.findUniqueOrThrow({
-      where: { id: clientId },
-    });
-
-    return this.prisma.building.findMany({
-      where: {
-        clientId,
-      },
+      take: query.take,
+      skip: query.skip,
     });
   }
 
