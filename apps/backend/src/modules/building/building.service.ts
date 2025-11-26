@@ -39,4 +39,11 @@ export class BuildingService extends BasePrismaService<
       },
     });
   }
+
+  async softDelete(id: string): Promise<Building> {
+    return this.prisma.building.update({
+      where: { id },
+      data: { isActive: false },
+    });
+  }
 }
