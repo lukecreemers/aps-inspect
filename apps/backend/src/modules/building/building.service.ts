@@ -6,6 +6,7 @@ import {
 } from '@aps/shared-types';
 import { BasePrismaService } from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
+import { BuildingCreatorService } from './building-creator.service';
 
 @Injectable()
 export class BuildingService extends BasePrismaService<
@@ -13,7 +14,10 @@ export class BuildingService extends BasePrismaService<
   CreateBuildingDto,
   UpdateBuildingDto
 > {
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private buildingCreator: BuildingCreatorService,
+  ) {
     super(prisma.building as any, 'Building');
   }
 
@@ -24,7 +28,12 @@ export class BuildingService extends BasePrismaService<
       createBuildingDto.locationId,
     );
 
-    return this.prisma.building.create({ data: { ...createBuildingDto } });
+    return this.prisma.$transaction(async (tx) => {
+      return this.buildingCreator.createBuildingWithDefaults(
+        tx,
+        createBuildingDto,
+      );
+    });
   }
 
   async update(id: string, data: UpdateBuildingDto): Promise<Building> {

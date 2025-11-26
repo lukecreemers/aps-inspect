@@ -22,4 +22,3 @@ export class MapService extends BasePrismaService<
     });
   }
 }
-
