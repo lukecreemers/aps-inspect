@@ -52,4 +52,12 @@ export class SubstrateController {
   async softDelete(@Param('id') id: string) {
     return this.substrateService.softDelete(id);
   }
+
+  @Get('active/building/:buildingId')
+  @ZodResponse(SubstrateResponseSchema.array())
+  async findAllActiveByBuilding(
+    @Param('buildingId') buildingId: string,
+  ): Promise<Substrate[]> {
+    return this.substrateService.findAllActiveByBuilding(buildingId);
+  }
 }

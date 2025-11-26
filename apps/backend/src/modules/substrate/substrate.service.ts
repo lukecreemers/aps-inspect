@@ -26,6 +26,12 @@ export class SubstrateService extends BasePrismaService<
     });
   }
 
+  async findAllActiveByBuilding(buildingId: string): Promise<Substrate[]> {
+    return this.prisma.substrate.findMany({
+      where: { buildingId, removedAt: null },
+    });
+  }
+
   async softDelete(id: string): Promise<Substrate> {
     return this.prisma.substrate.update({
       where: { id },
