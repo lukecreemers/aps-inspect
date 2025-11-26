@@ -50,4 +50,12 @@ export class RoofController {
   async softDelete(@Param('id') id: string) {
     return this.roofService.softDelete(id);
   }
+
+  @Get('active/building/:buildingId')
+  @ZodResponse(RoofResponseSchema.array())
+  async findAllActiveByBuilding(
+    @Param('buildingId') buildingId: string,
+  ): Promise<Roof[]> {
+    return this.roofService.findAllActiveByBuilding(buildingId);
+  }
 }

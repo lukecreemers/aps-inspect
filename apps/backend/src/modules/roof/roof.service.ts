@@ -22,6 +22,12 @@ export class RoofService extends BasePrismaService<
     });
   }
 
+  async findAllActiveByBuilding(buildingId: string): Promise<Roof[]> {
+    return this.prisma.roof.findMany({
+      where: { buildingId, removedAt: null },
+    });
+  }
+
   async softDelete(id: string): Promise<Roof> {
     return this.prisma.roof.update({
       where: { id },
