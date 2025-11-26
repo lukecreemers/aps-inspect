@@ -13,4 +13,8 @@ export interface ApiResponse<T> {
 export * from "./client";
 export * from "./building";
 export * from "./location";
+export * from "./roof";
+export * from "./gutter";
+export * from "./substrate";
+export * from "./window";
 export * from "./generated/zod";

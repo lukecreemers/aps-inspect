@@ -1,2 +1,2 @@
-Shared Packages:
-npm run build -w packages/shared-types
+Create New Entity
+node scripts/generate-domain.js roof

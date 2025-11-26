@@ -5,9 +5,22 @@ import { ClientModule } from './modules/client/client.module';
 import { PrismaModule } from './database/prisma.module';
 import { BuildingModule } from './modules/building/building.module';
 import { LocationModule } from './modules/location/location.module';
+import { RoofModule } from './modules/roof/roof.module';
+import { GutterModule } from './modules/gutter/gutter.module';
+import { SubstrateModule } from './modules/substrate/substrate.module';
+import { WindowModule } from './modules/window/window.module';
 
 @Module({
-  imports: [PrismaModule, ClientModule, BuildingModule, LocationModule],
+  imports: [
+    PrismaModule,
+    ClientModule,
+    BuildingModule,
+    LocationModule,
+    RoofModule,
+    GutterModule,
+    SubstrateModule,
+    WindowModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
