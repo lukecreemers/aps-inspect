@@ -41,6 +41,7 @@ export class BuildingController {
     return this.buildingService.findAllByLocation(locationId);
   }
 
+  // Creates a roof, gutter, substrate, and window for the building
   @Post()
   @ZodResponse(BuildingResponseSchema)
   @UsePipes(new ZodValidationPipe(CreateBuildingSchema))
@@ -70,5 +71,13 @@ export class BuildingController {
   @ZodResponse(BuildingResponseSchema)
   async softDelete(@Param('id') id: string): Promise<Building> {
     return this.buildingService.softDelete(id);
+  }
+
+  @Get('active/client/:clientId')
+  @ZodResponse(BuildingResponseSchema.array())
+  async findAllActiveByClient(
+    @Param('clientId') clientId: string,
+  ): Promise<Building[]> {
+    return this.buildingService.findAllActiveByClient(clientId);
   }
 }

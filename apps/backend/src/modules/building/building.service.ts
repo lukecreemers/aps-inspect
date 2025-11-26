@@ -61,6 +61,15 @@ export class BuildingService extends BasePrismaService<
     });
   }
 
+  async findAllActiveByClient(clientId: string): Promise<Building[]> {
+    return this.prisma.building.findMany({
+      where: {
+        clientId,
+        isActive: true,
+      },
+    });
+  }
+
   async softDelete(id: string): Promise<Building> {
     return this.prisma.building.update({
       where: { id },
