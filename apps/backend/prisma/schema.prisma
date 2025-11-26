@@ -31,7 +31,7 @@ enum MapImageType {
 
 model Client {
   id                String        @id @default(uuid())
-  name              String
+  name              String        @unique
   metadata          Json?
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
@@ -55,6 +55,8 @@ model Map {
   // Relations
   client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
   images            MapImage[]
+  
+  @@unique([name, clientId])
 }
 
 model MapImage {
@@ -82,6 +84,8 @@ model Location {
   // Relations
   client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
   buildings         Building[]
+
+  @@unique([name, clientId])
 }
 
 model Building {
@@ -103,6 +107,8 @@ model Building {
   gutters           Gutter[]
   substrates        Substrate[]
   windows           Window[]
+
+  @@unique([clientId, name, locationId])
 }
 
 model Roof {
