@@ -20,7 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "prisma:view": "npx prisma studio"
+    "prisma:view": "npx prisma studio",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:generate": "npx prisma generate"
   },
   "dependencies": {
     "@aps/shared-types": "*",
