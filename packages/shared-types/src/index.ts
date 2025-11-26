@@ -17,4 +17,5 @@ export * from "./roof";
 export * from "./gutter";
 export * from "./substrate";
 export * from "./window";
+export * from "./map";
 export * from "./generated/zod";
