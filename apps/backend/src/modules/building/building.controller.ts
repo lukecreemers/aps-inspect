@@ -20,10 +20,14 @@ import {
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { Building } from '@aps/shared-types/src/generated/zod';
+import { BuildingCreatorService } from './building-creator.service';
 
 @Controller('buildings')
 export class BuildingController {
-  constructor(private buildingService: BuildingService) {}
+  constructor(
+    private buildingService: BuildingService,
+    private buildingCreatorService: BuildingCreatorService,
+  ) {}
 
   @Get('client/:clientId')
   @ZodResponse(BuildingResponseSchema.array())
@@ -48,7 +52,9 @@ export class BuildingController {
   async create(
     @Body() createBuildingDto: CreateBuildingDto,
   ): Promise<Building> {
-    return this.buildingService.create(createBuildingDto);
+    return this.buildingCreatorService.createBuildingWithDefaults(
+      createBuildingDto,
+    );
   }
 
   @Get(':id')
