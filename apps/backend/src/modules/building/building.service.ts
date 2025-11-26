@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   Building,
   CreateBuildingDto,
@@ -18,6 +18,16 @@ export class BuildingService extends BasePrismaService<
   }
 
   async create(createBuildingDto: CreateBuildingDto): Promise<Building> {
+    const { clientId, locationId } = createBuildingDto;
+    if (locationId) {
+      const location = await this.prisma.location.findUnique({
+        where: { id: locationId },
+      });
+      if (location && clientId !== location.clientId) {
+        throw new BadRequestException('Location does not belong to client');
+      }
+    }
+
     return this.prisma.building.create({
       data: {
         ...createBuildingDto,
@@ -61,11 +71,13 @@ export class BuildingService extends BasePrismaService<
     });
   }
 
+  // Returns all active buildings by client, including buildings with no location, excludes buildings in inactive locations.
   async findAllActiveByClient(clientId: string): Promise<Building[]> {
     return this.prisma.building.findMany({
       where: {
         clientId,
         isActive: true,
+        OR: [{ locationId: null }, { location: { isActive: true } }],
       },
     });
   }
