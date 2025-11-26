@@ -56,6 +56,7 @@ export class RoofController {
   }
 
   @Delete(':id')
+  @ZodResponse(RoofResponseSchema)
   async delete(@Param('id') id: string) {
     return this.roofService.delete(id);
   }

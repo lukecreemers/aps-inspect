@@ -9,6 +9,7 @@ import { RoofModule } from './modules/roof/roof.module';
 import { GutterModule } from './modules/gutter/gutter.module';
 import { SubstrateModule } from './modules/substrate/substrate.module';
 import { WindowModule } from './modules/window/window.module';
+import { MapModule } from './modules/map/map.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { WindowModule } from './modules/window/window.module';
     GutterModule,
     SubstrateModule,
     WindowModule,
+    MapModule,
   ],
   controllers: [AppController],
   providers: [AppService],

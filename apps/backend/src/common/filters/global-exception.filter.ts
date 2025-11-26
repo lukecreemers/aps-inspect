@@ -52,6 +52,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         statusCode = HttpStatus.NOT_FOUND;
         error = 'Not Found';
         message = 'Record not found';
+      }
+      // P2003: Foreign key constraint failed
+      else if (exception.code === 'P2003') {
+        statusCode = HttpStatus.BAD_REQUEST;
+        error = 'Bad Request';
+        message = 'Foreign key constraint failed';
       } else {
         this.logger.error(
           `Prisma Error ${exception.code}: ${exception.message}`,
