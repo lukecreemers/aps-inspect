@@ -10,6 +10,7 @@ import { GutterModule } from './modules/gutter/gutter.module';
 import { SubstrateModule } from './modules/substrate/substrate.module';
 import { WindowModule } from './modules/window/window.module';
 import { MapModule } from './modules/map/map.module';
+import { MapImageModule } from './modules/map-image/map-image.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { MapModule } from './modules/map/map.module';
     SubstrateModule,
     WindowModule,
     MapModule,
+    MapImageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
