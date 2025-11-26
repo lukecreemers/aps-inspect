@@ -29,6 +29,11 @@ enum MapImageType {
   BLUEPRINT
 }
 
+enum ReportType {
+  ROOF
+  EXTERIOR
+}
+
 model Client {
   id                String        @id @default(uuid())
   name              String        @unique
@@ -40,6 +45,7 @@ model Client {
   locations         Location[]
   buildings         Building[]
   maps              Map[]
+  reports           Report[]
 }
 
 model Map {
@@ -155,3 +161,15 @@ model Window {
   building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 }
 
+model Report {
+  id                String        @id @default(uuid())
+  clientId          String
+  title             String
+  status            ReportType    @default(ROOF)
+  isSystem          Boolean       @default(false)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  // Relations
+  client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+}

@@ -74,6 +74,8 @@ export const SubstrateScalarFieldEnumSchema = z.enum(['id','buildingId','removed
 
 export const WindowScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
+export const ReportScalarFieldEnumSchema = z.enum(['id','clientId','title','status','isSystem','createdAt','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const NullableJsonNullValueInputSchema = z.enum(['DbNull','JsonNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value);
@@ -87,6 +89,10 @@ export const NullsOrderSchema = z.enum(['first','last']);
 export const MapImageTypeSchema = z.enum(['BASE','WIREFRAME','ANNOTATED','BLUEPRINT']);
 
 export type MapImageTypeType = `${z.infer<typeof MapImageTypeSchema>}`
+
+export const ReportTypeSchema = z.enum(['ROOF','EXTERIOR']);
+
+export type ReportTypeType = `${z.infer<typeof ReportTypeSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -229,3 +235,19 @@ export const WindowSchema = z.object({
 })
 
 export type Window = z.infer<typeof WindowSchema>
+
+/////////////////////////////////////////
+// REPORT SCHEMA
+/////////////////////////////////////////
+
+export const ReportSchema = z.object({
+  status: ReportTypeSchema,
+  id: z.string(),
+  clientId: z.string(),
+  title: z.string(),
+  isSystem: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Report = z.infer<typeof ReportSchema>
