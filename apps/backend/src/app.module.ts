@@ -11,6 +11,7 @@ import { SubstrateModule } from './modules/substrate/substrate.module';
 import { WindowModule } from './modules/window/window.module';
 import { MapModule } from './modules/map/map.module';
 import { MapImageModule } from './modules/map-image/map-image.module';
+import { ReportModule } from './modules/report/report.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MapImageModule } from './modules/map-image/map-image.module';
     WindowModule,
     MapModule,
     MapImageModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [AppService],

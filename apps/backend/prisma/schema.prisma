@@ -34,6 +34,12 @@ enum ReportType {
   EXTERIOR
 }
 
+enum ReportStatus {
+  IN_PROGRESS
+  FOR_REVIEW
+  COMPLETED
+}
+
 model Client {
   id                String        @id @default(uuid())
   name              String        @unique
@@ -165,11 +171,23 @@ model Report {
   id                String        @id @default(uuid())
   clientId          String
   title             String
-  status            ReportType    @default(ROOF)
+  status            ReportStatus  @default(IN_PROGRESS) 
   isSystem          Boolean       @default(false)
   createdAt         DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
   // Relations
   client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  types             ReportTypeAssignment[]
+}
+
+model ReportTypeAssignment {
+  id                String        @id @default(uuid())
+  reportId          String
+  type              ReportType
+
+  report            Report        @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@unique([reportId, type])
+  @@map("report_type_assignments")
 }
