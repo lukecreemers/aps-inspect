@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { SubstrateService } from './substrate.service';
@@ -17,6 +18,8 @@ import {
   SubstrateResponseSchema,
   UpdateSubstrateDto,
   UpdateSubstrateSchema,
+  GetSubstratesQueryDto,
+  GetSubstratesQuerySchema,
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 
@@ -24,12 +27,13 @@ import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 export class SubstrateController {
   constructor(private readonly substrateService: SubstrateService) {}
 
-  @Get('building/:buildingId')
+  @Get()
   @ZodResponse(SubstrateResponseSchema.array())
-  async findAllByBuilding(
-    @Param('buildingId') buildingId: string,
+  @UsePipes(new ZodValidationPipe(GetSubstratesQuerySchema))
+  async findSubstrates(
+    @Query() query: GetSubstratesQueryDto,
   ): Promise<Substrate[]> {
-    return this.substrateService.findAllByBuilding(buildingId);
+    return this.substrateService.findSubstrates(query);
   }
 
   @Post()
@@ -51,13 +55,5 @@ export class SubstrateController {
   @ZodResponse(SubstrateResponseSchema)
   async softDelete(@Param('id') id: string) {
     return this.substrateService.softDelete(id);
-  }
-
-  @Get('active/building/:buildingId')
-  @ZodResponse(SubstrateResponseSchema.array())
-  async findAllActiveByBuilding(
-    @Param('buildingId') buildingId: string,
-  ): Promise<Substrate[]> {
-    return this.substrateService.findAllActiveByBuilding(buildingId);
   }
 }

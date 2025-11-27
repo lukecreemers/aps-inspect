@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { BasePrismaService } from 'src/common/services/base-prisma.service';
 import {
   Substrate,
   CreateSubstrateDto,
   UpdateSubstrateDto,
+  GetSubstratesQueryDto,
 } from '@aps/shared-types';
 import { PrismaService } from 'src/database/prisma.service';
+import { activeFilter } from 'src/common/filters/active-filter';
 
 @Injectable()
 export class SubstrateService extends BasePrismaService<
@@ -13,22 +15,22 @@ export class SubstrateService extends BasePrismaService<
   CreateSubstrateDto,
   UpdateSubstrateDto
 > {
+  private readonly logger = new Logger(SubstrateService.name);
+
   constructor(private prisma: PrismaService) {
     super(prisma.substrate as any, 'Substrate');
   }
 
-  async findAllByBuilding(buildingId: string): Promise<Substrate[]> {
-    await this.prisma.building.findUniqueOrThrow({
-      where: { id: buildingId },
-    });
+  async findSubstrates(query: GetSubstratesQueryDto): Promise<Substrate[]> {
+    this.logger.log(query);
     return this.prisma.substrate.findMany({
-      where: { buildingId },
-    });
-  }
-
-  async findAllActiveByBuilding(buildingId: string): Promise<Substrate[]> {
-    return this.prisma.substrate.findMany({
-      where: { buildingId, removedAt: null },
+      where: {
+        buildingId: query.buildingId,
+        removedAt: activeFilter(query.isActive),
+      },
+      take: query.take,
+      skip: query.skip,
+      orderBy: { createdAt: 'desc' },
     });
   }
 

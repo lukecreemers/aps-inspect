@@ -1,7 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { BasePrismaService } from 'src/common/services/base-prisma.service';
-import { Roof, CreateRoofDto, UpdateRoofDto } from '@aps/shared-types';
+import {
+  Roof,
+  CreateRoofDto,
+  UpdateRoofDto,
+  GetRoofsQueryDto,
+} from '@aps/shared-types';
 import { PrismaService } from 'src/database/prisma.service';
+import { activeFilter } from 'src/common/filters/active-filter';
 
 @Injectable()
 export class RoofService extends BasePrismaService<
@@ -9,22 +15,22 @@ export class RoofService extends BasePrismaService<
   CreateRoofDto,
   UpdateRoofDto
 > {
+  private readonly logger = new Logger(RoofService.name);
+
   constructor(private prisma: PrismaService) {
     super(prisma.roof as any, 'Roof');
   }
 
-  async findAllByBuilding(buildingId: string): Promise<Roof[]> {
-    await this.prisma.building.findUniqueOrThrow({
-      where: { id: buildingId },
-    });
+  async findRoofs(query: GetRoofsQueryDto): Promise<Roof[]> {
+    this.logger.log(query);
     return this.prisma.roof.findMany({
-      where: { buildingId },
-    });
-  }
-
-  async findAllActiveByBuilding(buildingId: string): Promise<Roof[]> {
-    return this.prisma.roof.findMany({
-      where: { buildingId, removedAt: null },
+      where: {
+        buildingId: query.buildingId,
+        removedAt: activeFilter(query.isActive),
+      },
+      take: query.take,
+      skip: query.skip,
+      orderBy: { createdAt: 'desc' },
     });
   }
 

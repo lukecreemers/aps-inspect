@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { RoofService } from './roof.service';
@@ -17,6 +18,8 @@ import {
   RoofResponseSchema,
   UpdateRoofDto,
   UpdateRoofSchema,
+  GetRoofsQueryDto,
+  GetRoofsQuerySchema,
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 
@@ -24,12 +27,11 @@ import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 export class RoofController {
   constructor(private readonly roofService: RoofService) {}
 
-  @Get('building/:buildingId')
+  @Get()
   @ZodResponse(RoofResponseSchema.array())
-  async findAllByBuilding(
-    @Param('buildingId') buildingId: string,
-  ): Promise<Roof[]> {
-    return this.roofService.findAllByBuilding(buildingId);
+  @UsePipes(new ZodValidationPipe(GetRoofsQuerySchema))
+  async findRoofs(@Query() query: GetRoofsQueryDto): Promise<Roof[]> {
+    return this.roofService.findRoofs(query);
   }
 
   @Post()
@@ -49,13 +51,5 @@ export class RoofController {
   @ZodResponse(RoofResponseSchema)
   async softDelete(@Param('id') id: string) {
     return this.roofService.softDelete(id);
-  }
-
-  @Get('active/building/:buildingId')
-  @ZodResponse(RoofResponseSchema.array())
-  async findAllActiveByBuilding(
-    @Param('buildingId') buildingId: string,
-  ): Promise<Roof[]> {
-    return this.roofService.findAllActiveByBuilding(buildingId);
   }
 }
