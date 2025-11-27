@@ -2,7 +2,10 @@ import { z } from "zod";
 import { PaginationSchema } from "../../helpers/pagination.dto";
 
 export const GetReportBuildingsQuerySchema = PaginationSchema.extend({
-  // TODO: Add fields here
+  reportId: z.string().uuid().optional(),
+  buildingId: z.string().uuid().optional(),
 });
 
-export type GetReportBuildingsQueryDto = z.infer<typeof GetReportBuildingsQuerySchema>;
+export type GetReportBuildingsQueryDto = z.infer<
+  typeof GetReportBuildingsQuerySchema
+>;

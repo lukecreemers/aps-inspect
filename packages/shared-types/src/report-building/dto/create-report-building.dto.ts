@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 export const CreateReportBuildingSchema = z.object({
-  // TODO: Add fields here
+  reportId: z.string().uuid(),
+  buildingId: z.string().uuid(),
 });
 
-export type CreateReportBuildingDto = z.infer<typeof CreateReportBuildingSchema>;
+export type CreateReportBuildingDto = z.infer<
+  typeof CreateReportBuildingSchema
+>;

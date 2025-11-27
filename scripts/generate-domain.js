@@ -4,6 +4,7 @@ const path = require('path');
 const args = process.argv.slice(2);
 const domain = args[0];
 const hasQuery = args.includes('--query');
+const noUpdate = args.includes('--no-update');
 
 if (!domain || domain.startsWith('--')) {
   console.error('Please provide a domain name (e.g., client, building)');
@@ -24,7 +25,7 @@ const baseDir = path.join(__dirname, '../packages/shared-types/src', domainKebab
 
 const indexContent = [
   `export * from "./dto/create-${domainKebab}.dto";`,
-  `export * from "./dto/update-${domainKebab}.dto";`,
+  !noUpdate ? `export * from "./dto/update-${domainKebab}.dto";` : null,
   hasQuery ? `export * from "./dto/get-${domainKebab}-query.dto";` : null,
   `export * from "./output/${domainKebab}.output";`,
 ].filter(Boolean).join('\n') + '\n';
@@ -49,15 +50,18 @@ export const Create${domainPascal}Schema = z.object({
 
 export type Create${domainPascal}Dto = z.infer<typeof Create${domainPascal}Schema>;
 `,
-  [`dto/update-${domainKebab}.dto.ts`]: `import { z } from "zod";
+};
+
+if (!noUpdate) {
+  files[`dto/update-${domainKebab}.dto.ts`] = `import { z } from "zod";
 
 export const Update${domainPascal}Schema = z.object({
   // TODO: Add fields here
 });
 
 export type Update${domainPascal}Dto = z.infer<typeof Update${domainPascal}Schema>;
-`,
-};
+`;
+}
 
 if (hasQuery) {
   files[`dto/get-${domainKebab}-query.dto.ts`] = `import { z } from "zod";

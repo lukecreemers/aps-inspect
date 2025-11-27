@@ -13,6 +13,7 @@ import { MapModule } from './modules/map/map.module';
 import { MapImageModule } from './modules/map-image/map-image.module';
 import { ReportModule } from './modules/report/report.module';
 import { ReportTypeAssignmentModule } from './modules/report-type-assignment/report-type-assignment.module';
+import { ReportBuildingModule } from './modules/report-building/report-building.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ReportTypeAssignmentModule } from './modules/report-type-assignment/rep
     MapImageModule,
     ReportModule,
     ReportTypeAssignmentModule,
+    ReportBuildingModule,
   ],
   controllers: [AppController],
   providers: [AppService],
