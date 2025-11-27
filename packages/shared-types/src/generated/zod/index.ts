@@ -78,6 +78,8 @@ export const ReportScalarFieldEnumSchema = z.enum(['id','clientId','title','stat
 
 export const ReportTypeAssignmentScalarFieldEnumSchema = z.enum(['id','reportId','type']);
 
+export const ReportBuildingScalarFieldEnumSchema = z.enum(['id','reportId','buildingId']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const NullableJsonNullValueInputSchema = z.enum(['DbNull','JsonNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value);
@@ -269,3 +271,15 @@ export const ReportTypeAssignmentSchema = z.object({
 })
 
 export type ReportTypeAssignment = z.infer<typeof ReportTypeAssignmentSchema>
+
+/////////////////////////////////////////
+// REPORT BUILDING SCHEMA
+/////////////////////////////////////////
+
+export const ReportBuildingSchema = z.object({
+  id: z.string(),
+  reportId: z.string(),
+  buildingId: z.string(),
+})
+
+export type ReportBuilding = z.infer<typeof ReportBuildingSchema>

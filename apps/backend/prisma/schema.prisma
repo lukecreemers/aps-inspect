@@ -81,6 +81,7 @@ model MapImage {
 
   // Relations
   map               Map            @relation(fields: [mapId], references: [id], onDelete: Cascade)
+  @@map("map_images")
 }
 
 model Location {
@@ -119,6 +120,7 @@ model Building {
   gutters           Gutter[]
   substrates        Substrate[]
   windows           Window[]
+  reports           ReportBuilding[]
 
   @@unique([clientId, name, locationId])
 }
@@ -179,6 +181,7 @@ model Report {
   // Relations
   client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
   types             ReportTypeAssignment[]
+  buildings         ReportBuilding[]
 }
 
 model ReportTypeAssignment {
@@ -190,4 +193,17 @@ model ReportTypeAssignment {
 
   @@unique([reportId, type])
   @@map("report_type_assignments")
+}
+
+model ReportBuilding {
+  id                String        @id @default(uuid())
+  reportId          String
+  buildingId        String
+  
+  // Relations
+  report            Report        @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  building          Building      @relation(fields: [buildingId], references: [id])
+
+  @@unique([reportId, buildingId])
+  @@map("report_buildings")
 }
