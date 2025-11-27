@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -16,8 +15,6 @@ import {
   CreateWindowSchema,
   Window,
   WindowResponseSchema,
-  UpdateWindowDto,
-  UpdateWindowSchema,
   GetWindowsQueryDto,
   GetWindowsQuerySchema,
 } from '@aps/shared-types';

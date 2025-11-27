@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -16,8 +15,6 @@ import {
   CreateSubstrateSchema,
   Substrate,
   SubstrateResponseSchema,
-  UpdateSubstrateDto,
-  UpdateSubstrateSchema,
   GetSubstratesQueryDto,
   GetSubstratesQuerySchema,
 } from '@aps/shared-types';

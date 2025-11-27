@@ -5,7 +5,10 @@ import {
   UpdateReportDto,
 } from '@aps/shared-types';
 import { Injectable } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
 import { ReportCreatorService } from './report-creator.service';
 
@@ -19,7 +22,14 @@ export class ReportService extends BasePrismaService<
     private prisma: PrismaService,
     private reportCreator: ReportCreatorService,
   ) {
-    super(prisma.report as any, 'Report');
+    super(
+      prisma.report as unknown as PrismaDelegate<
+        Report,
+        CreateSystemReportDto,
+        UpdateReportDto
+      >,
+      'Report',
+    );
   }
 
   async findReports(query: GetReportsQueryDto) {

@@ -1,5 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import {
   Substrate,
   CreateSubstrateDto,
@@ -18,7 +21,14 @@ export class SubstrateService extends BasePrismaService<
   private readonly logger = new Logger(SubstrateService.name);
 
   constructor(private prisma: PrismaService) {
-    super(prisma.substrate as any, 'Substrate');
+    super(
+      prisma.substrate as unknown as PrismaDelegate<
+        Substrate,
+        CreateSubstrateDto,
+        UpdateSubstrateDto
+      >,
+      'Substrate',
+    );
   }
 
   async findSubstrates(query: GetSubstratesQueryDto): Promise<Substrate[]> {

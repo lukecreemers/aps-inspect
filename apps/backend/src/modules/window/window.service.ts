@@ -1,5 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import {
   Window,
   CreateWindowDto,
@@ -18,7 +21,14 @@ export class WindowService extends BasePrismaService<
   private readonly logger = new Logger(WindowService.name);
 
   constructor(private prisma: PrismaService) {
-    super(prisma.window as any, 'Window');
+    super(
+      prisma.window as unknown as PrismaDelegate<
+        Window,
+        CreateWindowDto,
+        UpdateWindowDto
+      >,
+      'Window',
+    );
   }
 
   async findWindows(query: GetWindowsQueryDto): Promise<Window[]> {

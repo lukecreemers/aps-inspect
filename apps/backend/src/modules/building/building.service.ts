@@ -4,10 +4,14 @@ import {
   CreateBuildingDto,
   UpdateBuildingDto,
 } from '@aps/shared-types';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
 import { BuildingCreatorService } from './building-creator.service';
 import { GetBuildingsQueryDto } from '@aps/shared-types/src/building/dto/get-building-query.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BuildingService extends BasePrismaService<
@@ -19,7 +23,14 @@ export class BuildingService extends BasePrismaService<
     private prisma: PrismaService,
     private buildingCreator: BuildingCreatorService,
   ) {
-    super(prisma.building as any, 'Building');
+    super(
+      prisma.building as unknown as PrismaDelegate<
+        Building,
+        CreateBuildingDto,
+        UpdateBuildingDto
+      >,
+      'Building',
+    );
   }
 
   async create(createBuildingDto: CreateBuildingDto): Promise<Building> {
@@ -57,7 +68,7 @@ export class BuildingService extends BasePrismaService<
 
     return this.prisma.building.update({
       where: { id },
-      data: data as any,
+      data: data as Prisma.BuildingUpdateInput,
     });
   }
 

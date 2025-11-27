@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -18,8 +17,6 @@ import {
   GetGuttersQuerySchema,
   Gutter,
   GutterResponseSchema,
-  UpdateGutterDto,
-  UpdateGutterSchema,
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 

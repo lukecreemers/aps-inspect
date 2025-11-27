@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import {
   Gutter,
   CreateGutterDto,
@@ -16,7 +19,14 @@ export class GutterService extends BasePrismaService<
   UpdateGutterDto
 > {
   constructor(private prisma: PrismaService) {
-    super(prisma.gutter as any, 'Gutter');
+    super(
+      prisma.gutter as unknown as PrismaDelegate<
+        Gutter,
+        CreateGutterDto,
+        UpdateGutterDto
+      >,
+      'Gutter',
+    );
   }
 
   async findGutters(query: GetGuttersQueryDto): Promise<Gutter[]> {

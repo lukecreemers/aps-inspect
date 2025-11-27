@@ -9,4 +9,3 @@ import { PrismaModule } from 'src/database/prisma.module';
   providers: [WindowService],
 })
 export class WindowModule {}
-

@@ -18,5 +18,5 @@
       "@aps/shared-utils": ["../../packages/shared-utils/src/index.ts"]
     }
   },
-  "include": ["src", "../../packages/shared-types/src"]
+  "include": ["src", "test", "../../packages/shared-types/src"]
 }

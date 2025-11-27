@@ -4,7 +4,10 @@ import type {
   UpdateClientDto,
 } from '@aps/shared-types';
 import { Injectable } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -14,7 +17,14 @@ export class ClientService extends BasePrismaService<
   UpdateClientDto
 > {
   constructor(private prisma: PrismaService) {
-    super(prisma.client as any, 'Client');
+    super(
+      prisma.client as unknown as PrismaDelegate<
+        Client,
+        CreateClientDto,
+        UpdateClientDto
+      >,
+      'Client',
+    );
   }
 
   async findAll(): Promise<Client[]> {

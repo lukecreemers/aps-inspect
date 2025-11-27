@@ -1,5 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import {
   Roof,
   CreateRoofDto,
@@ -18,7 +21,14 @@ export class RoofService extends BasePrismaService<
   private readonly logger = new Logger(RoofService.name);
 
   constructor(private prisma: PrismaService) {
-    super(prisma.roof as any, 'Roof');
+    super(
+      prisma.roof as unknown as PrismaDelegate<
+        Roof,
+        CreateRoofDto,
+        UpdateRoofDto
+      >,
+      'Roof',
+    );
   }
 
   async findRoofs(query: GetRoofsQueryDto): Promise<Roof[]> {

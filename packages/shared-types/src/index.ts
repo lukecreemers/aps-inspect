@@ -9,7 +9,7 @@ export interface ApiResponse<T> {
   method: string;
   timestamp: string;
   data?: T;
-  details?: string;
+  details?: unknown;
 }
 
 export * from "./client";

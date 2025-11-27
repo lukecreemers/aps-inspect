@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -16,8 +15,6 @@ import {
   CreateRoofSchema,
   Roof,
   RoofResponseSchema,
-  UpdateRoofDto,
-  UpdateRoofSchema,
   GetRoofsQueryDto,
   GetRoofsQuerySchema,
 } from '@aps/shared-types';

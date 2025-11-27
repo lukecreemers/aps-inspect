@@ -14,7 +14,6 @@ import {
   CreateSystemReportDto,
   CreateSystemReportSchema,
   GetReportsQueryDto,
-  GetReportsQuerySchema,
   Report,
   ReportResponseSchema,
   UpdateReportDto,

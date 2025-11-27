@@ -5,6 +5,7 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -12,12 +13,12 @@ import { map } from 'rxjs/operators';
 export class SuccessResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const ctx = context.switchToHttp();
-    const response = ctx.getResponse();
-    const request = ctx.getRequest();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
     const statusCode = response.statusCode;
 
     return next.handle().pipe(
-      map((data) => {
+      map((data: unknown) => {
         const successResponse: ApiResponse<typeof data> = {
           success: true,
           statusCode,
