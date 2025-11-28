@@ -82,7 +82,7 @@ export const ReportBuildingScalarFieldEnumSchema = z.enum(['id','reportId','buil
 
 export const ContractorScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','phone','isActive','createdAt','updatedAt']);
 
-export const ReportWorkUnitScalarFieldEnumSchema = z.enum(['id','reportId','buildingId','type','contractorId','status','assignedAt','firstPulledAt','submittedAt','reviewedAt']);
+export const ReportWorkUnitScalarFieldEnumSchema = z.enum(['id','reportBuildingId','type','contractorId','status','assignedAt','firstPulledAt','submittedAt','reviewedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -317,8 +317,7 @@ export const ReportWorkUnitSchema = z.object({
   type: ReportTypeSchema,
   status: WorkUnitStatusSchema,
   id: z.string(),
-  reportId: z.string(),
-  buildingId: z.string(),
+  reportBuildingId: z.string(),
   contractorId: z.string().nullable(),
   assignedAt: z.coerce.date().nullable(),
   firstPulledAt: z.coerce.date().nullable(),

@@ -11,6 +11,8 @@ import {
 } from '@nestjs/common';
 import { ReportService } from './report.service';
 import {
+  CreateStandardReportDto,
+  CreateStandardReportSchema,
   CreateSystemReportDto,
   CreateSystemReportSchema,
   GetReportsQueryDto,
@@ -39,6 +41,15 @@ export class ReportController {
     @Body() createSystemReportDto: CreateSystemReportDto,
   ): Promise<Report> {
     return this.reportService.createSystemReport(createSystemReportDto);
+  }
+
+  @Post('standard')
+  @ZodResponse(ReportResponseSchema)
+  @UsePipes(new ZodValidationPipe(CreateStandardReportSchema))
+  async createStandardReport(
+    @Body() createStandardReportDto: CreateStandardReportDto,
+  ): Promise<Report> {
+    return this.reportService.createStandardReport(createStandardReportDto);
   }
 
   @Get(':id')

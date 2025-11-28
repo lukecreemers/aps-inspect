@@ -6,8 +6,7 @@ export const GetReportWorkUnitsQuerySchema = PaginationSchema.extend({
   type: ReportTypeSchema.optional(),
   status: WorkUnitStatusSchema.optional(),
   contractorId: z.string().uuid().optional(),
-  reportId: z.string().uuid().optional(),
-  buildingId: z.string().uuid().optional(),
+  reportBuildingId: z.string().uuid().optional(),
 });
 
 export type GetReportWorkUnitsQueryDto = z.infer<

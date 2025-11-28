@@ -2,8 +2,7 @@ import { z } from "zod";
 import { ReportTypeSchema } from "../../generated/zod";
 
 export const CreateReportWorkUnitSchema = z.object({
-  reportId: z.string().uuid(),
-  buildingId: z.string().uuid(),
+  reportBuildingId: z.string().uuid(),
   type: ReportTypeSchema,
   contractorId: z.string().uuid().nullable().optional(),
 });

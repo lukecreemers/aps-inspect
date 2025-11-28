@@ -132,7 +132,6 @@ model Building {
   substrates        Substrate[]
   windows           Window[]
   reports           ReportBuilding[]
-  reportWorkUnits   ReportWorkUnit[]
 
   @@unique([clientId, name, locationId])
   @@map("buildings")
@@ -203,8 +202,8 @@ model Report {
   client            Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
   types             ReportTypeAssignment[]
   buildings         ReportBuilding[]
-  reportWorkUnits   ReportWorkUnit[]
 
+  @@unique([clientId, title])
   @@map("reports")
 }
 
@@ -227,6 +226,7 @@ model ReportBuilding {
   // Relations
   report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
   building          Building        @relation(fields: [buildingId], references: [id])
+  reportWorkUnits   ReportWorkUnit[]
 
   @@unique([reportId, buildingId])
   @@map("report_buildings")
@@ -251,8 +251,7 @@ model Contractor {
 
 model ReportWorkUnit {
   id                String          @id @default(uuid())
-  reportId          String
-  buildingId        String
+  reportBuildingId  String
   type              ReportType
 
   contractorId      String?
@@ -264,9 +263,8 @@ model ReportWorkUnit {
   reviewedAt        DateTime?
 
   // Relations
-  report            Report         @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  building          Building       @relation(fields: [buildingId], references: [id])
+  reportBuilding    ReportBuilding @relation(fields: [reportBuildingId], references: [id], onDelete: Cascade)
   contractor        Contractor?    @relation(fields: [contractorId], references: [id])
 
-  @@unique([reportId, buildingId, type])
+  @@unique([reportBuildingId, type])
 }

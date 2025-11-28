@@ -1,4 +1,8 @@
-import { CreateSystemReportDto, Report } from '@aps/shared-types';
+import {
+  CreateStandardReportDto,
+  CreateSystemReportDto,
+  Report,
+} from '@aps/shared-types';
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
@@ -17,6 +21,44 @@ export class ReportCreatorService {
     });
 
     // Future add extra data here.
+    return report;
+  }
+
+  async createStandardReport(
+    tx: Prisma.TransactionClient,
+    data: CreateStandardReportDto,
+  ): Promise<Report> {
+    // Create report
+    const report = await tx.report.create({
+      data: {
+        clientId: data.clientId,
+        title: data.title,
+        isSystem: false,
+      },
+    });
+
+    await tx.reportBuilding.createMany({
+      data: data.buildingIds.map((buildingId) => ({
+        reportId: report.id,
+        buildingId,
+      })),
+    });
+
+    const reportBuildings = await tx.reportBuilding.findMany({
+      where: { reportId: report.id },
+      select: { id: true, buildingId: true },
+    });
+
+    await tx.reportWorkUnit.createMany({
+      data: reportBuildings.flatMap((rb) =>
+        data.reportTypes.map((type) => ({
+          reportBuildingId: rb.id,
+          type,
+          status: 'PENDING',
+        })),
+      ),
+    });
+
     return report;
   }
 }
