@@ -14,6 +14,7 @@ import { MapImageModule } from './modules/map-image/map-image.module';
 import { ReportModule } from './modules/report/report.module';
 import { ReportTypeAssignmentModule } from './modules/report-type-assignment/report-type-assignment.module';
 import { ReportBuildingModule } from './modules/report-building/report-building.module';
+import { ContractorModule } from './modules/contractor/contractor.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ReportBuildingModule } from './modules/report-building/report-building.
     ReportModule,
     ReportTypeAssignmentModule,
     ReportBuildingModule,
+    ContractorModule,
   ],
   controllers: [AppController],
   providers: [AppService],

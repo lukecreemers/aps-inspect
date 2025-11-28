@@ -1,2 +1,2 @@
 Create New Entity
-node scripts/generate-domain.js roof
+node scripts/generate-domain.js roof --query --no-update

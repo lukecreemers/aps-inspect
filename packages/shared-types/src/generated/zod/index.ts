@@ -80,7 +80,7 @@ export const ReportTypeAssignmentScalarFieldEnumSchema = z.enum(['id','reportId'
 
 export const ReportBuildingScalarFieldEnumSchema = z.enum(['id','reportId','buildingId']);
 
-export const ContractorScalarFieldEnumSchema = z.enum(['id','name','email','phone','isActive','createdAt','updatedAt']);
+export const ContractorScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','phone','isActive','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -292,7 +292,8 @@ export type ReportBuilding = z.infer<typeof ReportBuildingSchema>
 
 export const ContractorSchema = z.object({
   id: z.string(),
-  name: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
   email: z.string(),
   phone: z.string().nullable(),
   isActive: z.boolean(),
