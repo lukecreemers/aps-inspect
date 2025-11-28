@@ -52,6 +52,8 @@ model Client {
   buildings         Building[]
   maps              Map[]
   reports           Report[]
+
+  @@map("clients")
 }
 
 model Map {
@@ -69,6 +71,7 @@ model Map {
   images            MapImage[]
   
   @@unique([name, clientId])
+  @@map("maps")
 }
 
 model MapImage {
@@ -99,6 +102,7 @@ model Location {
   buildings         Building[]
 
   @@unique([name, clientId])
+  @@map("locations")
 }
 
 model Building {
@@ -123,6 +127,7 @@ model Building {
   reports           ReportBuilding[]
 
   @@unique([clientId, name, locationId])
+  @@map("buildings")
 }
 
 model Roof {
@@ -134,6 +139,8 @@ model Roof {
 
   // Relations
   building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+
+  @@map("roofs")
 }
 
 model Gutter {
@@ -145,6 +152,8 @@ model Gutter {
 
   // Relations
   building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+
+  @@map("gutters")
 }
 
 model Substrate {
@@ -156,6 +165,8 @@ model Substrate {
 
   // Relations
   building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+
+  @@map("substrates")
 }
 
 model Window {
@@ -167,6 +178,8 @@ model Window {
 
   // Relations
   building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+
+  @@map("windows")
 }
 
 model Report {
@@ -182,6 +195,8 @@ model Report {
   client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
   types             ReportTypeAssignment[]
   buildings         ReportBuilding[]
+
+  @@map("reports")
 }
 
 model ReportTypeAssignment {
@@ -206,4 +221,17 @@ model ReportBuilding {
 
   @@unique([reportId, buildingId])
   @@map("report_buildings")
+}
+
+model Contractor {
+  id                String        @id @default(uuid())
+  name              String
+  email             String        @unique
+  phone             String?
+  isActive          Boolean       @default(true)
+
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@map("contractors")
 }
