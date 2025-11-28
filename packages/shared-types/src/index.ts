@@ -23,4 +23,5 @@ export * from "./map";
 export * from "./map-image";
 export * from "./report";
 export * from "./report-type-assignment";
+export * from "./contractor";
 export * from "./generated/zod";

@@ -35,7 +35,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         const r = responseData as Record<string, unknown>;
         message = (r.message as string) ?? message;
         error = (r.error as string) ?? error;
-        details = r.details ?? r.issues ?? null;
+        details = r.details ?? r.issues ?? r.errors ?? null;
       }
     }
 

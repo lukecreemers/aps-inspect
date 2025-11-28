@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const UpdateContractorSchema = z.object({
-  name: z.string().min(1).optional(),
+  firstName: z.string().min(1).optional(),
+  lastName: z.string().min(1).optional(),
   email: z.string().email("Invalid email address").optional(),
   phone: z
     .string()
