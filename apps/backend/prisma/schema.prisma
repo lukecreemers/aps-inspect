@@ -40,12 +40,19 @@ enum ReportStatus {
   COMPLETED
 }
 
+enum WorkUnitStatus {
+  PENDING
+  IN_PROGRESS
+  SUBMITTED
+  REVIEWED
+}
+
 model Client {
-  id                String        @id @default(uuid())
-  name              String        @unique
+  id                String          @id @default(uuid())
+  name              String          @unique
   metadata          Json?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
   locations         Location[]
@@ -57,17 +64,17 @@ model Client {
 }
 
 model Map {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   clientId          String
   name              String
   width             Int
   height            Int
   metadata          Json?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client            Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
   images            MapImage[]
   
   @@unique([name, clientId])
@@ -75,30 +82,30 @@ model Map {
 }
 
 model MapImage {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   mapId             String
   imageUrl          String
-  imageType         MapImageType  @default(BASE)
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  imageType         MapImageType    @default(BASE)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  map               Map            @relation(fields: [mapId], references: [id], onDelete: Cascade)
+  map               Map             @relation(fields: [mapId], references: [id], onDelete: Cascade)
   @@map("map_images")
 }
 
 model Location {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   clientId          String
-  isActive          Boolean       @default(true)
+  isActive          Boolean         @default(true)
   name              String
   address           String?
   metadata          Json?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client            Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
   buildings         Building[]
 
   @@unique([name, clientId])
@@ -106,133 +113,160 @@ model Location {
 }
 
 model Building {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   clientId          String
   locationId        String?
-  isActive          Boolean       @default(true)
+  isActive          Boolean         @default(true)
   name              String
   facilityNumber    String?
   accessInformation String?
   metadata          Json?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  location          Location?     @relation(fields: [locationId], references: [id], onDelete: SetNull)
+  client            Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  location          Location?       @relation(fields: [locationId], references: [id], onDelete: SetNull)
   roofs             Roof[]
   gutters           Gutter[]
   substrates        Substrate[]
   windows           Window[]
   reports           ReportBuilding[]
+  reportWorkUnits   ReportWorkUnit[]
 
   @@unique([clientId, name, locationId])
   @@map("buildings")
 }
 
 model Roof {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   buildingId        String
   removedAt         DateTime?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 
   @@map("roofs")
 }
 
 model Gutter {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   buildingId        String
   removedAt         DateTime?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 
   @@map("gutters")
 }
 
 model Substrate {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   buildingId        String
   removedAt         DateTime?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 
   @@map("substrates")
 }
 
 model Window {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   buildingId        String
   removedAt         DateTime?
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  building          Building      @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
 
   @@map("windows")
 }
 
 model Report {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   clientId          String
   title             String
-  status            ReportStatus  @default(IN_PROGRESS) 
-  isSystem          Boolean       @default(false)
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  status            ReportStatus    @default(IN_PROGRESS) 
+  isSystem          Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 
   // Relations
-  client            Client        @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client            Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
   types             ReportTypeAssignment[]
   buildings         ReportBuilding[]
+  reportWorkUnits   ReportWorkUnit[]
 
   @@map("reports")
 }
 
 model ReportTypeAssignment {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   reportId          String
   type              ReportType
 
-  report            Report        @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   @@unique([reportId, type])
   @@map("report_type_assignments")
 }
 
 model ReportBuilding {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   reportId          String
   buildingId        String
   
   // Relations
-  report            Report        @relation(fields: [reportId], references: [id], onDelete: Cascade)
-  building          Building      @relation(fields: [buildingId], references: [id])
+  report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  building          Building        @relation(fields: [buildingId], references: [id])
 
   @@unique([reportId, buildingId])
   @@map("report_buildings")
 }
 
 model Contractor {
-  id                String        @id @default(uuid())
+  id                String          @id @default(uuid())
   firstName         String
   lastName          String
-  email             String        @unique
+  email             String          @unique
   phone             String?
-  isActive          Boolean       @default(true)
+  isActive          Boolean         @default(true)
 
-  createdAt         DateTime      @default(now())
-  updatedAt         DateTime      @updatedAt
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  reportWorkUnits   ReportWorkUnit[]
 
   @@map("contractors")
+}
+
+model ReportWorkUnit {
+  id                String          @id @default(uuid())
+  reportId          String
+  buildingId        String
+  type              ReportType
+
+  contractorId      String?
+  status            WorkUnitStatus  @default(PENDING)
+
+  assignedAt        DateTime?
+  firstPulledAt     DateTime?
+  submittedAt       DateTime?
+  reviewedAt        DateTime?
+
+  // Relations
+  report            Report         @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  building          Building       @relation(fields: [buildingId], references: [id])
+  contractor        Contractor?    @relation(fields: [contractorId], references: [id])
+
+  @@unique([reportId, buildingId, type])
 }

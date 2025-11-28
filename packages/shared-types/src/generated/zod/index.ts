@@ -82,6 +82,8 @@ export const ReportBuildingScalarFieldEnumSchema = z.enum(['id','reportId','buil
 
 export const ContractorScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','phone','isActive','createdAt','updatedAt']);
 
+export const ReportWorkUnitScalarFieldEnumSchema = z.enum(['id','reportId','buildingId','type','contractorId','status','assignedAt','firstPulledAt','submittedAt','reviewedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const NullableJsonNullValueInputSchema = z.enum(['DbNull','JsonNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value);
@@ -103,6 +105,10 @@ export type ReportTypeType = `${z.infer<typeof ReportTypeSchema>}`
 export const ReportStatusSchema = z.enum(['IN_PROGRESS','FOR_REVIEW','COMPLETED']);
 
 export type ReportStatusType = `${z.infer<typeof ReportStatusSchema>}`
+
+export const WorkUnitStatusSchema = z.enum(['PENDING','IN_PROGRESS','SUBMITTED','REVIEWED']);
+
+export type WorkUnitStatusType = `${z.infer<typeof WorkUnitStatusSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -302,3 +308,22 @@ export const ContractorSchema = z.object({
 })
 
 export type Contractor = z.infer<typeof ContractorSchema>
+
+/////////////////////////////////////////
+// REPORT WORK UNIT SCHEMA
+/////////////////////////////////////////
+
+export const ReportWorkUnitSchema = z.object({
+  type: ReportTypeSchema,
+  status: WorkUnitStatusSchema,
+  id: z.string(),
+  reportId: z.string(),
+  buildingId: z.string(),
+  contractorId: z.string().nullable(),
+  assignedAt: z.coerce.date().nullable(),
+  firstPulledAt: z.coerce.date().nullable(),
+  submittedAt: z.coerce.date().nullable(),
+  reviewedAt: z.coerce.date().nullable(),
+})
+
+export type ReportWorkUnit = z.infer<typeof ReportWorkUnitSchema>
