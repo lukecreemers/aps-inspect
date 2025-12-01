@@ -82,7 +82,9 @@ export const ReportBuildingScalarFieldEnumSchema = z.enum(['id','reportId','buil
 
 export const ContractorScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','phone','isActive','createdAt','updatedAt']);
 
-export const ReportWorkUnitScalarFieldEnumSchema = z.enum(['id','reportBuildingId','type','contractorId','status','assignedAt','firstPulledAt','submittedAt','reviewedAt']);
+export const ReportWorkUnitScalarFieldEnumSchema = z.enum(['id','reportBuildingId','type','contractorId','contractorName','reportWorkBlockId','status','assignedAt','firstPulledAt','submittedAt','reviewedAt']);
+
+export const ReportWorkBlockScalarFieldEnumSchema = z.enum(['id','reportId','contractorId','loginSecretText','status','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -106,9 +108,13 @@ export const ReportStatusSchema = z.enum(['IN_PROGRESS','FOR_REVIEW','COMPLETED'
 
 export type ReportStatusType = `${z.infer<typeof ReportStatusSchema>}`
 
-export const WorkUnitStatusSchema = z.enum(['PENDING','IN_PROGRESS','SUBMITTED','REVIEWED']);
+export const WorkUnitStatusSchema = z.enum(['PENDING','IN_PROGRESS','SUBMITTED']);
 
 export type WorkUnitStatusType = `${z.infer<typeof WorkUnitStatusSchema>}`
+
+export const WorkBlockStatusSchema = z.enum(['ASSIGNED','IN_PROGRESS','SUBMITTED']);
+
+export type WorkBlockStatusType = `${z.infer<typeof WorkBlockStatusSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -319,6 +325,8 @@ export const ReportWorkUnitSchema = z.object({
   id: z.string(),
   reportBuildingId: z.string(),
   contractorId: z.string().nullable(),
+  contractorName: z.string().nullable(),
+  reportWorkBlockId: z.string().nullable(),
   assignedAt: z.coerce.date().nullable(),
   firstPulledAt: z.coerce.date().nullable(),
   submittedAt: z.coerce.date().nullable(),
@@ -326,3 +334,19 @@ export const ReportWorkUnitSchema = z.object({
 })
 
 export type ReportWorkUnit = z.infer<typeof ReportWorkUnitSchema>
+
+/////////////////////////////////////////
+// REPORT WORK BLOCK SCHEMA
+/////////////////////////////////////////
+
+export const ReportWorkBlockSchema = z.object({
+  status: WorkBlockStatusSchema,
+  id: z.string(),
+  reportId: z.string(),
+  contractorId: z.string(),
+  loginSecretText: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type ReportWorkBlock = z.infer<typeof ReportWorkBlockSchema>

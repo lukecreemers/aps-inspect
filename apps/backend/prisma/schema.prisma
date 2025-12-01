@@ -44,7 +44,12 @@ enum WorkUnitStatus {
   PENDING
   IN_PROGRESS
   SUBMITTED
-  REVIEWED
+}
+
+enum WorkBlockStatus {
+  ASSIGNED
+  IN_PROGRESS
+  SUBMITTED
 }
 
 model Client {
@@ -202,6 +207,7 @@ model Report {
   client            Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
   types             ReportTypeAssignment[]
   buildings         ReportBuilding[]
+  reportWorkBlocks  ReportWorkBlock[]
 
   @@unique([clientId, title])
   @@map("reports")
@@ -244,7 +250,7 @@ model Contractor {
   updatedAt         DateTime        @updatedAt
 
   // Relations
-  reportWorkUnits   ReportWorkUnit[]
+  reportWorkBlocks  ReportWorkBlock[]
 
   @@map("contractors")
 }
@@ -255,6 +261,9 @@ model ReportWorkUnit {
   type              ReportType
 
   contractorId      String?
+  contractorName    String?
+
+  reportWorkBlockId String?
   status            WorkUnitStatus  @default(PENDING)
 
   assignedAt        DateTime?
@@ -263,8 +272,28 @@ model ReportWorkUnit {
   reviewedAt        DateTime?
 
   // Relations
-  reportBuilding    ReportBuilding @relation(fields: [reportBuildingId], references: [id], onDelete: Cascade)
-  contractor        Contractor?    @relation(fields: [contractorId], references: [id])
+  reportBuilding    ReportBuilding    @relation(fields: [reportBuildingId], references: [id], onDelete: Cascade)
+  reportWorkBlock   ReportWorkBlock?  @relation(fields: [reportWorkBlockId], references: [id], onDelete: SetNull)
 
   @@unique([reportBuildingId, type])
+  @@map("report_work_unit")
+}
+
+model ReportWorkBlock {
+  id                String          @id @default(uuid())
+  reportId          String
+  contractorId      String
+  loginSecretText   String
+
+  status            WorkBlockStatus @default(ASSIGNED)
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  contractor        Contractor      @relation(fields: [contractorId], references: [id])
+  reportWorkUnits   ReportWorkUnit[]
+
+  @@map("report_work_block")
 }
