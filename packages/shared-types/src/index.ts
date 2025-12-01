@@ -25,4 +25,5 @@ export * from "./report";
 export * from "./report-type-assignment";
 export * from "./contractor";
 export * from "./report-work-unit";
+export * from "./report-work-block";
 export * from "./generated/zod";

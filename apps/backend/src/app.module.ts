@@ -16,6 +16,7 @@ import { ReportTypeAssignmentModule } from './modules/report-type-assignment/rep
 import { ReportBuildingModule } from './modules/report-building/report-building.module';
 import { ContractorModule } from './modules/contractor/contractor.module';
 import { ReportWorkUnitModule } from './modules/report-work-unit/report-work-unit.module';
+import { ReportWorkBlockModule } from './modules/report-work-block/report-work-block.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ReportWorkUnitModule } from './modules/report-work-unit/report-work-uni
     ReportBuildingModule,
     ContractorModule,
     ReportWorkUnitModule,
+    ReportWorkBlockModule,
   ],
   controllers: [AppController],
   providers: [AppService],

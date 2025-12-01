@@ -1,7 +1,11 @@
 import { z } from "zod";
+import { WorkBlockStatusSchema } from "../../generated/zod";
 
 export const UpdateReportWorkBlockSchema = z.object({
-  // TODO: Add fields here
+  status: WorkBlockStatusSchema.optional(),
+  contractorId: z.string().uuid().optional(),
 });
 
-export type UpdateReportWorkBlockDto = z.infer<typeof UpdateReportWorkBlockSchema>;
+export type UpdateReportWorkBlockDto = z.infer<
+  typeof UpdateReportWorkBlockSchema
+>;
