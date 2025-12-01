@@ -37,6 +37,13 @@ export class ReportCreatorService {
       },
     });
 
+    await tx.reportTypeAssignment.createMany({
+      data: data.reportTypes.map((type) => ({
+        reportId: report.id,
+        type,
+      })),
+    });
+
     await tx.reportBuilding.createMany({
       data: data.buildingIds.map((buildingId) => ({
         reportId: report.id,
