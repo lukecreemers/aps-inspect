@@ -12,6 +12,8 @@ import {
   ReportWorkBlock,
   CreateReportWorkBlockDto,
   UpdateReportWorkBlockDto,
+  AddWorkUnitsToReportWorkBlockDto,
+  RemoveWorkUnitsFromReportWorkBlockDto,
 } from '@aps/shared-types';
 import { PrismaService } from 'src/database/prisma.service';
 import * as crypto from 'crypto';
@@ -100,5 +102,65 @@ export class ReportWorkBlockService extends BasePrismaService<
         `The following ReportWorkUnits are already assigned: ${ids}`,
       );
     }
+  }
+
+  private ensureAllWorkUnitsBelongToBlock(
+    workUnits: { id: string; reportWorkBlockId: string | null }[],
+    blockId: string,
+  ) {
+    const wrongBlock = workUnits.filter(
+      (wu) => wu.reportWorkBlockId !== blockId,
+    );
+    if (wrongBlock.length > 0) {
+      const ids = wrongBlock.map((wu) => wu.id).join(', ');
+      throw new BadRequestException(
+        `The following ReportWorkUnits are not assigned to this block: ${ids}`,
+      );
+    }
+  }
+
+  async addWorkUnitsToReportWorkBlock(
+    id: string,
+    addWorkUnitsToReportWorkBlockDto: AddWorkUnitsToReportWorkBlockDto,
+  ): Promise<ReportWorkBlock> {
+    return this.prisma.$transaction(async (tx) => {
+      const reportWorkBlock = await tx.reportWorkBlock.findUniqueOrThrow({
+        where: { id },
+      });
+      await this.assignWorkUnitsToBlock(
+        tx,
+        id,
+        addWorkUnitsToReportWorkBlockDto.workUnitIds,
+      );
+      return reportWorkBlock;
+    });
+  }
+
+  async removeWorkUnitsFromReportWorkBlock(
+    id: string,
+    dto: RemoveWorkUnitsFromReportWorkBlockDto,
+  ): Promise<ReportWorkBlock> {
+    return this.prisma.$transaction(async (tx) => {
+      const reportWorkBlock = await tx.reportWorkBlock.findUniqueOrThrow({
+        where: { id },
+      });
+
+      const uniqueIds = [...new Set(dto.workUnitIds)];
+
+      const workUnits = await tx.reportWorkUnit.findMany({
+        where: { id: { in: uniqueIds } },
+        select: { id: true, reportWorkBlockId: true },
+      });
+
+      this.ensureAllWorkUnitsExist(workUnits, uniqueIds);
+      this.ensureAllWorkUnitsBelongToBlock(workUnits, id);
+
+      await tx.reportWorkUnit.updateMany({
+        where: { id: { in: uniqueIds } },
+        data: { reportWorkBlockId: null },
+      });
+
+      return reportWorkBlock;
+    });
   }
 }

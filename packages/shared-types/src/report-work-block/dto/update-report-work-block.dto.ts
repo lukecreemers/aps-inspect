@@ -9,3 +9,19 @@ export const UpdateReportWorkBlockSchema = z.object({
 export type UpdateReportWorkBlockDto = z.infer<
   typeof UpdateReportWorkBlockSchema
 >;
+
+export const AddWorkUnitsToReportWorkBlockSchema = z.object({
+  workUnitIds: z.array(z.string().uuid()),
+});
+
+export type AddWorkUnitsToReportWorkBlockDto = z.infer<
+  typeof AddWorkUnitsToReportWorkBlockSchema
+>;
+
+export const RemoveWorkUnitsFromReportWorkBlockSchema = z.object({
+  workUnitIds: z.array(z.string().uuid()),
+});
+
+export type RemoveWorkUnitsFromReportWorkBlockDto = z.infer<
+  typeof RemoveWorkUnitsFromReportWorkBlockSchema
+>;
