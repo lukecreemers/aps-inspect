@@ -138,6 +138,7 @@ model Building {
   substrates        Substrate[]
   windows           Window[]
   reports           ReportBuilding[]
+  issues            Issue[]
 
   @@unique([clientId, name, locationId])
   @@map("buildings")
@@ -360,6 +361,7 @@ model Report {
   gutterInspections                 GutterInspection[]
   windowInspections                 WindowInspection[]
   substrateInspections              SubstrateInspection[]
+  openedIssues                      Issue[]
 
   @@unique([clientId, title])
   @@map("reports")
@@ -452,5 +454,23 @@ model ReportWorkBlock {
   reportWorkUnits   ReportWorkUnit[]
 
   @@map("report_work_block")
+}
+
+model Issue {
+  id                String          @id @default(uuid())
+  type              ReportType
+  
+  openingReportId   String
+  buildingId        String
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  resolvedAt        DateTime?
+
+  // Relations
+  openingReport     Report          @relation(fields: [openingReportId], references: [id], onDelete: Cascade)
+  building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+
+  @@map("issue")
 }
 
