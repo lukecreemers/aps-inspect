@@ -18,6 +18,7 @@ import { ContractorModule } from './modules/contractor/contractor.module';
 import { ReportWorkUnitModule } from './modules/report-work-unit/report-work-unit.module';
 import { ReportWorkBlockModule } from './modules/report-work-block/report-work-block.module';
 import { ContractorPullModule } from './modules/contractor-pull/contractor-pull.module';
+import { InspectionsModule } from './modules/inspections/inspections.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ContractorPullModule } from './modules/contractor-pull/contractor-pull.
     ReportWorkUnitModule,
     ReportWorkBlockModule,
     ContractorPullModule,
+    InspectionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -106,7 +106,9 @@ export const IssueScalarFieldEnumSchema = z.enum(['id','type','openingReportId',
 
 export const SubIssueScalarFieldEnumSchema = z.enum(['id','issueId','createdAt','updatedAt','resolvedAt']);
 
-export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','issueId','reportId','workUnitId','timeframe','action','description','toFix','createdAt','updatedAt']);
+export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','issueId','reportId','workUnitId','timeframe','action','description','toFix','metadata','createdAt','updatedAt']);
+
+export const SubIssueInspectionScalarFieldEnumSchema = z.enum(['id','subIssueId','issueInspectionId','action','xCoord','yCoord','metadata','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -557,8 +559,27 @@ export const IssueInspectionSchema = z.object({
   workUnitId: z.string(),
   description: z.string(),
   toFix: z.string(),
+  metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
 })
 
 export type IssueInspection = z.infer<typeof IssueInspectionSchema>
+
+/////////////////////////////////////////
+// SUB ISSUE INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const SubIssueInspectionSchema = z.object({
+  action: IssueActionSchema,
+  id: z.string(),
+  subIssueId: z.string(),
+  issueInspectionId: z.string(),
+  xCoord: z.number(),
+  yCoord: z.number(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type SubIssueInspection = z.infer<typeof SubIssueInspectionSchema>

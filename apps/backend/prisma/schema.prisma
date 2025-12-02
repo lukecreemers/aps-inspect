@@ -500,7 +500,8 @@ model SubIssue {
   resolvedAt        DateTime?
 
   // Relations
-  issue             Issue        @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  issue             Issue           @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  subIssueInspections               SubIssueInspection[]
 
   @@map("sub_issues")
 }
@@ -512,11 +513,14 @@ model IssueInspection {
   issueId           String
   reportId          String
   workUnitId        String
+
   timeframe         TimeFrame?
   action            IssueAction     @default(UPDATED)
 
   description       String
   toFix             String
+
+  metadata          Json?
 
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
@@ -525,7 +529,32 @@ model IssueInspection {
   issue             Issue           @relation(fields: [issueId], references: [id], onDelete: Cascade)
   report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
   workUnit          ReportWorkUnit  @relation(fields: [workUnitId], references: [id], onDelete: Cascade)
+  subIssueInspections               SubIssueInspection[]
 
   @@unique([issueId, reportId])
   @@map("issue_inspections")
+}
+
+model SubIssueInspection {
+  id                String          @id @default(uuid())
+  
+  subIssueId        String
+  issueInspectionId String
+
+  action            IssueAction
+
+  xCoord            Float
+  yCoord            Float
+
+  metadata          Json?
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  subIssue          SubIssue        @relation(fields: [subIssueId], references: [id], onDelete: Cascade)
+  issueInspection   IssueInspection @relation(fields: [issueInspectionId], references: [id], onDelete: Cascade)
+
+  @@unique([subIssueId, issueInspectionId])
+  @@map("sub_issue_inspections")
 }
