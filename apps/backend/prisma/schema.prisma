@@ -470,7 +470,22 @@ model Issue {
   // Relations
   openingReport     Report          @relation(fields: [openingReportId], references: [id], onDelete: Cascade)
   building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  subIssues         SubIssue[]
 
-  @@map("issue")
+  @@map("issues")
+}
+
+model SubIssue {
+  id                String          @id @default(uuid())
+  issueId           String
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  resolvedAt        DateTime?
+
+  // Relations
+  issue             Issue        @relation(fields: [issueId], references: [id], onDelete: Cascade)
+
+  @@map("sub_issues")
 }
 
