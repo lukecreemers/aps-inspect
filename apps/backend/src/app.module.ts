@@ -17,6 +17,7 @@ import { ReportBuildingModule } from './modules/report-building/report-building.
 import { ContractorModule } from './modules/contractor/contractor.module';
 import { ReportWorkUnitModule } from './modules/report-work-unit/report-work-unit.module';
 import { ReportWorkBlockModule } from './modules/report-work-block/report-work-block.module';
+import { ContractorPullModule } from './modules/contractor-pull/contractor-pull.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ReportWorkBlockModule } from './modules/report-work-block/report-work-b
     ContractorModule,
     ReportWorkUnitModule,
     ReportWorkBlockModule,
+    ContractorPullModule,
   ],
   controllers: [AppController],
   providers: [AppService],
