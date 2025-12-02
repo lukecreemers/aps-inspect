@@ -52,6 +52,7 @@ enum WorkBlockStatus {
   SUBMITTED
 }
 
+
 model Client {
   id                String          @id @default(uuid())
   name              String          @unique
@@ -203,8 +204,45 @@ model Gutter {
 
   // Relations
   building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  inspections       GutterInspection[]
 
   @@map("gutters")
+}
+
+model GutterInspection {
+  id                String          @id @default(uuid())
+  gutterId          String
+  reportId          String
+  reportWorkUnitId  String
+
+  length            Float
+  typeId            String
+  condition         Int
+  metadata          Json?
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  gutter            Gutter          @relation(fields: [gutterId], references: [id], onDelete: Cascade)
+  report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  workUnit          ReportWorkUnit  @relation(fields: [reportWorkUnitId], references: [id], onDelete: Cascade)
+  type              GutterType        @relation(fields: [typeId], references: [id])
+
+  @@unique([gutterId, reportId])
+  @@map("gutter_inspections")
+}
+
+model GutterType {
+  id                String          @id @default(uuid())
+  code              String          @unique
+  description       String
+  uoaCodeNumber     String?
+  isActive          Boolean         @default(true)
+
+  inspections       GutterInspection[]
+  
+  @@map("gutter_types")
 }
 
 model Substrate {
@@ -220,6 +258,7 @@ model Substrate {
   @@map("substrates")
 }
 
+
 model Window {
   id                String          @id @default(uuid())
   buildingId        String
@@ -229,8 +268,43 @@ model Window {
 
   // Relations
   building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
-
+  inspections       WindowInspection[]
   @@map("windows")
+}
+
+model WindowInspection {
+  id                String          @id @default(uuid())
+  windowId          String
+  reportId          String
+  reportWorkUnitId  String
+
+  typeId            String
+  condition         Int
+  metadata          Json?
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  window            Window          @relation(fields: [windowId], references: [id], onDelete: Cascade)
+  report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  workUnit          ReportWorkUnit  @relation(fields: [reportWorkUnitId], references: [id], onDelete: Cascade)
+  type              WindowType      @relation(fields: [typeId], references: [id])
+
+  @@unique([windowId, reportId])
+  @@map("window_inspections")
+}
+
+model WindowType {
+  id                String          @id @default(uuid())
+  code              String          @unique
+  description       String
+  uoaCodeNumber     String?
+  isActive          Boolean         @default(true)
+
+  inspections       WindowInspection[]
+  
+  @@map("window_types")
 }
 
 model Report {
@@ -247,7 +321,9 @@ model Report {
   types             ReportTypeAssignment[]
   buildings         ReportBuilding[]
   reportWorkBlocks  ReportWorkBlock[]
-  inspections       RoofInspection[]
+  roofInspections   RoofInspection[]
+  gutterInspections GutterInspection[]
+  windowInspections WindowInspection[]
 
   @@unique([clientId, title])
   @@map("reports")
@@ -314,7 +390,9 @@ model ReportWorkUnit {
   // Relations
   reportBuilding    ReportBuilding    @relation(fields: [reportBuildingId], references: [id], onDelete: Cascade)
   reportWorkBlock   ReportWorkBlock?  @relation(fields: [reportWorkBlockId], references: [id], onDelete: SetNull)
-  inspections       RoofInspection[]
+  roofInspections   RoofInspection[]
+  gutterInspections GutterInspection[]
+  windowInspections WindowInspection[]
 
   @@unique([reportBuildingId, type])
   @@map("report_work_unit")

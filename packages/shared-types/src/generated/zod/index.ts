@@ -74,9 +74,17 @@ export const RoofTypeScalarFieldEnumSchema = z.enum(['id','code','description','
 
 export const GutterScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
+export const GutterInspectionScalarFieldEnumSchema = z.enum(['id','gutterId','reportId','reportWorkUnitId','length','typeId','condition','metadata','createdAt','updatedAt']);
+
+export const GutterTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+
 export const SubstrateScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
 export const WindowScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
+
+export const WindowInspectionScalarFieldEnumSchema = z.enum(['id','windowId','reportId','reportWorkUnitId','typeId','condition','metadata','createdAt','updatedAt']);
+
+export const WindowTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
 
 export const ReportScalarFieldEnumSchema = z.enum(['id','clientId','title','status','isSystem','createdAt','updatedAt']);
 
@@ -270,6 +278,39 @@ export const GutterSchema = z.object({
 export type Gutter = z.infer<typeof GutterSchema>
 
 /////////////////////////////////////////
+// GUTTER INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const GutterInspectionSchema = z.object({
+  id: z.string(),
+  gutterId: z.string(),
+  reportId: z.string(),
+  reportWorkUnitId: z.string(),
+  length: z.number(),
+  typeId: z.string(),
+  condition: z.number().int(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type GutterInspection = z.infer<typeof GutterInspectionSchema>
+
+/////////////////////////////////////////
+// GUTTER TYPE SCHEMA
+/////////////////////////////////////////
+
+export const GutterTypeSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  description: z.string(),
+  uoaCodeNumber: z.string().nullable(),
+  isActive: z.boolean(),
+})
+
+export type GutterType = z.infer<typeof GutterTypeSchema>
+
+/////////////////////////////////////////
 // SUBSTRATE SCHEMA
 /////////////////////////////////////////
 
@@ -296,6 +337,38 @@ export const WindowSchema = z.object({
 })
 
 export type Window = z.infer<typeof WindowSchema>
+
+/////////////////////////////////////////
+// WINDOW INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const WindowInspectionSchema = z.object({
+  id: z.string(),
+  windowId: z.string(),
+  reportId: z.string(),
+  reportWorkUnitId: z.string(),
+  typeId: z.string(),
+  condition: z.number().int(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type WindowInspection = z.infer<typeof WindowInspectionSchema>
+
+/////////////////////////////////////////
+// WINDOW TYPE SCHEMA
+/////////////////////////////////////////
+
+export const WindowTypeSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  description: z.string(),
+  uoaCodeNumber: z.string().nullable(),
+  isActive: z.boolean(),
+})
+
+export type WindowType = z.infer<typeof WindowTypeSchema>
 
 /////////////////////////////////////////
 // REPORT SCHEMA
