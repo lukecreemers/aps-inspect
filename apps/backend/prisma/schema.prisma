@@ -151,8 +151,47 @@ model Roof {
 
   // Relations
   building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
+  inspections       RoofInspection[]
 
   @@map("roofs")
+}
+
+model RoofInspection {
+  id                String          @id @default(uuid())
+  roofId            String
+  reportId          String
+  reportWorkUnitId  String
+
+  area              Float
+  typeId            String
+  condition         Int
+  paintCondition    Int?
+  color             String?
+  metadata          Json?
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  roof              Roof            @relation(fields: [roofId], references: [id], onDelete: Cascade)
+  report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  workUnit          ReportWorkUnit  @relation(fields: [reportWorkUnitId], references: [id], onDelete: Cascade)
+  type              RoofType        @relation(fields: [typeId], references: [id])
+
+  @@unique([roofId, reportId])
+  @@map("roof_inspections")
+}
+
+model RoofType {
+  id                String          @id @default(uuid())
+  code              String          @unique
+  description       String
+  uoaCodeNumber     String?
+  isActive          Boolean         @default(true)
+
+  inspections       RoofInspection[]
+  
+  @@map("roof_types")
 }
 
 model Gutter {
@@ -208,6 +247,7 @@ model Report {
   types             ReportTypeAssignment[]
   buildings         ReportBuilding[]
   reportWorkBlocks  ReportWorkBlock[]
+  inspections       RoofInspection[]
 
   @@unique([clientId, title])
   @@map("reports")
@@ -274,6 +314,7 @@ model ReportWorkUnit {
   // Relations
   reportBuilding    ReportBuilding    @relation(fields: [reportBuildingId], references: [id], onDelete: Cascade)
   reportWorkBlock   ReportWorkBlock?  @relation(fields: [reportWorkBlockId], references: [id], onDelete: SetNull)
+  inspections       RoofInspection[]
 
   @@unique([reportBuildingId, type])
   @@map("report_work_unit")
@@ -297,3 +338,4 @@ model ReportWorkBlock {
 
   @@map("report_work_block")
 }
+

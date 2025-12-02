@@ -68,6 +68,10 @@ export const BuildingScalarFieldEnumSchema = z.enum(['id','clientId','locationId
 
 export const RoofScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
+export const RoofInspectionScalarFieldEnumSchema = z.enum(['id','roofId','reportId','reportWorkUnitId','area','typeId','condition','paintCondition','color','metadata','createdAt','updatedAt']);
+
+export const RoofTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+
 export const GutterScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
 export const SubstrateScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
@@ -215,6 +219,41 @@ export const RoofSchema = z.object({
 })
 
 export type Roof = z.infer<typeof RoofSchema>
+
+/////////////////////////////////////////
+// ROOF INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const RoofInspectionSchema = z.object({
+  id: z.string(),
+  roofId: z.string(),
+  reportId: z.string(),
+  reportWorkUnitId: z.string(),
+  area: z.number(),
+  typeId: z.string(),
+  condition: z.number().int(),
+  paintCondition: z.number().int().nullable(),
+  color: z.string().nullable(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type RoofInspection = z.infer<typeof RoofInspectionSchema>
+
+/////////////////////////////////////////
+// ROOF TYPE SCHEMA
+/////////////////////////////////////////
+
+export const RoofTypeSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  description: z.string(),
+  uoaCodeNumber: z.string().nullable(),
+  isActive: z.boolean(),
+})
+
+export type RoofType = z.infer<typeof RoofTypeSchema>
 
 /////////////////////////////////////////
 // GUTTER SCHEMA

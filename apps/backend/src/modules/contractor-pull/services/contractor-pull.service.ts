@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import { ContractorPullAuthService } from './contractor-pull-auth.service';
 import { ContractorPullFetchService } from './contractor-pull-fetch.service';
 import { ContractorPullAssembleService } from './contractor-pull-assemble.service';
+import { ContractorPullAssignService } from './contractor-pull-assign.service';
 
 @Injectable()
 export class ContractorPullService {
@@ -13,6 +14,7 @@ export class ContractorPullService {
     private readonly auth: ContractorPullAuthService,
     private readonly fetch: ContractorPullFetchService,
     private readonly assemble: ContractorPullAssembleService,
+    private readonly assign: ContractorPullAssignService,
   ) {}
 
   async pull(
@@ -27,6 +29,8 @@ export class ContractorPullService {
       const locations = await this.fetch.locations(tx, buildings);
 
       const data = await this.assemble.byReportTypes(tx, workUnits, buildings);
+
+      await this.assign.assign(tx, workUnits, workBlock);
 
       return {
         syncToken: crypto.randomBytes(32).toString('hex'),
