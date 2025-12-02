@@ -1,11 +1,11 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 
@@ -20,29 +20,22 @@ import {
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { Building } from '@aps/shared-types/src/generated/zod';
-import { BuildingCreatorService } from './building-creator.service';
+import {
+  GetBuildingsQueryDto,
+  GetBuildingsQuerySchema,
+} from '@aps/shared-types/src/building/dto/get-building-query.dto';
 
 @Controller('buildings')
 export class BuildingController {
-  constructor(
-    private buildingService: BuildingService,
-    private buildingCreatorService: BuildingCreatorService,
-  ) {}
+  constructor(private buildingService: BuildingService) {}
 
-  @Get('client/:clientId')
+  @Get()
   @ZodResponse(BuildingResponseSchema.array())
-  async findAllByClient(
-    @Param('clientId') clientId: string,
+  @UsePipes(new ZodValidationPipe(GetBuildingsQuerySchema))
+  async findBuildings(
+    @Query() query: GetBuildingsQueryDto,
   ): Promise<Building[]> {
-    return this.buildingService.findAllByClient(clientId);
-  }
-
-  @Get('location/:locationId')
-  @ZodResponse(BuildingResponseSchema.array())
-  async findAllByLocation(
-    @Param('locationId') locationId: string,
-  ): Promise<Building[]> {
-    return this.buildingService.findAllByLocation(locationId);
+    return this.buildingService.findBuildings(query);
   }
 
   // Creates a roof, gutter, substrate, and window for the building
@@ -52,9 +45,7 @@ export class BuildingController {
   async create(
     @Body() createBuildingDto: CreateBuildingDto,
   ): Promise<Building> {
-    return this.buildingCreatorService.createBuildingWithDefaults(
-      createBuildingDto,
-    );
+    return this.buildingService.create(createBuildingDto);
   }
 
   @Get(':id')

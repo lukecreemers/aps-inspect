@@ -1,11 +1,11 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { GutterService } from './gutter.service';
@@ -13,10 +13,10 @@ import { ZodResponse } from 'src/common/decorators/zod-response.decorator';
 import {
   CreateGutterDto,
   CreateGutterSchema,
+  GetGuttersQueryDto,
+  GetGuttersQuerySchema,
   Gutter,
   GutterResponseSchema,
-  UpdateGutterDto,
-  UpdateGutterSchema,
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 
@@ -24,12 +24,11 @@ import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 export class GutterController {
   constructor(private readonly gutterService: GutterService) {}
 
-  @Get('building/:buildingId')
+  @Get()
   @ZodResponse(GutterResponseSchema.array())
-  async findAllByBuilding(
-    @Param('buildingId') buildingId: string,
-  ): Promise<Gutter[]> {
-    return this.gutterService.findAllByBuilding(buildingId);
+  @UsePipes(new ZodValidationPipe(GetGuttersQuerySchema))
+  async findGutters(@Query() query: GetGuttersQueryDto): Promise<Gutter[]> {
+    return this.gutterService.findGutters(query);
   }
 
   @Post()
@@ -49,13 +48,5 @@ export class GutterController {
   @ZodResponse(GutterResponseSchema)
   async softDelete(@Param('id') id: string) {
     return this.gutterService.softDelete(id);
-  }
-
-  @Get('active/building/:buildingId')
-  @ZodResponse(GutterResponseSchema.array())
-  async findAllActiveByBuilding(
-    @Param('buildingId') buildingId: string,
-  ): Promise<Gutter[]> {
-    return this.gutterService.findAllActiveByBuilding(buildingId);
   }
 }

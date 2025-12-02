@@ -1,7 +1,16 @@
-import { Injectable } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
-import { Window, CreateWindowDto, UpdateWindowDto } from '@aps/shared-types';
+import { Injectable, Logger } from '@nestjs/common';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
+import {
+  Window,
+  CreateWindowDto,
+  UpdateWindowDto,
+  GetWindowsQueryDto,
+} from '@aps/shared-types';
 import { PrismaService } from 'src/database/prisma.service';
+import { activeFilter } from 'src/common/filters/active-filter';
 
 @Injectable()
 export class WindowService extends BasePrismaService<
@@ -9,22 +18,29 @@ export class WindowService extends BasePrismaService<
   CreateWindowDto,
   UpdateWindowDto
 > {
+  private readonly logger = new Logger(WindowService.name);
+
   constructor(private prisma: PrismaService) {
-    super(prisma.window as any, 'Window');
+    super(
+      prisma.window as unknown as PrismaDelegate<
+        Window,
+        CreateWindowDto,
+        UpdateWindowDto
+      >,
+      'Window',
+    );
   }
 
-  async findAllByBuilding(buildingId: string): Promise<Window[]> {
-    await this.prisma.building.findUniqueOrThrow({
-      where: { id: buildingId },
-    });
+  async findWindows(query: GetWindowsQueryDto): Promise<Window[]> {
+    this.logger.log(query);
     return this.prisma.window.findMany({
-      where: { buildingId },
-    });
-  }
-
-  async findAllActiveByBuilding(buildingId: string): Promise<Window[]> {
-    return this.prisma.window.findMany({
-      where: { buildingId, removedAt: null },
+      where: {
+        buildingId: query.buildingId,
+        removedAt: activeFilter(query.isActive),
+      },
+      take: query.take,
+      skip: query.skip,
+      orderBy: { createdAt: 'desc' },
     });
   }
 

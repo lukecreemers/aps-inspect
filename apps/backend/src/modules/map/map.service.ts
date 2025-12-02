@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import { Map, CreateMapDto, UpdateMapDto } from '@aps/shared-types';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -10,7 +13,10 @@ export class MapService extends BasePrismaService<
   UpdateMapDto
 > {
   constructor(private prisma: PrismaService) {
-    super(prisma.map as any, 'Map');
+    super(
+      prisma.map as unknown as PrismaDelegate<Map, CreateMapDto, UpdateMapDto>,
+      'Map',
+    );
   }
 
   async findAllByClient(clientId: string): Promise<Map[]> {
@@ -22,4 +28,3 @@ export class MapService extends BasePrismaService<
     });
   }
 }
-

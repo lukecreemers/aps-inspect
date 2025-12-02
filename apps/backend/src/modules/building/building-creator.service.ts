@@ -1,25 +1,24 @@
-import { PrismaService } from 'src/database/prisma.service';
-import { BuildingService } from './building.service';
 import { Injectable } from '@nestjs/common';
 import { CreateBuildingDto } from '@aps/shared-types';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BuildingCreatorService {
-  constructor(
-    private buildingService: BuildingService,
-    private prisma: PrismaService,
-  ) {}
+  constructor() {}
 
-  async createBuildingWithDefaults(data: CreateBuildingDto) {
-    return this.prisma.$transaction(async () => {
-      const building = await this.buildingService.create(data);
+  async createBuildingWithDefaults(
+    tx: Prisma.TransactionClient,
+    data: CreateBuildingDto,
+  ) {
+    // Create the building
+    const building = await tx.building.create({ data });
 
-      await this.prisma.roof.create({ data: { buildingId: building.id } });
-      await this.prisma.gutter.create({ data: { buildingId: building.id } });
-      await this.prisma.substrate.create({ data: { buildingId: building.id } });
-      await this.prisma.window.create({ data: { buildingId: building.id } });
+    // Create default associated entities
+    await tx.roof.create({ data: { buildingId: building.id } });
+    await tx.gutter.create({ data: { buildingId: building.id } });
+    await tx.substrate.create({ data: { buildingId: building.id } });
+    await tx.window.create({ data: { buildingId: building.id } });
 
-      return building;
-    });
+    return building;
   }
 }

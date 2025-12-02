@@ -4,7 +4,10 @@ import {
   UpdateLocationDto,
 } from '@aps/shared-types';
 import { Injectable } from '@nestjs/common';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
@@ -14,7 +17,14 @@ export class LocationService extends BasePrismaService<
   UpdateLocationDto
 > {
   constructor(private prisma: PrismaService) {
-    super(prisma.location as any, 'Location');
+    super(
+      prisma.location as unknown as PrismaDelegate<
+        Location,
+        CreateLocationDto,
+        UpdateLocationDto
+      >,
+      'Location',
+    );
   }
 
   async findAllByClient(clientId: string): Promise<Location[]> {

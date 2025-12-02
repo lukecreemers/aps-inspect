@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface ApiResponse<T> {
   success: boolean;
   statusCode: number;
@@ -7,8 +9,10 @@ export interface ApiResponse<T> {
   method: string;
   timestamp: string;
   data?: T;
-  details?: string;
+  details?: unknown;
 }
+
+export type ConditionType = 1 | 2 | 3 | 4 | 5;
 
 export * from "./client";
 export * from "./building";
@@ -19,4 +23,11 @@ export * from "./substrate";
 export * from "./window";
 export * from "./map";
 export * from "./map-image";
+export * from "./report";
+export * from "./report-type-assignment";
+export * from "./contractor";
+export * from "./report-work-unit";
+export * from "./report-work-block";
+export * from "./controller-pull";
 export * from "./generated/zod";
+export * from "./view/roof-view";

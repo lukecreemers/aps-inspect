@@ -1,0 +1,90 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UsePipes,
+} from '@nestjs/common';
+import { ZodResponse } from 'src/common/decorators/zod-response.decorator';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
+import { ReportWorkBlockService } from './report-work-block.service';
+import {
+  AddWorkUnitsToReportWorkBlockDto,
+  AddWorkUnitsToReportWorkBlockSchema,
+  CreateReportWorkBlockDto,
+  CreateReportWorkBlockSchema,
+  RemoveWorkUnitsFromReportWorkBlockDto,
+  RemoveWorkUnitsFromReportWorkBlockSchema,
+  ReportWorkBlock,
+  ReportWorkBlockResponseSchema,
+  UpdateReportWorkBlockDto,
+  UpdateReportWorkBlockSchema,
+} from '@aps/shared-types';
+
+@Controller('report-work-blocks')
+export class ReportWorkBlockController {
+  constructor(
+    private readonly reportWorkBlockService: ReportWorkBlockService,
+  ) {}
+
+  @Post()
+  @ZodResponse(ReportWorkBlockResponseSchema)
+  @UsePipes(new ZodValidationPipe(CreateReportWorkBlockSchema))
+  async create(
+    @Body() createReportWorkBlockDto: CreateReportWorkBlockDto,
+  ): Promise<ReportWorkBlock> {
+    return this.reportWorkBlockService.create(createReportWorkBlockDto);
+  }
+
+  @Get(':id')
+  @ZodResponse(ReportWorkBlockResponseSchema)
+  async findOne(@Param('id') id: string): Promise<ReportWorkBlock> {
+    return this.reportWorkBlockService.findOne(id);
+  }
+
+  @Patch(':id')
+  @ZodResponse(ReportWorkBlockResponseSchema)
+  @UsePipes(new ZodValidationPipe(UpdateReportWorkBlockSchema))
+  async update(
+    @Param('id') id: string,
+    @Body() updateReportWorkBlockDto: UpdateReportWorkBlockDto,
+  ): Promise<ReportWorkBlock> {
+    return this.reportWorkBlockService.update(id, updateReportWorkBlockDto);
+  }
+
+  @Delete(':id')
+  @ZodResponse(ReportWorkBlockResponseSchema)
+  async delete(@Param('id') id: string): Promise<ReportWorkBlock> {
+    return this.reportWorkBlockService.delete(id);
+  }
+
+  @Patch(':id/add-work-units')
+  @ZodResponse(ReportWorkBlockResponseSchema)
+  @UsePipes(new ZodValidationPipe(AddWorkUnitsToReportWorkBlockSchema))
+  async addWorkUnitsToReportWorkBlock(
+    @Param('id') id: string,
+    @Body() addWorkUnitsToReportWorkBlockDto: AddWorkUnitsToReportWorkBlockDto,
+  ): Promise<ReportWorkBlock> {
+    return this.reportWorkBlockService.addWorkUnitsToReportWorkBlock(
+      id,
+      addWorkUnitsToReportWorkBlockDto,
+    );
+  }
+
+  @Patch(':id/remove-work-units')
+  @ZodResponse(ReportWorkBlockResponseSchema)
+  @UsePipes(new ZodValidationPipe(RemoveWorkUnitsFromReportWorkBlockSchema))
+  async removeWorkUnitsFromReportWorkBlock(
+    @Param('id') id: string,
+    @Body()
+    removeWorkUnitsFromReportWorkBlockDto: RemoveWorkUnitsFromReportWorkBlockDto,
+  ): Promise<ReportWorkBlock> {
+    return this.reportWorkBlockService.removeWorkUnitsFromReportWorkBlock(
+      id,
+      removeWorkUnitsFromReportWorkBlockDto,
+    );
+  }
+}

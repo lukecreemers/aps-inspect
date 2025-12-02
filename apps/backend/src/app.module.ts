@@ -11,6 +11,14 @@ import { SubstrateModule } from './modules/substrate/substrate.module';
 import { WindowModule } from './modules/window/window.module';
 import { MapModule } from './modules/map/map.module';
 import { MapImageModule } from './modules/map-image/map-image.module';
+import { ReportModule } from './modules/report/report.module';
+import { ReportTypeAssignmentModule } from './modules/report-type-assignment/report-type-assignment.module';
+import { ReportBuildingModule } from './modules/report-building/report-building.module';
+import { ContractorModule } from './modules/contractor/contractor.module';
+import { ReportWorkUnitModule } from './modules/report-work-unit/report-work-unit.module';
+import { ReportWorkBlockModule } from './modules/report-work-block/report-work-block.module';
+import { ContractorPullModule } from './modules/contractor-pull/contractor-pull.module';
+import { InspectionsModule } from './modules/inspections/inspections.module';
 
 @Module({
   imports: [
@@ -24,6 +32,14 @@ import { MapImageModule } from './modules/map-image/map-image.module';
     WindowModule,
     MapModule,
     MapImageModule,
+    ReportModule,
+    ReportTypeAssignmentModule,
+    ReportBuildingModule,
+    ContractorModule,
+    ReportWorkUnitModule,
+    ReportWorkBlockModule,
+    ContractorPullModule,
+    InspectionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

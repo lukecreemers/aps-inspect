@@ -1,11 +1,11 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { WindowService } from './window.service';
@@ -15,8 +15,8 @@ import {
   CreateWindowSchema,
   Window,
   WindowResponseSchema,
-  UpdateWindowDto,
-  UpdateWindowSchema,
+  GetWindowsQueryDto,
+  GetWindowsQuerySchema,
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 
@@ -24,12 +24,11 @@ import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 export class WindowController {
   constructor(private readonly windowService: WindowService) {}
 
-  @Get('building/:buildingId')
+  @Get()
   @ZodResponse(WindowResponseSchema.array())
-  async findAllByBuilding(
-    @Param('buildingId') buildingId: string,
-  ): Promise<Window[]> {
-    return this.windowService.findAllByBuilding(buildingId);
+  @UsePipes(new ZodValidationPipe(GetWindowsQuerySchema))
+  async findWindows(@Query() query: GetWindowsQueryDto): Promise<Window[]> {
+    return this.windowService.findWindows(query);
   }
 
   @Post()
@@ -49,13 +48,5 @@ export class WindowController {
   @ZodResponse(WindowResponseSchema)
   async softDelete(@Param('id') id: string) {
     return this.windowService.softDelete(id);
-  }
-
-  @Get('active/building/:buildingId')
-  @ZodResponse(WindowResponseSchema.array())
-  async findAllActiveByBuilding(
-    @Param('buildingId') buildingId: string,
-  ): Promise<Window[]> {
-    return this.windowService.findAllActiveByBuilding(buildingId);
   }
 }

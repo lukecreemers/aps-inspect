@@ -68,11 +68,47 @@ export const BuildingScalarFieldEnumSchema = z.enum(['id','clientId','locationId
 
 export const RoofScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
+export const RoofInspectionScalarFieldEnumSchema = z.enum(['id','roofId','reportId','reportWorkUnitId','area','typeId','condition','paintCondition','color','metadata','createdAt','updatedAt']);
+
+export const RoofTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+
 export const GutterScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
+
+export const GutterInspectionScalarFieldEnumSchema = z.enum(['id','gutterId','reportId','reportWorkUnitId','length','typeId','condition','metadata','createdAt','updatedAt']);
+
+export const GutterTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
 
 export const SubstrateScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
+export const SubstrateInspectionScalarFieldEnumSchema = z.enum(['id','substrateId','reportId','reportWorkUnitId','typeId','condition','metadata','createdAt','updatedAt']);
+
+export const SubstrateTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+
 export const WindowScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
+
+export const WindowInspectionScalarFieldEnumSchema = z.enum(['id','windowId','reportId','reportWorkUnitId','typeId','condition','metadata','createdAt','updatedAt']);
+
+export const WindowTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+
+export const ReportScalarFieldEnumSchema = z.enum(['id','clientId','title','status','isSystem','createdAt','updatedAt']);
+
+export const ReportTypeAssignmentScalarFieldEnumSchema = z.enum(['id','reportId','type']);
+
+export const ReportBuildingScalarFieldEnumSchema = z.enum(['id','reportId','buildingId']);
+
+export const ContractorScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','phone','isActive','createdAt','updatedAt']);
+
+export const ReportWorkUnitScalarFieldEnumSchema = z.enum(['id','reportBuildingId','type','contractorId','contractorName','reportWorkBlockId','status','assignedAt','firstPulledAt','submittedAt','reviewedAt']);
+
+export const ReportWorkBlockScalarFieldEnumSchema = z.enum(['id','reportId','contractorId','loginSecretText','status','createdAt','updatedAt']);
+
+export const IssueScalarFieldEnumSchema = z.enum(['id','type','openingReportId','buildingId','createdAt','updatedAt','resolvedAt']);
+
+export const SubIssueScalarFieldEnumSchema = z.enum(['id','issueId','createdAt','updatedAt','resolvedAt']);
+
+export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','issueId','reportId','workUnitId','timeframe','action','description','toFix','metadata','createdAt','updatedAt']);
+
+export const SubIssueInspectionScalarFieldEnumSchema = z.enum(['id','subIssueId','issueInspectionId','action','xCoord','yCoord','metadata','createdAt','updatedAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -87,6 +123,30 @@ export const NullsOrderSchema = z.enum(['first','last']);
 export const MapImageTypeSchema = z.enum(['BASE','WIREFRAME','ANNOTATED','BLUEPRINT']);
 
 export type MapImageTypeType = `${z.infer<typeof MapImageTypeSchema>}`
+
+export const ReportTypeSchema = z.enum(['ROOF','EXTERIOR']);
+
+export type ReportTypeType = `${z.infer<typeof ReportTypeSchema>}`
+
+export const ReportStatusSchema = z.enum(['IN_PROGRESS','FOR_REVIEW','COMPLETED']);
+
+export type ReportStatusType = `${z.infer<typeof ReportStatusSchema>}`
+
+export const WorkUnitStatusSchema = z.enum(['PENDING','IN_PROGRESS','SUBMITTED']);
+
+export type WorkUnitStatusType = `${z.infer<typeof WorkUnitStatusSchema>}`
+
+export const WorkBlockStatusSchema = z.enum(['ASSIGNED','IN_PROGRESS','SUBMITTED']);
+
+export type WorkBlockStatusType = `${z.infer<typeof WorkBlockStatusSchema>}`
+
+export const TimeFrameSchema = z.enum(['IMMEDIATE','URGENT','NONURGENT']);
+
+export type TimeFrameType = `${z.infer<typeof TimeFrameSchema>}`
+
+export const IssueActionSchema = z.enum(['OPENED','UPDATED','RESOLVED']);
+
+export type IssueActionType = `${z.infer<typeof IssueActionSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -189,6 +249,41 @@ export const RoofSchema = z.object({
 export type Roof = z.infer<typeof RoofSchema>
 
 /////////////////////////////////////////
+// ROOF INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const RoofInspectionSchema = z.object({
+  id: z.string(),
+  roofId: z.string(),
+  reportId: z.string(),
+  reportWorkUnitId: z.string(),
+  area: z.number(),
+  typeId: z.string(),
+  condition: z.number().int(),
+  paintCondition: z.number().int().nullable(),
+  color: z.string().nullable(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type RoofInspection = z.infer<typeof RoofInspectionSchema>
+
+/////////////////////////////////////////
+// ROOF TYPE SCHEMA
+/////////////////////////////////////////
+
+export const RoofTypeSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  description: z.string(),
+  uoaCodeNumber: z.string().nullable(),
+  isActive: z.boolean(),
+})
+
+export type RoofType = z.infer<typeof RoofTypeSchema>
+
+/////////////////////////////////////////
 // GUTTER SCHEMA
 /////////////////////////////////////////
 
@@ -201,6 +296,39 @@ export const GutterSchema = z.object({
 })
 
 export type Gutter = z.infer<typeof GutterSchema>
+
+/////////////////////////////////////////
+// GUTTER INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const GutterInspectionSchema = z.object({
+  id: z.string(),
+  gutterId: z.string(),
+  reportId: z.string(),
+  reportWorkUnitId: z.string(),
+  length: z.number(),
+  typeId: z.string(),
+  condition: z.number().int(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type GutterInspection = z.infer<typeof GutterInspectionSchema>
+
+/////////////////////////////////////////
+// GUTTER TYPE SCHEMA
+/////////////////////////////////////////
+
+export const GutterTypeSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  description: z.string(),
+  uoaCodeNumber: z.string().nullable(),
+  isActive: z.boolean(),
+})
+
+export type GutterType = z.infer<typeof GutterTypeSchema>
 
 /////////////////////////////////////////
 // SUBSTRATE SCHEMA
@@ -217,6 +345,38 @@ export const SubstrateSchema = z.object({
 export type Substrate = z.infer<typeof SubstrateSchema>
 
 /////////////////////////////////////////
+// SUBSTRATE INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const SubstrateInspectionSchema = z.object({
+  id: z.string(),
+  substrateId: z.string(),
+  reportId: z.string(),
+  reportWorkUnitId: z.string(),
+  typeId: z.string(),
+  condition: z.number().int(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type SubstrateInspection = z.infer<typeof SubstrateInspectionSchema>
+
+/////////////////////////////////////////
+// SUBSTRATE TYPE SCHEMA
+/////////////////////////////////////////
+
+export const SubstrateTypeSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  description: z.string(),
+  uoaCodeNumber: z.string().nullable(),
+  isActive: z.boolean(),
+})
+
+export type SubstrateType = z.infer<typeof SubstrateTypeSchema>
+
+/////////////////////////////////////////
 // WINDOW SCHEMA
 /////////////////////////////////////////
 
@@ -229,3 +389,197 @@ export const WindowSchema = z.object({
 })
 
 export type Window = z.infer<typeof WindowSchema>
+
+/////////////////////////////////////////
+// WINDOW INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const WindowInspectionSchema = z.object({
+  id: z.string(),
+  windowId: z.string(),
+  reportId: z.string(),
+  reportWorkUnitId: z.string(),
+  typeId: z.string(),
+  condition: z.number().int(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type WindowInspection = z.infer<typeof WindowInspectionSchema>
+
+/////////////////////////////////////////
+// WINDOW TYPE SCHEMA
+/////////////////////////////////////////
+
+export const WindowTypeSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  description: z.string(),
+  uoaCodeNumber: z.string().nullable(),
+  isActive: z.boolean(),
+})
+
+export type WindowType = z.infer<typeof WindowTypeSchema>
+
+/////////////////////////////////////////
+// REPORT SCHEMA
+/////////////////////////////////////////
+
+export const ReportSchema = z.object({
+  status: ReportStatusSchema,
+  id: z.string(),
+  clientId: z.string(),
+  title: z.string(),
+  isSystem: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Report = z.infer<typeof ReportSchema>
+
+/////////////////////////////////////////
+// REPORT TYPE ASSIGNMENT SCHEMA
+/////////////////////////////////////////
+
+export const ReportTypeAssignmentSchema = z.object({
+  type: ReportTypeSchema,
+  id: z.string(),
+  reportId: z.string(),
+})
+
+export type ReportTypeAssignment = z.infer<typeof ReportTypeAssignmentSchema>
+
+/////////////////////////////////////////
+// REPORT BUILDING SCHEMA
+/////////////////////////////////////////
+
+export const ReportBuildingSchema = z.object({
+  id: z.string(),
+  reportId: z.string(),
+  buildingId: z.string(),
+})
+
+export type ReportBuilding = z.infer<typeof ReportBuildingSchema>
+
+/////////////////////////////////////////
+// CONTRACTOR SCHEMA
+/////////////////////////////////////////
+
+export const ContractorSchema = z.object({
+  id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string(),
+  phone: z.string().nullable(),
+  isActive: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type Contractor = z.infer<typeof ContractorSchema>
+
+/////////////////////////////////////////
+// REPORT WORK UNIT SCHEMA
+/////////////////////////////////////////
+
+export const ReportWorkUnitSchema = z.object({
+  type: ReportTypeSchema,
+  status: WorkUnitStatusSchema,
+  id: z.string(),
+  reportBuildingId: z.string(),
+  contractorId: z.string().nullable(),
+  contractorName: z.string().nullable(),
+  reportWorkBlockId: z.string().nullable(),
+  assignedAt: z.coerce.date().nullable(),
+  firstPulledAt: z.coerce.date().nullable(),
+  submittedAt: z.coerce.date().nullable(),
+  reviewedAt: z.coerce.date().nullable(),
+})
+
+export type ReportWorkUnit = z.infer<typeof ReportWorkUnitSchema>
+
+/////////////////////////////////////////
+// REPORT WORK BLOCK SCHEMA
+/////////////////////////////////////////
+
+export const ReportWorkBlockSchema = z.object({
+  status: WorkBlockStatusSchema,
+  id: z.string(),
+  reportId: z.string(),
+  contractorId: z.string(),
+  loginSecretText: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type ReportWorkBlock = z.infer<typeof ReportWorkBlockSchema>
+
+/////////////////////////////////////////
+// ISSUE SCHEMA
+/////////////////////////////////////////
+
+export const IssueSchema = z.object({
+  type: ReportTypeSchema,
+  id: z.string(),
+  openingReportId: z.string(),
+  buildingId: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  resolvedAt: z.coerce.date().nullable(),
+})
+
+export type Issue = z.infer<typeof IssueSchema>
+
+/////////////////////////////////////////
+// SUB ISSUE SCHEMA
+/////////////////////////////////////////
+
+export const SubIssueSchema = z.object({
+  id: z.string(),
+  issueId: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  resolvedAt: z.coerce.date().nullable(),
+})
+
+export type SubIssue = z.infer<typeof SubIssueSchema>
+
+/////////////////////////////////////////
+// ISSUE INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const IssueInspectionSchema = z.object({
+  timeframe: TimeFrameSchema.nullable(),
+  action: IssueActionSchema,
+  id: z.string(),
+  isInitial: z.boolean(),
+  issueId: z.string(),
+  reportId: z.string(),
+  workUnitId: z.string(),
+  description: z.string(),
+  toFix: z.string(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type IssueInspection = z.infer<typeof IssueInspectionSchema>
+
+/////////////////////////////////////////
+// SUB ISSUE INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const SubIssueInspectionSchema = z.object({
+  action: IssueActionSchema,
+  id: z.string(),
+  subIssueId: z.string(),
+  issueInspectionId: z.string(),
+  xCoord: z.number(),
+  yCoord: z.number(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type SubIssueInspection = z.infer<typeof SubIssueInspectionSchema>

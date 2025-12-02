@@ -4,8 +4,14 @@ import {
   CreateBuildingDto,
   UpdateBuildingDto,
 } from '@aps/shared-types';
-import { BasePrismaService } from 'src/common/services/base-prisma.service';
+import {
+  BasePrismaService,
+  PrismaDelegate,
+} from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
+import { BuildingCreatorService } from './building-creator.service';
+import { GetBuildingsQueryDto } from '@aps/shared-types/src/building/dto/get-building-query.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BuildingService extends BasePrismaService<
@@ -13,8 +19,18 @@ export class BuildingService extends BasePrismaService<
   CreateBuildingDto,
   UpdateBuildingDto
 > {
-  constructor(private prisma: PrismaService) {
-    super(prisma.building as any, 'Building');
+  constructor(
+    private prisma: PrismaService,
+    private buildingCreator: BuildingCreatorService,
+  ) {
+    super(
+      prisma.building as unknown as PrismaDelegate<
+        Building,
+        CreateBuildingDto,
+        UpdateBuildingDto
+      >,
+      'Building',
+    );
   }
 
   async create(createBuildingDto: CreateBuildingDto): Promise<Building> {
@@ -24,7 +40,12 @@ export class BuildingService extends BasePrismaService<
       createBuildingDto.locationId,
     );
 
-    return this.prisma.building.create({ data: { ...createBuildingDto } });
+    return this.prisma.$transaction(async (tx) => {
+      return this.buildingCreator.createBuildingWithDefaults(
+        tx,
+        createBuildingDto,
+      );
+    });
   }
 
   async update(id: string, data: UpdateBuildingDto): Promise<Building> {
@@ -47,30 +68,19 @@ export class BuildingService extends BasePrismaService<
 
     return this.prisma.building.update({
       where: { id },
-      data: data as any,
+      data: data as Prisma.BuildingUpdateInput,
     });
   }
 
-  async findAllByLocation(locationId: string): Promise<Building[]> {
-    await this.prisma.location.findUniqueOrThrow({
-      where: { id: locationId },
-    });
+  async findBuildings(query: GetBuildingsQueryDto): Promise<Building[]> {
     return this.prisma.building.findMany({
       where: {
-        locationId,
+        clientId: query.clientId,
+        locationId: query.locationId,
+        isActive: query.isActive,
       },
-    });
-  }
-
-  async findAllByClient(clientId: string): Promise<Building[]> {
-    await this.prisma.client.findUniqueOrThrow({
-      where: { id: clientId },
-    });
-
-    return this.prisma.building.findMany({
-      where: {
-        clientId,
-      },
+      take: query.take,
+      skip: query.skip,
     });
   }
 
