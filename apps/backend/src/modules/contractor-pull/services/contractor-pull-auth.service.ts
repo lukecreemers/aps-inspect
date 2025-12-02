@@ -1,9 +1,9 @@
-import { ControllerPullDto } from '@aps/shared-types';
+import { ContractorPullDto } from '@aps/shared-types';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ContractorPullAuthService {
-  async validate(tx, reportWorkBlockId: string, body: ControllerPullDto) {
+  async validate(tx, reportWorkBlockId: string, body: ContractorPullDto) {
     const block = await tx.reportWorkBlock.findFirstOrThrow({
       where: { id: reportWorkBlockId },
     });
