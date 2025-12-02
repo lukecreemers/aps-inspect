@@ -52,6 +52,18 @@ enum WorkBlockStatus {
   SUBMITTED
 }
 
+enum TimeFrame {
+  IMMEDIATE
+  URGENT
+  NONURGENT
+}
+
+enum IssueAction {
+  OPENED
+  UPDATED
+  RESOLVED
+}
+
 
 model Client {
   id                String          @id @default(uuid())
@@ -362,6 +374,7 @@ model Report {
   windowInspections                 WindowInspection[]
   substrateInspections              SubstrateInspection[]
   openedIssues                      Issue[]
+  issueInspections                  IssueInspection[]
 
   @@unique([clientId, title])
   @@map("reports")
@@ -432,6 +445,8 @@ model ReportWorkUnit {
   gutterInspections                   GutterInspection[]
   windowInspections                   WindowInspection[]
   substrateInspections                SubstrateInspection[]
+  issueInspections                    IssueInspection[]
+
 
   @@unique([reportBuildingId, type])
   @@map("report_work_unit")
@@ -471,6 +486,7 @@ model Issue {
   openingReport     Report          @relation(fields: [openingReportId], references: [id], onDelete: Cascade)
   building          Building        @relation(fields: [buildingId], references: [id], onDelete: Cascade)
   subIssues         SubIssue[]
+  issueInspections  IssueInspection[]
 
   @@map("issues")
 }
@@ -489,3 +505,27 @@ model SubIssue {
   @@map("sub_issues")
 }
 
+model IssueInspection {
+  id                String          @id @default(uuid())
+  isInitial         Boolean         @default(false)
+
+  issueId           String
+  reportId          String
+  workUnitId        String
+  timeframe         TimeFrame?
+  action            IssueAction     @default(UPDATED)
+
+  description       String
+  toFix             String
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  issue             Issue           @relation(fields: [issueId], references: [id], onDelete: Cascade)
+  report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  workUnit          ReportWorkUnit  @relation(fields: [workUnitId], references: [id], onDelete: Cascade)
+
+  @@unique([issueId, reportId])
+  @@map("issue_inspections")
+}

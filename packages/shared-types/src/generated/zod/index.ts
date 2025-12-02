@@ -106,6 +106,8 @@ export const IssueScalarFieldEnumSchema = z.enum(['id','type','openingReportId',
 
 export const SubIssueScalarFieldEnumSchema = z.enum(['id','issueId','createdAt','updatedAt','resolvedAt']);
 
+export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','issueId','reportId','workUnitId','timeframe','action','description','toFix','createdAt','updatedAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const NullableJsonNullValueInputSchema = z.enum(['DbNull','JsonNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value);
@@ -135,6 +137,14 @@ export type WorkUnitStatusType = `${z.infer<typeof WorkUnitStatusSchema>}`
 export const WorkBlockStatusSchema = z.enum(['ASSIGNED','IN_PROGRESS','SUBMITTED']);
 
 export type WorkBlockStatusType = `${z.infer<typeof WorkBlockStatusSchema>}`
+
+export const TimeFrameSchema = z.enum(['IMMEDIATE','URGENT','NONURGENT']);
+
+export type TimeFrameType = `${z.infer<typeof TimeFrameSchema>}`
+
+export const IssueActionSchema = z.enum(['OPENED','UPDATED','RESOLVED']);
+
+export type IssueActionType = `${z.infer<typeof IssueActionSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -532,3 +542,23 @@ export const SubIssueSchema = z.object({
 })
 
 export type SubIssue = z.infer<typeof SubIssueSchema>
+
+/////////////////////////////////////////
+// ISSUE INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const IssueInspectionSchema = z.object({
+  timeframe: TimeFrameSchema.nullable(),
+  action: IssueActionSchema,
+  id: z.string(),
+  isInitial: z.boolean(),
+  issueId: z.string(),
+  reportId: z.string(),
+  workUnitId: z.string(),
+  description: z.string(),
+  toFix: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type IssueInspection = z.infer<typeof IssueInspectionSchema>
