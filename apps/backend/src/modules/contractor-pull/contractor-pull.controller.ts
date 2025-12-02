@@ -1,5 +1,5 @@
 import { Body, Controller, Param, Post, UsePipes } from '@nestjs/common';
-import { ContractorPullService } from './contractor-pull.service';
+import { ContractorPullService } from './services/contractor-pull.service';
 import {
   ControllerPullDto,
   ControllerPullResponse,

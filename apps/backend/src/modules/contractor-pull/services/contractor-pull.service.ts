@@ -12,56 +12,61 @@ import { Gutter, Prisma, Substrate } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 import crypto from 'crypto';
 import { Logger } from '@nestjs/common';
+import { ContractorPullAuthService } from './contractor-pull-auth.service';
+import { ContractorPullFetchService } from './contractor-pull-fetch.service';
+import { ContractorPullAssembleService } from './contractor-pull-assemble.service';
 
 @Injectable()
 export class ContractorPullService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly auth: ContractorPullAuthService,
+    private readonly fetch: ContractorPullFetchService,
+    private readonly assemble: ContractorPullAssembleService,
+  ) {}
 
   async pull(
     body: ControllerPullDto,
     reportWorkBlockId: string,
   ): Promise<ControllerPullResponse> {
     return await this.prisma.$transaction(async (tx) => {
-      const workBlock = await tx.reportWorkBlock.findFirstOrThrow({
-        where: { id: reportWorkBlockId },
-      });
+      const workBlock = await this.auth.validate(tx, reportWorkBlockId, body);
 
-      if (workBlock.loginSecretText !== body.loginSecretText) {
-        throw new ForbiddenException('Invalid login secret');
-      }
+      const workUnits = await this.fetch.workUnits(tx, reportWorkBlockId);
+      const buildings = await this.fetch.buildings(tx, workUnits);
+      const locations = await this.fetch.locations(tx, buildings);
 
-      const workUnits = await tx.reportWorkUnit.findMany({
-        where: { reportWorkBlockId },
-      });
+      const data = await this.assemble.byReportTypes(tx, workUnits, buildings);
 
-      const types = workUnits.map((wu) => wu.type);
-      const uniqueTypes = [...new Set(types)];
-      Logger.log(`Types: ${uniqueTypes}`);
+      // const workUnits = await tx.reportWorkUnit.findMany({
+      //   where: { reportWorkBlockId },
+      // });
 
-      const buildings = await this.findBuildings(tx, workUnits);
-      const locations = await this.findLocations(tx, buildings);
-      let roofs: Roof[] = [];
-      let gutters: Gutter[] = [];
-      let substrates: Substrate[] = [];
-      let windows: Window[] = [];
+      // const types = workUnits.map((wu) => wu.type);
+      // const uniqueTypes = [...new Set(types)];
+      // Logger.log(`Types: ${uniqueTypes}`);
 
-      if (uniqueTypes.includes('ROOF')) {
-        roofs = await this.findRoofs(tx, buildings);
-        gutters = await this.findGutters(tx, buildings);
-      }
-      if (uniqueTypes.includes('EXTERIOR')) {
-        substrates = await this.findSubstrates(tx, buildings);
-        windows = await this.findWindows(tx, buildings);
-      }
+      // const buildings = await this.findBuildings(tx, workUnits);
+      // const locations = await this.findLocations(tx, buildings);
+      // let roofs: Roof[] = [];
+      // let gutters: Gutter[] = [];
+      // let substrates: Substrate[] = [];
+      // let windows: Window[] = [];
+
+      // if (uniqueTypes.includes('ROOF')) {
+      //   roofs = await this.findRoofs(tx, buildings);
+      //   gutters = await this.findGutters(tx, buildings);
+      // }
+      // if (uniqueTypes.includes('EXTERIOR')) {
+      //   substrates = await this.findSubstrates(tx, buildings);
+      //   windows = await this.findWindows(tx, buildings);
+      // }
 
       return {
         syncToken: crypto.randomBytes(32).toString('hex'),
         buildings,
         locations,
-        roofs,
-        gutters,
-        substrates,
-        windows,
+        ...data,
       };
     });
   }
