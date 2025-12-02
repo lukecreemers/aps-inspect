@@ -80,6 +80,10 @@ export const GutterTypeScalarFieldEnumSchema = z.enum(['id','code','description'
 
 export const SubstrateScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
+export const SubstrateInspectionScalarFieldEnumSchema = z.enum(['id','substrateId','reportId','reportWorkUnitId','typeId','condition','metadata','createdAt','updatedAt']);
+
+export const SubstrateTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+
 export const WindowScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
 
 export const WindowInspectionScalarFieldEnumSchema = z.enum(['id','windowId','reportId','reportWorkUnitId','typeId','condition','metadata','createdAt','updatedAt']);
@@ -323,6 +327,38 @@ export const SubstrateSchema = z.object({
 })
 
 export type Substrate = z.infer<typeof SubstrateSchema>
+
+/////////////////////////////////////////
+// SUBSTRATE INSPECTION SCHEMA
+/////////////////////////////////////////
+
+export const SubstrateInspectionSchema = z.object({
+  id: z.string(),
+  substrateId: z.string(),
+  reportId: z.string(),
+  reportWorkUnitId: z.string(),
+  typeId: z.string(),
+  condition: z.number().int(),
+  metadata: JsonValueSchema.nullable(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+})
+
+export type SubstrateInspection = z.infer<typeof SubstrateInspectionSchema>
+
+/////////////////////////////////////////
+// SUBSTRATE TYPE SCHEMA
+/////////////////////////////////////////
+
+export const SubstrateTypeSchema = z.object({
+  id: z.string(),
+  code: z.string(),
+  description: z.string(),
+  uoaCodeNumber: z.string().nullable(),
+  isActive: z.boolean(),
+})
+
+export type SubstrateType = z.infer<typeof SubstrateTypeSchema>
 
 /////////////////////////////////////////
 // WINDOW SCHEMA
