@@ -12,6 +12,8 @@ export interface ApiResponse<T> {
   details?: unknown;
 }
 
+export type ConditionType = 1 | 2 | 3 | 4 | 5;
+
 export * from "./client";
 export * from "./building";
 export * from "./location";
@@ -28,3 +30,4 @@ export * from "./report-work-unit";
 export * from "./report-work-block";
 export * from "./controller-pull";
 export * from "./generated/zod";
+export * from "./view/roof-view";
