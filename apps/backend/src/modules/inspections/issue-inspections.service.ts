@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { BaseInspectionService } from './common/base-inspection.service';
 import { PrismaService } from 'src/database/prisma.service';
 import { IssueInspection } from '@aps/shared-types';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class IssueInspectionService extends BaseInspectionService<IssueInspection> {
@@ -9,7 +10,9 @@ export class IssueInspectionService extends BaseInspectionService<IssueInspectio
     super();
   }
 
-  protected readonly delegate = this.prisma.issueInspection;
+  protected getDelegate(tx: Prisma.TransactionClient) {
+    return tx.issueInspection;
+  }
 
   protected filterById(id: string) {
     return { issueId: id };

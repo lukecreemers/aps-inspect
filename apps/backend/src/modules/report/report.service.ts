@@ -12,7 +12,6 @@ import {
 } from 'src/common/services/base-prisma.service';
 import { PrismaService } from 'src/database/prisma.service';
 import { ReportCreatorService } from './report-creator.service';
-import { CreateReportBuildingDto } from '@aps/shared-types/src/report-building';
 
 @Injectable()
 export class ReportService extends BasePrismaService<

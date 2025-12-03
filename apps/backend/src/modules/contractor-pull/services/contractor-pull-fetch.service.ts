@@ -15,7 +15,7 @@ export class ContractorPullFetchService {
     return tx.reportWorkUnit.findMany({ where: { reportWorkBlockId } });
   }
 
-  async types(workUnits: ReportWorkUnit[]) {
+  types(workUnits: ReportWorkUnit[]) {
     const types = new Set<string>();
     for (const workUnit of workUnits) {
       if (workUnit.type) {

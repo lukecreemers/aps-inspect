@@ -27,10 +27,10 @@ export class ContractorPullService {
     workBlockId: string,
   ): Promise<ContractorPullResponse> {
     return await this.prisma.$transaction(async (tx) => {
-      const workBlock = await this.auth.validate(tx, workBlockId, body);
+      await this.auth.validate(tx, workBlockId, body);
 
       const workUnits = await this.fetch.workUnits(tx, workBlockId);
-      const types = await this.fetch.types(workUnits);
+      const types = this.fetch.types(workUnits);
 
       const buildings = await this.fetch.buildings(tx, workUnits);
       const locations = await this.fetch.locations(tx, buildings);
@@ -42,21 +42,16 @@ export class ContractorPullService {
       }));
 
       for (const type of types) {
-        const handler = this.registry.get(type);
-
-        if (!handler) {
-          throw new Error(`No handler registered for report type ${type}`);
-        }
-
-        for (let i = 0; i < buildings.length; i++) {
-          const building = buildings[i];
-
-          const mapped = await handler.createBundle(tx, building);
-
-          switch (type) {
-            case ReportType.ROOF:
-              buildingBundles[i].roof = mapped as RoofBundle;
-              break;
+        switch (type) {
+          case ReportType.ROOF: {
+            const handler = this.registry.get<RoofBundle>(ReportType.ROOF);
+            for (let i = 0; i < buildings.length; i++) {
+              buildingBundles[i].roof = await handler.createBundle(
+                tx,
+                buildings[i],
+              );
+            }
+            break;
           }
         }
       }

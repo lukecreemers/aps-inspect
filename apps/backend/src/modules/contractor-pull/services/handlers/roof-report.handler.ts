@@ -1,29 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { ReportTypeHandler } from './report-type.handler';
-import { groupBy } from 'rxjs';
 import { Gutter, Prisma, ReportType } from '@prisma/client';
 import {
   Building,
   GutterView,
   Roof,
   RoofBundle,
-  RoofInspection,
-  RoofType,
   RoofView,
 } from '@aps/shared-types';
 import { RoofInspectionService } from 'src/modules/inspections/roof-inspections.service';
-import { Logger } from '@nestjs/common';
 import { GutterInspectionService } from 'src/modules/inspections/gutter-inspections.service';
-type RoofRaw = {
-  roofs: {
-    id: string;
-    type: RoofType | null;
-    roofInspection: RoofInspection | null;
-  }[];
-};
 
 @Injectable()
-export class RoofReportHandler implements ReportTypeHandler {
+export class RoofReportHandler implements ReportTypeHandler<RoofBundle> {
   constructor(
     private readonly roofInspectionService: RoofInspectionService,
     private readonly gutterInspectionService: GutterInspectionService,
@@ -64,7 +53,10 @@ export class RoofReportHandler implements ReportTypeHandler {
     tx: Prisma.TransactionClient,
     roof: Roof,
   ): Promise<RoofView> {
-    const insp = await this.roofInspectionService.getLatestInspection(roof.id);
+    const insp = await this.roofInspectionService.getLatestInspection(
+      tx,
+      roof.id,
+    );
 
     if (!insp) {
       return this.defaultRoofView(roof.id);
@@ -109,6 +101,7 @@ export class RoofReportHandler implements ReportTypeHandler {
     gutter: Gutter,
   ): Promise<GutterView> {
     const insp = await this.gutterInspectionService.getLatestInspection(
+      tx,
       gutter.id,
     );
 
