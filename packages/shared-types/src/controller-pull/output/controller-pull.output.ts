@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { GutterTypeSchema, RoofTypeSchema } from "../../generated/zod";
+import {
+  GutterTypeSchema,
+  IssueActionSchema,
+  RoofTypeSchema,
+  TimeFrameSchema,
+} from "../../generated/zod";
 
 // ------------------------------
 // Base Views
@@ -18,6 +23,28 @@ export const BuildingViewSchema = z.object({
   accessInformation: z.string().nullable(),
   metadata: z.any().optional(),
 });
+
+export const SubIssueViewSchema = z.object({
+  id: z.string(),
+  action: IssueActionSchema,
+  xCoord: z.number(),
+  yCoord: z.number(),
+});
+
+export type SubIssueView = z.infer<typeof SubIssueViewSchema>;
+
+export const IssueViewSchema = z.object({
+  id: z.string(),
+  subIssues: z.array(SubIssueViewSchema),
+  timeframe: TimeFrameSchema.nullable(),
+  action: IssueActionSchema,
+  description: z.string(),
+  toFix: z.string(),
+  xCoord: z.number(),
+  yCoord: z.number(),
+});
+
+export type IssueView = z.infer<typeof IssueViewSchema>;
 
 export const RoofViewSchema = z.object({
   id: z.string(),
@@ -43,7 +70,7 @@ export type GutterView = z.infer<typeof GutterViewSchema>;
 export const RoofBundleSchema = z.object({
   roofs: z.array(RoofViewSchema),
   gutters: z.array(GutterViewSchema),
-  // issues: z.array(IssueViewSchema),
+  issues: z.array(IssueViewSchema),
 });
 
 export type RoofBundle = z.infer<typeof RoofBundleSchema>;

@@ -1,6 +1,10 @@
 import { ContractorPullDto } from '@aps/shared-types';
-import { ForbiddenException, Injectable } from '@nestjs/common';
-import { Prisma, ReportWorkBlock } from '@prisma/client';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
+import { Prisma, ReportWorkBlock, WorkBlockStatus } from '@prisma/client';
 
 @Injectable()
 export class ContractorPullAuthService {
@@ -15,6 +19,12 @@ export class ContractorPullAuthService {
 
     if (block.loginSecretText !== body.loginSecretText) {
       throw new ForbiddenException('Invalid login secret');
+    }
+
+    if (block.status !== WorkBlockStatus.ASSIGNED) {
+      throw new BadRequestException(
+        `Block is currently ${block.status}. Expected ${WorkBlockStatus.ASSIGNED}.`,
+      );
     }
 
     return block;

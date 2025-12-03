@@ -41,6 +41,8 @@ export class ContractorPullService {
         roof: undefined,
       }));
 
+      // Assemble Bundles
+
       for (const type of types) {
         switch (type) {
           case ReportType.ROOF: {
@@ -55,6 +57,8 @@ export class ContractorPullService {
           }
         }
       }
+
+      // TODO: Update Work Units to IN_PROGRESS + update work block status to IN_PROGRESS
 
       const response: ContractorPullResponse = {
         syncToken: crypto.randomBytes(32).toString('hex'),

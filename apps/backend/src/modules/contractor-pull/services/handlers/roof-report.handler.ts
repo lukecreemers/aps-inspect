@@ -10,12 +10,14 @@ import {
 } from '@aps/shared-types';
 import { RoofInspectionService } from 'src/modules/inspections/roof-inspections.service';
 import { GutterInspectionService } from 'src/modules/inspections/gutter-inspections.service';
+import { IssueViewHandler } from './issue-view.handler';
 
 @Injectable()
 export class RoofReportHandler implements ReportTypeHandler<RoofBundle> {
   constructor(
     private readonly roofInspectionService: RoofInspectionService,
     private readonly gutterInspectionService: GutterInspectionService,
+    private readonly issueViewHandler: IssueViewHandler,
   ) {}
   type = ReportType.ROOF;
 
@@ -33,7 +35,13 @@ export class RoofReportHandler implements ReportTypeHandler<RoofBundle> {
       gutters.map((gutter) => this.mapGutter(tx, gutter)),
     );
 
-    return { roofs: roofViews, gutters: gutterViews };
+    const issueViews = await this.issueViewHandler.getIssueViews(
+      tx,
+      building,
+      ReportType.ROOF,
+    );
+
+    return { roofs: roofViews, gutters: gutterViews, issues: issueViews };
   }
 
   // =============================
@@ -45,6 +53,15 @@ export class RoofReportHandler implements ReportTypeHandler<RoofBundle> {
     building: Building,
   ): Promise<Roof[]> {
     return tx.roof.findMany({
+      where: { buildingId: building.id },
+    });
+  }
+
+  private async findGutters(
+    tx: Prisma.TransactionClient,
+    building: Building,
+  ): Promise<Gutter[]> {
+    return tx.gutter.findMany({
       where: { buildingId: building.id },
     });
   }
@@ -85,15 +102,6 @@ export class RoofReportHandler implements ReportTypeHandler<RoofBundle> {
       paintCondition: null,
       paintColor: null,
     };
-  }
-
-  private async findGutters(
-    tx: Prisma.TransactionClient,
-    building: Building,
-  ): Promise<Gutter[]> {
-    return tx.gutter.findMany({
-      where: { buildingId: building.id },
-    });
   }
 
   private async mapGutter(
