@@ -110,6 +110,8 @@ export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','is
 
 export const SubIssueInspectionScalarFieldEnumSchema = z.enum(['id','subIssueId','issueInspectionId','action','xCoord','yCoord','metadata','createdAt','updatedAt']);
 
+export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','passwordHash','passwordSalt','role','clientId','createdAt']);
+
 export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const NullableJsonNullValueInputSchema = z.enum(['DbNull','JsonNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value);
@@ -147,6 +149,10 @@ export type TimeFrameType = `${z.infer<typeof TimeFrameSchema>}`
 export const IssueActionSchema = z.enum(['OPENED','UPDATED','RESOLVED']);
 
 export type IssueActionType = `${z.infer<typeof IssueActionSchema>}`
+
+export const UserRoleSchema = z.enum(['ADMIN','CLIENT']);
+
+export type UserRoleType = `${z.infer<typeof UserRoleSchema>}`
 
 /////////////////////////////////////////
 // MODELS
@@ -585,3 +591,21 @@ export const SubIssueInspectionSchema = z.object({
 })
 
 export type SubIssueInspection = z.infer<typeof SubIssueInspectionSchema>
+
+/////////////////////////////////////////
+// USER SCHEMA
+/////////////////////////////////////////
+
+export const UserSchema = z.object({
+  role: UserRoleSchema,
+  id: z.string(),
+  firstName: z.string(),
+  lastName: z.string(),
+  email: z.string(),
+  passwordHash: z.string(),
+  passwordSalt: z.string(),
+  clientId: z.string().nullable(),
+  createdAt: z.coerce.date(),
+})
+
+export type User = z.infer<typeof UserSchema>

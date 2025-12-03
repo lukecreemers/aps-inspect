@@ -29,4 +29,5 @@ export * from "./contractor";
 export * from "./report-work-unit";
 export * from "./report-work-block";
 export * from "./controller-pull";
+export * from "./auth";
 export * from "./generated/zod";
