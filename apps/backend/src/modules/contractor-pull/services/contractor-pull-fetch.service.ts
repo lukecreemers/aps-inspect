@@ -15,6 +15,16 @@ export class ContractorPullFetchService {
     return tx.reportWorkUnit.findMany({ where: { reportWorkBlockId } });
   }
 
+  types(workUnits: ReportWorkUnit[]) {
+    const types = new Set<string>();
+    for (const workUnit of workUnits) {
+      if (workUnit.type) {
+        types.add(workUnit.type);
+      }
+    }
+    return types;
+  }
+
   async buildings(tx: Prisma.TransactionClient, workUnits: ReportWorkUnit[]) {
     const buildingIds = (
       await tx.reportBuilding.findMany({

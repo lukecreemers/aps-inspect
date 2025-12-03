@@ -106,7 +106,7 @@ export const IssueScalarFieldEnumSchema = z.enum(['id','type','openingReportId',
 
 export const SubIssueScalarFieldEnumSchema = z.enum(['id','issueId','createdAt','updatedAt','resolvedAt']);
 
-export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','issueId','reportId','workUnitId','timeframe','action','description','toFix','metadata','createdAt','updatedAt']);
+export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','issueId','reportId','workUnitId','timeframe','action','xCoord','yCoord','description','toFix','metadata','createdAt','updatedAt']);
 
 export const SubIssueInspectionScalarFieldEnumSchema = z.enum(['id','subIssueId','issueInspectionId','action','xCoord','yCoord','metadata','createdAt','updatedAt']);
 
@@ -557,6 +557,8 @@ export const IssueInspectionSchema = z.object({
   issueId: z.string(),
   reportId: z.string(),
   workUnitId: z.string(),
+  xCoord: z.number(),
+  yCoord: z.number(),
   description: z.string(),
   toFix: z.string(),
   metadata: JsonValueSchema.nullable(),

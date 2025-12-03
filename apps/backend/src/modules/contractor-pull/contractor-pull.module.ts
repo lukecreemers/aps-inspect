@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ContractorPullController } from './contractor-pull.controller';
-import { ContractorPullService } from './services/contractor-pull.service';
+
 import { PrismaModule } from 'src/database/prisma.module';
+import { ContractorPullService } from './services/contractor-pull.service';
 import { ContractorPullAuthService } from './services/contractor-pull-auth.service';
-import { ContractorPullAssembleService } from './services/contractor-pull-assemble.service';
 import { ContractorPullFetchService } from './services/contractor-pull-fetch.service';
-import { ContractorPullAssignService } from './services/contractor-pull-assign.service';
+import { InspectionsModule } from '../inspections/inspections.module';
+import { ReportTypeHandlerRegistry } from './services/handlers/report-type-handler-registry';
+import { RoofReportHandler } from './services/handlers/roof-report.handler';
+import { IssueViewHandler } from './services/handlers/issue-view.handler';
+import { ExteriorReportHandler } from './services/handlers/exterior-report.handler';
 
 @Module({
   controllers: [ContractorPullController],
@@ -13,9 +17,11 @@ import { ContractorPullAssignService } from './services/contractor-pull-assign.s
     ContractorPullService,
     ContractorPullAuthService,
     ContractorPullFetchService,
-    ContractorPullAssembleService,
-    ContractorPullAssignService,
+    ReportTypeHandlerRegistry,
+    RoofReportHandler,
+    ExteriorReportHandler,
+    IssueViewHandler,
   ],
-  imports: [PrismaModule],
+  imports: [PrismaModule, InspectionsModule],
 })
 export class ContractorPullModule {}

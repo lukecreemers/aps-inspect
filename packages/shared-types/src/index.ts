@@ -30,4 +30,3 @@ export * from "./report-work-unit";
 export * from "./report-work-block";
 export * from "./controller-pull";
 export * from "./generated/zod";
-export * from "./view/roof-view";

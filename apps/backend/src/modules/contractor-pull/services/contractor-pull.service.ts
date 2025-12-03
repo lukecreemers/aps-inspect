@@ -1,11 +1,25 @@
-import { ControllerPullDto, ControllerPullResponse } from '@aps/shared-types';
+import {
+  BuildingBundle,
+  ContractorPullDto,
+  ContractorPullResponse,
+  ExteriorBundle,
+  Location,
+  RoofBundle,
+} from '@aps/shared-types';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import crypto from 'crypto';
 import { ContractorPullAuthService } from './contractor-pull-auth.service';
 import { ContractorPullFetchService } from './contractor-pull-fetch.service';
-import { ContractorPullAssembleService } from './contractor-pull-assemble.service';
-import { ContractorPullAssignService } from './contractor-pull-assign.service';
+import { Logger } from '@nestjs/common';
+import { ReportTypeHandlerRegistry } from './handlers/report-type-handler-registry';
+import {
+  Building,
+  Prisma,
+  ReportType,
+  WorkBlockStatus,
+  WorkUnitStatus,
+} from '@prisma/client';
+import crypto from 'crypto';
 
 @Injectable()
 export class ContractorPullService {
@@ -13,31 +27,99 @@ export class ContractorPullService {
     private readonly prisma: PrismaService,
     private readonly auth: ContractorPullAuthService,
     private readonly fetch: ContractorPullFetchService,
-    private readonly assemble: ContractorPullAssembleService,
-    private readonly assign: ContractorPullAssignService,
+    private registry: ReportTypeHandlerRegistry,
   ) {}
 
   async pull(
-    body: ControllerPullDto,
-    reportWorkBlockId: string,
-  ): Promise<ControllerPullResponse> {
+    body: ContractorPullDto,
+    workBlockId: string,
+  ): Promise<ContractorPullResponse> {
     return await this.prisma.$transaction(async (tx) => {
-      const workBlock = await this.auth.validate(tx, reportWorkBlockId, body);
+      await this.auth.validate(tx, workBlockId, body);
 
-      const workUnits = await this.fetch.workUnits(tx, reportWorkBlockId);
+      const workUnits = await this.fetch.workUnits(tx, workBlockId);
+      const types = this.fetch.types(workUnits);
+
       const buildings = await this.fetch.buildings(tx, workUnits);
       const locations = await this.fetch.locations(tx, buildings);
 
-      const data = await this.assemble.byReportTypes(tx, workUnits, buildings);
-
-      await this.assign.assign(tx, workUnits, workBlock);
-
-      return {
-        syncToken: crypto.randomBytes(32).toString('hex'),
+      const buildingBundles = this.initialiseBuildingBundles(
         buildings,
         locations,
-        ...data,
+      );
+
+      await this.attachBundles(
+        tx,
+        Array.from(types) as ReportType[],
+        buildings,
+        buildingBundles,
+      );
+
+      await this.assignWorkBlock(tx, workBlockId);
+      await this.assignWorkUnits(tx, workBlockId);
+
+      const response: ContractorPullResponse = {
+        syncToken: crypto.randomBytes(32).toString('hex'),
+        locations,
+        buildings: buildingBundles,
       };
+
+      Logger.log(`Contractor pull prepared for workBlock ${workBlockId}`);
+
+      return response;
+    });
+  }
+
+  private initialiseBuildingBundles(
+    buildings: Building[],
+    locations: Location[],
+  ): BuildingBundle[] {
+    return buildings.map((building) => ({
+      building,
+      location: locations.find((l) => l.id === building.locationId) ?? null,
+      roof: undefined,
+      exterior: undefined,
+    }));
+  }
+
+  private async attachBundles(
+    tx: Prisma.TransactionClient,
+    types: ReportType[],
+    buildings: Building[],
+    bundles: BuildingBundle[],
+  ) {
+    for (const type of types) {
+      const handler = this.registry.get(type);
+
+      for (let i = 0; i < buildings.length; i++) {
+        const bundle = await handler.createBundle(tx, buildings[i]);
+
+        if (type === ReportType.ROOF) {
+          bundles[i].roof = bundle as RoofBundle;
+        } else if (type === ReportType.EXTERIOR) {
+          bundles[i].exterior = bundle as ExteriorBundle;
+        }
+      }
+    }
+  }
+
+  private async assignWorkBlock(
+    tx: Prisma.TransactionClient,
+    workBlockId: string,
+  ) {
+    await tx.reportWorkBlock.update({
+      where: { id: workBlockId },
+      data: { status: WorkBlockStatus.IN_PROGRESS },
+    });
+  }
+
+  private async assignWorkUnits(
+    tx: Prisma.TransactionClient,
+    workBlockId: string,
+  ) {
+    await tx.reportWorkUnit.updateMany({
+      where: { reportWorkBlockId: workBlockId },
+      data: { status: WorkUnitStatus.IN_PROGRESS },
     });
   }
 }

@@ -517,6 +517,9 @@ model IssueInspection {
   timeframe         TimeFrame?
   action            IssueAction     @default(UPDATED)
 
+  xCoord            Float
+  yCoord            Float
+
   description       String
   toFix             String
 

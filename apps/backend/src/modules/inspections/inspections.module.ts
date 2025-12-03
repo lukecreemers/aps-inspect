@@ -19,5 +19,13 @@ import { SubIssueInspectionService } from './sub-issue-inspections.service';
     IssueInspectionService,
     SubIssueInspectionService,
   ],
+  exports: [
+    RoofInspectionService,
+    GutterInspectionService,
+    WindowInspectionService,
+    SubstrateInspectionService,
+    IssueInspectionService,
+    SubIssueInspectionService,
+  ],
 })
 export class InspectionsModule {}
