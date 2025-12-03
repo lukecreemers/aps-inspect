@@ -64,6 +64,11 @@ enum IssueAction {
   RESOLVED
 }
 
+enum UserRole {
+  ADMIN
+  CLIENT
+}
+
 
 model Client {
   id                String          @id @default(uuid())
@@ -77,6 +82,7 @@ model Client {
   buildings         Building[]
   maps              Map[]
   reports           Report[]
+  users             User[]
 
   @@map("clients")
 }
@@ -560,4 +566,22 @@ model SubIssueInspection {
 
   @@unique([subIssueId, issueInspectionId])
   @@map("sub_issue_inspections")
+}
+
+
+model User {
+  id                String          @id @default(uuid())
+  firstName         String
+  lastName          String              
+  email             String          @unique
+  passwordHash      String
+  passwordSalt      String
+  role              UserRole
+  clientId          String?
+  createdAt         DateTime        @default(now())
+
+  // Relations 
+  client            Client?          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("user")
 }
