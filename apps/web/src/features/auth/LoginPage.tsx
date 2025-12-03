@@ -1,6 +1,7 @@
 import type { UserResponse, UserRoleType } from "@aps/shared-types";
 import { useUser } from "../../app/providers/UserProvider";
 import { useNavigate } from "react-router-dom";
+import { Home } from "lucide-react";
 
 const defaultAdmin: UserResponse = {
   id: "1",
@@ -26,6 +27,7 @@ export function LoginPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold">Login</h1>
+      <Home className="w-10 h-10" />
       <button onClick={() => login(defaultAdmin)}>Login as Admin</button>
       <button onClick={() => login(defaultClient)}>Login as Client</button>
     </div>
