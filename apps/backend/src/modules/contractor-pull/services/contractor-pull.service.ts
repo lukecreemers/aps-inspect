@@ -3,6 +3,7 @@ import {
   ContractorPullDto,
   ContractorPullResponse,
   ExteriorBundle,
+  Location,
   RoofBundle,
 } from '@aps/shared-types';
 import { Injectable } from '@nestjs/common';
@@ -11,7 +12,13 @@ import { ContractorPullAuthService } from './contractor-pull-auth.service';
 import { ContractorPullFetchService } from './contractor-pull-fetch.service';
 import { Logger } from '@nestjs/common';
 import { ReportTypeHandlerRegistry } from './handlers/report-type-handler-registry';
-import { ReportType } from '@prisma/client';
+import {
+  Building,
+  Prisma,
+  ReportType,
+  WorkBlockStatus,
+  WorkUnitStatus,
+} from '@prisma/client';
 import crypto from 'crypto';
 
 @Injectable()
@@ -36,42 +43,20 @@ export class ContractorPullService {
       const buildings = await this.fetch.buildings(tx, workUnits);
       const locations = await this.fetch.locations(tx, buildings);
 
-      const buildingBundles: BuildingBundle[] = buildings.map((building) => ({
-        building,
-        location: locations.find((l) => l.id === building.locationId) ?? null,
-        roof: undefined,
-      }));
+      const buildingBundles = this.initialiseBuildingBundles(
+        buildings,
+        locations,
+      );
 
-      // Assemble Bundles
+      await this.attachBundles(
+        tx,
+        Array.from(types) as ReportType[],
+        buildings,
+        buildingBundles,
+      );
 
-      for (const type of types) {
-        switch (type) {
-          case ReportType.ROOF: {
-            const handler = this.registry.get<RoofBundle>(ReportType.ROOF);
-            for (let i = 0; i < buildings.length; i++) {
-              buildingBundles[i].roof = await handler.createBundle(
-                tx,
-                buildings[i],
-              );
-            }
-            break;
-          }
-          case ReportType.EXTERIOR: {
-            const handler = this.registry.get<ExteriorBundle>(
-              ReportType.EXTERIOR,
-            );
-            for (let i = 0; i < buildings.length; i++) {
-              buildingBundles[i].exterior = await handler.createBundle(
-                tx,
-                buildings[i],
-              );
-            }
-            break;
-          }
-        }
-      }
-
-      // TODO: Update Work Units to IN_PROGRESS + update work block status to IN_PROGRESS
+      await this.assignWorkBlock(tx, workBlockId);
+      await this.assignWorkUnits(tx, workBlockId);
 
       const response: ContractorPullResponse = {
         syncToken: crypto.randomBytes(32).toString('hex'),
@@ -82,6 +67,59 @@ export class ContractorPullService {
       Logger.log(`Contractor pull prepared for workBlock ${workBlockId}`);
 
       return response;
+    });
+  }
+
+  private initialiseBuildingBundles(
+    buildings: Building[],
+    locations: Location[],
+  ): BuildingBundle[] {
+    return buildings.map((building) => ({
+      building,
+      location: locations.find((l) => l.id === building.locationId) ?? null,
+      roof: undefined,
+      exterior: undefined,
+    }));
+  }
+
+  private async attachBundles(
+    tx: Prisma.TransactionClient,
+    types: ReportType[],
+    buildings: Building[],
+    bundles: BuildingBundle[],
+  ) {
+    for (const type of types) {
+      const handler = this.registry.get(type);
+
+      for (let i = 0; i < buildings.length; i++) {
+        const bundle = await handler.createBundle(tx, buildings[i]);
+
+        if (type === ReportType.ROOF) {
+          bundles[i].roof = bundle as RoofBundle;
+        } else if (type === ReportType.EXTERIOR) {
+          bundles[i].exterior = bundle as ExteriorBundle;
+        }
+      }
+    }
+  }
+
+  private async assignWorkBlock(
+    tx: Prisma.TransactionClient,
+    workBlockId: string,
+  ) {
+    await tx.reportWorkBlock.update({
+      where: { id: workBlockId },
+      data: { status: WorkBlockStatus.IN_PROGRESS },
+    });
+  }
+
+  private async assignWorkUnits(
+    tx: Prisma.TransactionClient,
+    workBlockId: string,
+  ) {
+    await tx.reportWorkUnit.updateMany({
+      where: { reportWorkBlockId: workBlockId },
+      data: { status: WorkUnitStatus.IN_PROGRESS },
     });
   }
 }
