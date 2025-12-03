@@ -11,7 +11,7 @@ import {
   RoofView,
 } from '@aps/shared-types';
 import { RoofInspectionService } from 'src/modules/inspections/roof-inspections.service';
-
+import { Logger } from '@nestjs/common';
 type RoofRaw = {
   roofs: {
     id: string;
@@ -25,57 +25,62 @@ export class RoofReportHandler implements ReportTypeHandler {
   constructor(private readonly roofInspectionService: RoofInspectionService) {}
   type = ReportType.ROOF;
 
-  async loadOne(
+  async createBundle(
     tx: Prisma.TransactionClient,
     building: Building,
-  ): Promise<RoofRaw> {
-    const roofs = await tx.roof.findMany({
-      where: { buildingId: building.id },
-    });
-
-    const enriched = await Promise.all(
-      roofs.map(async (roof) => {
-        const roofInspection =
-          await this.roofInspectionService.getLatestInspection(roof.id);
-
-        let type: RoofType | null = null;
-
-        if (roofInspection?.typeId) {
-          type = await tx.roofType.findUnique({
-            where: { id: roofInspection.typeId },
-          });
-        }
-
-        return {
-          id: roof.id,
-          roofInspection,
-          type,
-        };
-      }),
+  ): Promise<RoofBundle> {
+    const roofs = await this.findRoofs(tx, building);
+    const roofViews = await Promise.all(
+      roofs.map((roof) => this.mapRoof(tx, roof)),
     );
-
-    return { roofs: enriched };
+    return { roofs: roofViews };
   }
 
-  async mapOne(raw: RoofRaw): Promise<RoofBundle> {
-    return {
-      roofs: raw.roofs.map((r) => {
-        const insp = r.roofInspection ?? {
-          area: null,
-          condition: 0,
-          paintCondition: null,
-          color: null,
-        };
+  // =============================
+  //           helpers
+  // =============================
 
-        return {
-          id: r.id,
-          area: insp.area,
-          type: r.type,
-          condition: insp.condition,
-          paintCondition: insp.paintCondition,
-          paintColor: insp.color,
-        };
-      }),
+  private async findRoofs(
+    tx: Prisma.TransactionClient,
+    building: Building,
+  ): Promise<Roof[]> {
+    return tx.roof.findMany({
+      where: { buildingId: building.id },
+    });
+  }
+
+  private async mapRoof(
+    tx: Prisma.TransactionClient,
+    roof: Roof,
+  ): Promise<RoofView> {
+    const insp = await this.roofInspectionService.getLatestInspection(roof.id);
+
+    if (!insp) {
+      return this.defaultRoofView(roof.id);
+    }
+
+    const type = await tx.roofType.findUniqueOrThrow({
+      where: { id: insp.typeId },
+    });
+
+    return {
+      id: roof.id,
+      area: insp.area,
+      type,
+      condition: insp.condition,
+      paintCondition: insp.paintCondition,
+      paintColor: insp.color,
+    };
+  }
+
+  private defaultRoofView(roofId: string): RoofView {
+    return {
+      id: roofId,
+      area: null,
+      type: null,
+      condition: null,
+      paintCondition: null,
+      paintColor: null,
     };
   }
 }

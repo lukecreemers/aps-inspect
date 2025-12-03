@@ -23,7 +23,7 @@ export const RoofViewSchema = z.object({
   id: z.string(),
   area: z.number().nullable(),
   type: RoofTypeSchema.nullable(),
-  condition: z.number(),
+  condition: z.number().nullable(),
   paintCondition: z.number().nullable(),
   paintColor: z.string().nullable(),
 });

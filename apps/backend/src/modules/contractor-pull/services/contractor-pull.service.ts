@@ -51,8 +51,7 @@ export class ContractorPullService {
         for (let i = 0; i < buildings.length; i++) {
           const building = buildings[i];
 
-          const raw = await handler.loadOne(tx, building);
-          const mapped = await handler.mapOne(raw);
+          const mapped = await handler.createBundle(tx, building);
 
           switch (type) {
             case ReportType.ROOF:
