@@ -1,45 +1,41 @@
-import { LoginDto } from '@aps/shared-types';
+import { LoginDto, User } from '@aps/shared-types';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import crypto from 'crypto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async login(loginDto: LoginDto) {
+    const user = await this.validateUser(loginDto.email, loginDto.password);
+    const payload = { userId: user.id, role: user.role };
+    const token = this.jwtService.sign(payload);
+
+    return {
+      accessToken: token,
+      user,
+    };
+  }
+
+  async validateUser(email: string, password: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
-      where: { email: loginDto.email },
+      where: { email },
     });
 
-    if (!user) {
-      throw new UnauthorizedException(
-        'Email not found. Please check your email and try again.',
-      );
-    }
+    if (!user) throw new UnauthorizedException('Invalid credentials');
 
-    const isPasswordValid = this.verifyPassword(
-      loginDto.password,
-      user.passwordSalt,
-      user.passwordHash,
-    );
+    const hash = this.hashPassword(password, user.passwordSalt);
 
-    if (!isPasswordValid) {
-      throw new UnauthorizedException(
-        'Invalid password. Please check your password and try again.',
-      );
+    if (hash !== user.passwordHash) {
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     return user;
-  }
-
-  private verifyPassword(
-    password: string,
-    salt: string,
-    storedHash: string,
-  ): boolean {
-    const hash = this.hashPassword(password, salt);
-    return hash === storedHash;
   }
 
   private hashPassword(password: string, salt: string): string {
