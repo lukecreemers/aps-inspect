@@ -2,6 +2,7 @@ import {
   BuildingBundle,
   ContractorPullDto,
   ContractorPullResponse,
+  ExteriorBundle,
   RoofBundle,
 } from '@aps/shared-types';
 import { Injectable } from '@nestjs/common';
@@ -49,6 +50,18 @@ export class ContractorPullService {
             const handler = this.registry.get<RoofBundle>(ReportType.ROOF);
             for (let i = 0; i < buildings.length; i++) {
               buildingBundles[i].roof = await handler.createBundle(
+                tx,
+                buildings[i],
+              );
+            }
+            break;
+          }
+          case ReportType.EXTERIOR: {
+            const handler = this.registry.get<ExteriorBundle>(
+              ReportType.EXTERIOR,
+            );
+            for (let i = 0; i < buildings.length; i++) {
+              buildingBundles[i].exterior = await handler.createBundle(
                 tx,
                 buildings[i],
               );

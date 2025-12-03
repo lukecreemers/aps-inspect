@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { ReportTypeHandler } from './report-type.handler';
 import { ReportType } from '@prisma/client';
 import { RoofReportHandler } from './roof-report.handler';
+import { ExteriorReportHandler } from './exterior-report.handler';
 
 @Injectable()
 export class ReportTypeHandlerRegistry {
-  constructor(roof: RoofReportHandler) {
+  constructor(roof: RoofReportHandler, exterior: ExteriorReportHandler) {
     this.register(ReportType.ROOF, roof);
+    this.register(ReportType.EXTERIOR, exterior);
   }
   private handlers = new Map<string, ReportTypeHandler<any>>();
 

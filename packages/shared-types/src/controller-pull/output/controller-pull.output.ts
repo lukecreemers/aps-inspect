@@ -3,7 +3,9 @@ import {
   GutterTypeSchema,
   IssueActionSchema,
   RoofTypeSchema,
+  SubstrateTypeSchema,
   TimeFrameSchema,
+  WindowTypeSchema,
 } from "../../generated/zod";
 
 // ------------------------------
@@ -79,25 +81,30 @@ export type RoofBundle = z.infer<typeof RoofBundleSchema>;
 // Exterior Data
 // ------------------------------
 
-// export const SubstrateViewSchema = z.object({
-//   id: z.string(),
-//   type: z.string().nullable(),
-//   condition: z.number().nullable(),
-// });
+export const SubstrateViewSchema = z.object({
+  id: z.string(),
+  type: SubstrateTypeSchema.nullable(),
+  condition: z.number().nullable(),
+});
 
-// export const WindowViewSchema = z.object({
-//   id: z.string(),
-//   type: z.string().nullable(),
-//   condition: z.number().nullable(),
-// });
+export type SubstrateView = z.infer<typeof SubstrateViewSchema>;
 
-// // A building's exterior bundle
-// export const ExteriorBundleSchema = z.object({
-//   substrates: z.array(SubstrateViewSchema),
-//   windows: z.array(WindowViewSchema),
-//   issues: z.array(IssueViewSchema),
-// });
+export const WindowViewSchema = z.object({
+  id: z.string(),
+  type: WindowTypeSchema.nullable(),
+  condition: z.number().nullable(),
+});
 
+export type WindowView = z.infer<typeof WindowViewSchema>;
+
+// A building's exterior bundle
+export const ExteriorBundleSchema = z.object({
+  substrates: z.array(SubstrateViewSchema),
+  windows: z.array(WindowViewSchema),
+  issues: z.array(IssueViewSchema),
+});
+
+export type ExteriorBundle = z.infer<typeof ExteriorBundleSchema>;
 // ------------------------------
 // FINAL Building Bundle
 // ------------------------------
@@ -107,7 +114,7 @@ export const BuildingBundleSchema = z.object({
   location: LocationViewSchema.nullable(),
 
   roof: RoofBundleSchema.optional(),
-  // exterior: ExteriorBundleSchema.optional(),
+  exterior: ExteriorBundleSchema.optional(),
 });
 
 export type BuildingBundle = z.infer<typeof BuildingBundleSchema>;

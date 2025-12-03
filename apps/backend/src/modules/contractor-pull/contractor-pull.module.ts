@@ -9,6 +9,7 @@ import { InspectionsModule } from '../inspections/inspections.module';
 import { ReportTypeHandlerRegistry } from './services/handlers/report-type-handler-registry';
 import { RoofReportHandler } from './services/handlers/roof-report.handler';
 import { IssueViewHandler } from './services/handlers/issue-view.handler';
+import { ExteriorReportHandler } from './services/handlers/exterior-report.handler';
 
 @Module({
   controllers: [ContractorPullController],
@@ -18,6 +19,7 @@ import { IssueViewHandler } from './services/handlers/issue-view.handler';
     ContractorPullFetchService,
     ReportTypeHandlerRegistry,
     RoofReportHandler,
+    ExteriorReportHandler,
     IssueViewHandler,
   ],
   imports: [PrismaModule, InspectionsModule],
