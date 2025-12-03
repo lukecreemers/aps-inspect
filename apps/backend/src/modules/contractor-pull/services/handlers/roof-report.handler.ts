@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ReportTypeHandler } from './report-type.handler';
 import { groupBy } from 'rxjs';
-import { Prisma, ReportType } from '@prisma/client';
+import { Gutter, Prisma, ReportType } from '@prisma/client';
 import {
   Building,
+  GutterView,
   Roof,
   RoofBundle,
   RoofInspection,
@@ -12,6 +13,7 @@ import {
 } from '@aps/shared-types';
 import { RoofInspectionService } from 'src/modules/inspections/roof-inspections.service';
 import { Logger } from '@nestjs/common';
+import { GutterInspectionService } from 'src/modules/inspections/gutter-inspections.service';
 type RoofRaw = {
   roofs: {
     id: string;
@@ -22,7 +24,10 @@ type RoofRaw = {
 
 @Injectable()
 export class RoofReportHandler implements ReportTypeHandler {
-  constructor(private readonly roofInspectionService: RoofInspectionService) {}
+  constructor(
+    private readonly roofInspectionService: RoofInspectionService,
+    private readonly gutterInspectionService: GutterInspectionService,
+  ) {}
   type = ReportType.ROOF;
 
   async createBundle(
@@ -33,7 +38,13 @@ export class RoofReportHandler implements ReportTypeHandler {
     const roofViews = await Promise.all(
       roofs.map((roof) => this.mapRoof(tx, roof)),
     );
-    return { roofs: roofViews };
+
+    const gutters = await this.findGutters(tx, building);
+    const gutterViews = await Promise.all(
+      gutters.map((gutter) => this.mapGutter(tx, gutter)),
+    );
+
+    return { roofs: roofViews, gutters: gutterViews };
   }
 
   // =============================
@@ -81,6 +92,48 @@ export class RoofReportHandler implements ReportTypeHandler {
       condition: null,
       paintCondition: null,
       paintColor: null,
+    };
+  }
+
+  private async findGutters(
+    tx: Prisma.TransactionClient,
+    building: Building,
+  ): Promise<Gutter[]> {
+    return tx.gutter.findMany({
+      where: { buildingId: building.id },
+    });
+  }
+
+  private async mapGutter(
+    tx: Prisma.TransactionClient,
+    gutter: Gutter,
+  ): Promise<GutterView> {
+    const insp = await this.gutterInspectionService.getLatestInspection(
+      gutter.id,
+    );
+
+    if (!insp) {
+      return this.defaultGutterView(gutter.id);
+    }
+
+    const type = await tx.gutterType.findUniqueOrThrow({
+      where: { id: insp.typeId },
+    });
+
+    return {
+      id: gutter.id,
+      length: insp.length,
+      type,
+      condition: insp.condition,
+    };
+  }
+
+  private defaultGutterView(gutterId: string): GutterView {
+    return {
+      id: gutterId,
+      type: null,
+      condition: null,
+      length: null,
     };
   }
 }

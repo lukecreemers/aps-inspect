@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { RoofTypeSchema } from "../../generated/zod";
+import { GutterTypeSchema, RoofTypeSchema } from "../../generated/zod";
 
 // ------------------------------
 // Base Views
@@ -30,17 +30,19 @@ export const RoofViewSchema = z.object({
 
 export type RoofView = z.infer<typeof RoofViewSchema>;
 
-// export const GutterViewSchema = z.object({
-//   id: z.string(),
-//   type: z.string().nullable(),
-//   condition: z.number().nullable(),
-//   length: z.number().nullable(),
-// });
+export const GutterViewSchema = z.object({
+  id: z.string(),
+  type: GutterTypeSchema.nullable(),
+  condition: z.number().nullable(),
+  length: z.number().nullable(),
+});
+
+export type GutterView = z.infer<typeof GutterViewSchema>;
 
 // A building's roof bundle
 export const RoofBundleSchema = z.object({
   roofs: z.array(RoofViewSchema),
-  // gutters: z.array(GutterViewSchema),
+  gutters: z.array(GutterViewSchema),
   // issues: z.array(IssueViewSchema),
 });
 
