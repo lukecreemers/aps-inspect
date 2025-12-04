@@ -576,6 +576,7 @@ model User {
   email             String          @unique
   passwordHash      String
   passwordSalt      String
+  refreshTokenHash  String?
   role              UserRole
   clientId          String?
   createdAt         DateTime        @default(now())

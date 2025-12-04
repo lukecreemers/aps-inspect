@@ -110,7 +110,7 @@ export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','is
 
 export const SubIssueInspectionScalarFieldEnumSchema = z.enum(['id','subIssueId','issueInspectionId','action','xCoord','yCoord','metadata','createdAt','updatedAt']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','passwordHash','passwordSalt','role','clientId','createdAt']);
+export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','passwordHash','passwordSalt','refreshTokenHash','role','clientId','createdAt']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -604,6 +604,7 @@ export const UserSchema = z.object({
   email: z.string(),
   passwordHash: z.string(),
   passwordSalt: z.string(),
+  refreshTokenHash: z.string().nullable(),
   clientId: z.string().nullable(),
   createdAt: z.coerce.date(),
 })

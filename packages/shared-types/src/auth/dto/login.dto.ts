@@ -6,3 +6,9 @@ export const LoginSchema = z.object({
 });
 
 export type LoginDto = z.infer<typeof LoginSchema>;
+
+export const RefreshTokenSchema = z.object({
+  refreshToken: z.string(),
+});
+
+export type RefreshTokenDto = z.infer<typeof RefreshTokenSchema>;

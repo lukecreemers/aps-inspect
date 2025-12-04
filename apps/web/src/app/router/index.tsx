@@ -5,6 +5,7 @@ import { RequireRole } from "./RequireRole";
 
 import { AppLayout } from "../layouts/AppLayout";
 import { LoginPage } from "../../features/Login/LoginPage";
+import ClientPage from "../../features/Clients/ClientPage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
               { index: true, element: <div>Admin Dashboard</div> },
               { path: "reports", element: <div>Admin Reports</div> },
               { path: "credentials", element: <div>Admin Credentials</div> },
+              { path: "clients", element: <ClientPage /> },
             ],
           },
           {
@@ -32,6 +34,7 @@ export const router = createBrowserRouter([
               { index: true, element: <div>Client Dashboard</div> },
               { path: "reports", element: <div>Client Reports</div> },
               { path: "invoices", element: <div>Client Invoices</div> },
+              { path: "clients", element: <ClientPage /> },
             ],
           },
         ],

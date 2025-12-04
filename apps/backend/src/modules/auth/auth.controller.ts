@@ -1,4 +1,9 @@
-import { LoginDto, LoginSchema } from '@aps/shared-types';
+import {
+  LoginDto,
+  LoginSchema,
+  RefreshTokenDto,
+  RefreshTokenSchema,
+} from '@aps/shared-types';
 import {
   Body,
   Controller,
@@ -14,6 +19,8 @@ import { ZodResponse } from 'src/common/decorators/zod-response.decorator';
 import {
   LoginResponse,
   LoginResponseSchema,
+  RefreshTokenResponse,
+  RefreshTokenResponseSchema,
   UserResponse,
   UserResponseSchema,
 } from '@aps/shared-types/src/auth/output/login.output';
@@ -42,5 +49,14 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async currentUser(@Req() req: RequestWithUser): Promise<UserResponse> {
     return this.authService.getUserById(req.user.userId);
+  }
+
+  @Post('refresh')
+  @UsePipes(new ZodValidationPipe(RefreshTokenSchema))
+  @ZodResponse(RefreshTokenResponseSchema)
+  async refresh(
+    @Body() refreshToken: RefreshTokenDto,
+  ): Promise<RefreshTokenResponse> {
+    return this.authService.refresh(refreshToken);
   }
 }

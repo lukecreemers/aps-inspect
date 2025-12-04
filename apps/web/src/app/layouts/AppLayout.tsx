@@ -10,12 +10,14 @@ export function AppLayout() {
     { label: "Dashboard", to: "/app/admin" },
     { label: "Reports", to: "/app/admin/reports" },
     { label: "Credentials", to: "/app/admin/credentials" },
+    { label: "Clients", to: "/app/admin/clients" },
   ];
 
   const clientTabs = [
     { label: "Dashboard", to: "/app/client" },
     { label: "Reports", to: "/app/client/reports" },
     { label: "Invoices", to: "/app/client/invoices" },
+    { label: "Clients", to: "/app/client/clients" },
   ];
 
   const tabs = currentUser?.role === "ADMIN" ? adminTabs : clientTabs;
