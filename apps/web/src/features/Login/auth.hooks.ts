@@ -24,3 +24,13 @@ export function useCurrentUser() {
     queryFn: UserApi.fetchCurrentUser,
   });
 }
+
+export function useLogout() {
+  const queryClient = useQueryClient();
+
+  return () => {
+    localStorage.removeItem("token");
+    queryClient.setQueryData(authKeys.currentUser, null);
+    queryClient.invalidateQueries({ queryKey: authKeys.currentUser });
+  };
+}

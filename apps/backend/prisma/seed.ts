@@ -9,7 +9,7 @@ async function main() {
   const adminPassword = process.env.INIT_ADMIN_PASSWORD;
 
   const clientEmail = 'client@example.com';
-  const clientPassword = 'client';
+  const clientPassword = 'client1234';
 
   if (!adminEmail || !adminPassword) {
     throw new Error(
@@ -29,7 +29,10 @@ async function main() {
 
   const admin = await prisma.user.upsert({
     where: { email: adminEmail },
-    update: {},
+    update: {
+      passwordSalt: adminSalt,
+      passwordHash: adminHash,
+    },
     create: {
       email: adminEmail,
       firstName: 'Luke',
@@ -42,7 +45,10 @@ async function main() {
 
   const client = await prisma.user.upsert({
     where: { email: clientEmail },
-    update: {},
+    update: {
+      passwordSalt: clientSalt,
+      passwordHash: clientHash,
+    },
     create: {
       email: clientEmail,
       firstName: 'Client',
