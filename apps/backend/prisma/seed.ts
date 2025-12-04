@@ -5,34 +5,56 @@ import 'dotenv/config';
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = process.env.INIT_ADMIN_EMAIL;
-  const password = process.env.INIT_ADMIN_PASSWORD;
+  const adminEmail = process.env.INIT_ADMIN_EMAIL;
+  const adminPassword = process.env.INIT_ADMIN_PASSWORD;
 
-  if (!email || !password) {
+  const clientEmail = 'client@example.com';
+  const clientPassword = 'client';
+
+  if (!adminEmail || !adminPassword) {
     throw new Error(
       'INIT_ADMIN_EMAIL and INIT_ADMIN_PASSWORD must be set in .env',
     );
   }
 
-  const salt = crypto.randomBytes(16).toString('hex');
-  const hash = crypto
-    .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+  const adminSalt = crypto.randomBytes(16).toString('hex');
+  const adminHash = crypto
+    .pbkdf2Sync(adminPassword, adminSalt, 10000, 64, 'sha512')
+    .toString('hex');
+
+  const clientSalt = crypto.randomBytes(16).toString('hex');
+  const clientHash = crypto
+    .pbkdf2Sync(clientPassword, clientSalt, 10000, 64, 'sha512')
     .toString('hex');
 
   const admin = await prisma.user.upsert({
-    where: { email: email },
+    where: { email: adminEmail },
     update: {},
     create: {
-      email: email,
+      email: adminEmail,
       firstName: 'Luke',
       lastName: 'Creemers',
-      passwordSalt: salt,
-      passwordHash: hash,
+      passwordSalt: adminSalt,
+      passwordHash: adminHash,
       role: 'ADMIN',
     },
   });
 
-  console.log('Admin created:', email);
+  const client = await prisma.user.upsert({
+    where: { email: clientEmail },
+    update: {},
+    create: {
+      email: clientEmail,
+      firstName: 'Client',
+      lastName: 'Example',
+      passwordSalt: clientSalt,
+      passwordHash: clientHash,
+      role: 'CLIENT',
+    },
+  });
+
+  console.log('Admin created:', adminEmail);
+  console.log('Client created:', clientEmail);
 }
 
 main().finally(() => prisma.$disconnect());
