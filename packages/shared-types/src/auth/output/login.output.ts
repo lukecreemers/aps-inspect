@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { UserRoleSchema } from "../..";
+import { UserRoleSchema } from "../../generated/zod";
 
 export const UserResponseSchema = z.object({
   id: z.string(),

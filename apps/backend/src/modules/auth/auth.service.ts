@@ -1,4 +1,4 @@
-import { LoginDto, User } from '@aps/shared-types';
+import { LoginDto, User, UserResponse } from '@aps/shared-types';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import crypto from 'crypto';
@@ -34,6 +34,16 @@ export class AuthService {
     if (hash !== user.passwordHash) {
       throw new UnauthorizedException('Invalid credentials');
     }
+
+    return user;
+  }
+
+  async getUserById(id: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) throw new UnauthorizedException('User not found');
 
     return user;
   }

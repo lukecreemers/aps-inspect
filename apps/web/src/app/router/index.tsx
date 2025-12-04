@@ -4,7 +4,7 @@ import { RequireAuth } from "./RequireAuth";
 import { RequireRole } from "./RequireRole";
 
 import { AppLayout } from "../layouts/AppLayout";
-import { LoginPage } from "../../features/auth/LoginPage";
+import { LoginPage } from "../../features/Login/LoginPage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },

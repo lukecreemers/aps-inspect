@@ -1,8 +1,8 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { useUser } from "../providers/UserProvider";
+import { useCurrentUser } from "../../features/Login/auth.hooks";
 
 export function AppLayout() {
-  const { user } = useUser();
+  const { data: currentUser } = useCurrentUser();
 
   const adminTabs = [
     { label: "Dashboard", to: "/app/admin" },
@@ -16,7 +16,7 @@ export function AppLayout() {
     { label: "Invoices", to: "/app/client/invoices" },
   ];
 
-  const tabs = user?.role === "ADMIN" ? adminTabs : clientTabs;
+  const tabs = currentUser?.role === "ADMIN" ? adminTabs : clientTabs;
 
   return (
     <div className="flex h-screen">
