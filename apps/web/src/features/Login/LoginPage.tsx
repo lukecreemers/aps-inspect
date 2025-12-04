@@ -1,6 +1,5 @@
 import type { LoginDto } from "@aps/shared-types";
 import { useNavigate } from "react-router-dom";
-import { Home } from "lucide-react";
 import { useCurrentUser, useLogin } from "./auth.hooks";
 import { useEffect } from "react";
 

@@ -1,4 +1,3 @@
-import React from "react";
 import { useClients } from "./client.hooks";
 
 const ClientPage = () => {
