@@ -7,6 +7,8 @@ interface LoginInputProps {
   value: string;
   type: "text" | "password";
   onChange: (value: string) => void;
+  isError?: boolean;
+  errorMessage?: string;
 }
 
 const LoginInput = ({
@@ -15,13 +17,17 @@ const LoginInput = ({
   value,
   type,
   onChange,
+  isError,
+  errorMessage,
 }: LoginInputProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">{label}</label>
+    <div className="flex flex-col gap-1">
+      <label className="text-sm font-medium text-[var(--color-text-muted)]">
+        {label}
+      </label>
       <div className="relative">
         <input
           type={isPassword ? (showPassword ? "text" : "password") : type}
@@ -29,9 +35,13 @@ const LoginInput = ({
           onChange={(e) => onChange(e.target.value)}
           value={value}
           className={`border w-full rounded-2xl px-4 py-4 bg-[var(--color-bg-muted)] outline-none border-none 
-            focus:ring-2 focus:ring-[var(--color-primary)]/80 
-            hover:ring-2 hover:ring-[var(--color-primary)]/50
-            transition-ring duration-200 ${isPassword ? "pr-12" : ""}`}
+            transition-all duration-200 
+            ${
+              isError
+                ? "ring-2 ring-red-500 animate-shake bg-red-50"
+                : "focus:ring-2 focus:ring-[var(--color-primary)]/80 hover:ring-2 hover:ring-[var(--color-primary)]/50"
+            }
+            ${isPassword ? "pr-12" : ""}`}
         />
         {isPassword && (
           <button
@@ -39,8 +49,13 @@ const LoginInput = ({
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
           >
-            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
           </button>
+        )}
+        {isError && (
+          <div className="absolute -bottom-6 text-red-500 text-xs font-medium animate-slide-down">
+            {errorMessage}
+          </div>
         )}
       </div>
     </div>
