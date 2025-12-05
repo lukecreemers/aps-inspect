@@ -1,12 +1,17 @@
 import type { LoginDto } from "@aps/shared-types";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser, useLogin } from "./auth.hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import LoginInput from "./components/LoginInput";
+import logo from "../../assets/aps-logo.png";
 
 export function LoginPage() {
   const navigate = useNavigate();
   const { mutate: loginMutation } = useLogin();
   const { data: currentUser } = useCurrentUser();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (currentUser) {
@@ -19,11 +24,11 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div>
-        <h1 className="text-2xl font-bold">Login</h1>
+    <div className="flex justify-center items-center h-screen w-full">
+      <div className="flex flex-col items-center w-80 gap-6">
+        <img src={logo} alt="logo" className="w-40 " />
         <form
-          className="flex flex-col gap-4 mt-6 max-w-xs"
+          className="flex flex-col gap-4 mt-6 w-full"
           onSubmit={(e) => {
             e.preventDefault();
             const form = e.currentTarget;
@@ -35,28 +40,20 @@ export function LoginPage() {
             login({ email, password });
           }}
         >
-          <label className="flex flex-col text-sm font-medium gap-1">
-            Email
-            <input
-              type="email"
-              name="email"
-              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
-              placeholder="your@email.com"
-              required
-              autoComplete="email"
-            />
-          </label>
-          <label className="flex flex-col text-sm font-medium gap-1">
-            Password
-            <input
-              type="password"
-              name="password"
-              className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-200"
-              placeholder="********"
-              required
-              autoComplete="current-password"
-            />
-          </label>
+          <LoginInput
+            label="Email"
+            placeholder="Email"
+            value={email}
+            type="text"
+            onChange={setEmail}
+          />
+          <LoginInput
+            label="Password"
+            placeholder="Password"
+            value={password}
+            type="password"
+            onChange={setPassword}
+          />
           <button
             type="submit"
             className="bg-blue-600 text-white font-semibold px-4 py-2 rounded hover:bg-blue-700 transition"
