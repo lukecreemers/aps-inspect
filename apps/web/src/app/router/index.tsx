@@ -22,9 +22,11 @@ export const router = createBrowserRouter([
             element: <RequireRole role="ADMIN" />,
             children: [
               { index: true, element: <div>Admin Dashboard</div> },
-              { path: "reports", element: <div>Admin Reports</div> },
+              { path: "overview", element: <div>Admin Overview</div> },
+              { path: "report-session", element: <div>Admin Reports</div> },
+              { path: "archive", element: <div>Admin Archive</div> },
+              { path: "quotes", element: <div>Admin Quotes</div> },
               { path: "credentials", element: <div>Admin Credentials</div> },
-              { path: "clients", element: <ClientPage /> },
             ],
           },
           {

@@ -2,6 +2,8 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useCurrentUser, useLogout } from "../../features/auth/auth.hooks";
 import Sidebar from "./sidebar/Sidebar";
 import {
+  Archive,
+  Briefcase,
   FileText,
   Grid,
   Grid2X2,
@@ -9,6 +11,7 @@ import {
   Key,
   LayoutGrid,
   Lock,
+  Map,
   Users,
 } from "lucide-react";
 
@@ -19,9 +22,19 @@ export function AppLayout() {
 
   const adminTabs = [
     { label: "Dashboard", to: "/app/admin", icon: <LayoutGrid /> },
-    { label: "Reports", to: "/app/admin/reports", icon: <FileText /> },
+    { label: "Buildings & Map", to: "/app/admin/overview", icon: <Map /> },
+    {
+      label: "Report Session",
+      to: "/app/admin/report-session",
+      icon: <FileText />,
+    },
+    {
+      label: "Report Archive",
+      to: "/app/admin/archive",
+      icon: <Archive />,
+    },
+    { label: "Quotes", to: "/app/admin/quotes", icon: <Briefcase /> },
     { label: "Credentials", to: "/app/admin/credentials", icon: <Lock /> },
-    { label: "Clients", to: "/app/admin/clients", icon: <Users /> },
   ];
 
   const clientTabs = [

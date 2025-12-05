@@ -1,7 +1,7 @@
-import { useClients } from "./client.hooks";
+import { useGetClients } from "./client.hooks";
 
 const ClientPage = () => {
-  const { data: clients, refetch, isError } = useClients();
+  const { data: clients, refetch, isError } = useGetClients();
   return (
     <div>
       <h1>Clients</h1>

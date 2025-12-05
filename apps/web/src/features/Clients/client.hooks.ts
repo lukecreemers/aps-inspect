@@ -5,7 +5,7 @@ const clientKeys = {
   all: ["clients"] as const,
 };
 
-export function useClients() {
+export function useGetClients() {
   return useQuery({
     queryKey: clientKeys.all,
     queryFn: ClientApi.getClients,

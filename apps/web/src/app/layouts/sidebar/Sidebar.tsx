@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import SideTab from "./SideTab";
+import ClientDropdown from "./ClientDropdown";
 
 interface SidebarProps {
   tabs: {
@@ -13,14 +14,15 @@ interface SidebarProps {
 
 const Sidebar = ({ tabs, handleLogout }: SidebarProps) => {
   return (
-    <aside className="w-80 bg-[var(--color-bg-sidebar)]">
-      <div className="flex flex-col gap-2 m-4">
+    <div className="w-80 bg-[var(--color-bg-sidebar)]">
+      <ClientDropdown />
+      <div className="flex flex-col gap-1 m-4">
         {tabs.map((t) => (
           <SideTab label={t.label} to={t.to} icon={t.icon} />
         ))}
       </div>
       <button onClick={handleLogout}>Logout</button>
-    </aside>
+    </div>
   );
 };
 
