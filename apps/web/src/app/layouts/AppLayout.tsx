@@ -1,5 +1,16 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useCurrentUser, useLogout } from "../../features/auth/auth.hooks";
+import Sidebar from "./sidebar/Sidebar";
+import {
+  FileText,
+  Grid,
+  Grid2X2,
+  Home,
+  Key,
+  LayoutGrid,
+  Lock,
+  Users,
+} from "lucide-react";
 
 export function AppLayout() {
   const { data: currentUser } = useCurrentUser();
@@ -7,17 +18,17 @@ export function AppLayout() {
   const logout = useLogout();
 
   const adminTabs = [
-    { label: "Dashboard", to: "/app/admin" },
-    { label: "Reports", to: "/app/admin/reports" },
-    { label: "Credentials", to: "/app/admin/credentials" },
-    { label: "Clients", to: "/app/admin/clients" },
+    { label: "Dashboard", to: "/app/admin", icon: <LayoutGrid /> },
+    { label: "Reports", to: "/app/admin/reports", icon: <FileText /> },
+    { label: "Credentials", to: "/app/admin/credentials", icon: <Lock /> },
+    { label: "Clients", to: "/app/admin/clients", icon: <Users /> },
   ];
 
   const clientTabs = [
-    { label: "Dashboard", to: "/app/client" },
-    { label: "Reports", to: "/app/client/reports" },
-    { label: "Invoices", to: "/app/client/invoices" },
-    { label: "Clients", to: "/app/client/clients" },
+    { label: "Dashboard", to: "/app/client", icon: <Home /> },
+    { label: "Reports", to: "/app/client/reports", icon: <FileText /> },
+    { label: "Invoices", to: "/app/client/invoices", icon: <FileText /> },
+    { label: "Clients", to: "/app/client/clients", icon: <Users /> },
   ];
 
   const tabs = currentUser?.role === "ADMIN" ? adminTabs : clientTabs;
@@ -29,16 +40,9 @@ export function AppLayout() {
 
   return (
     <div className="flex h-screen">
-      <aside className="w-56 bg-gray-900 text-white p-4">
-        {tabs.map((t) => (
-          <NavLink key={t.to} className="block py-2" to={t.to}>
-            {t.label}
-          </NavLink>
-        ))}
-        <button onClick={handleLogout}>Logout</button>
-      </aside>
+      <Sidebar tabs={tabs} handleLogout={handleLogout} />
 
-      <main className="flex-1 p-6 overflow-auto bg-gray-50">
+      <main className="flex-1 p-6 overflow-auto bg-[var(--color-bg-default)]">
         <Outlet />
       </main>
     </div>
