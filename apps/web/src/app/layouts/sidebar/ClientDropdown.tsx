@@ -1,4 +1,3 @@
-import React from "react";
 import { useGetClients } from "../../../features/clients/client.hooks";
 import tempLogo from "../../../assets/client-logo.svg";
 import { ChevronDown } from "lucide-react";

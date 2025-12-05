@@ -1,14 +1,11 @@
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useCurrentUser, useLogout } from "../../features/auth/auth.hooks";
 import Sidebar from "./sidebar/Sidebar";
 import {
   Archive,
   Briefcase,
   FileText,
-  Grid,
-  Grid2X2,
   Home,
-  Key,
   LayoutGrid,
   Lock,
   Map,
