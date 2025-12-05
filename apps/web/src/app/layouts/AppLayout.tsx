@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useCurrentUser, useLogout } from "../../features/Login/auth.hooks";
+import { useCurrentUser, useLogout } from "../../features/auth/auth.hooks";
 
 export function AppLayout() {
   const { data: currentUser } = useCurrentUser();
