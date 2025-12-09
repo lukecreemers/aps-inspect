@@ -9,5 +9,6 @@ export function useGetClients() {
   return useQuery({
     queryKey: clientKeys.all,
     queryFn: ClientApi.getClients,
+    staleTime: 10 * 60 * 1000,
   });
 }

@@ -10,8 +10,7 @@ export default function SideTab({ label, to, icon }: SideTabProps) {
   return (
     <NavLink to={to} end>
       {({ isActive }) => {
-        const baseStyles =
-          "flex items-center gap-3 px-4 py-4 rounded-xl transition-all duration-200";
+        const baseStyles = "flex items-center gap-3 px-4 py-4 rounded-xl";
 
         const activeStyles = "bg-[var(--color-primary)] text-white shadow-md";
 
