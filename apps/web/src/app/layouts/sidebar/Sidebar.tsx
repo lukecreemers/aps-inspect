@@ -33,7 +33,7 @@ const Sidebar = ({ tabs, handleLogout }: SidebarProps) => {
       <div>
         <ClientDropdown />
 
-        <Separator />
+        {/* <Separator /> */}
 
         <ScrollArea className="flex-1">
           <div className="flex flex-col gap-1 p-2 mt-2">

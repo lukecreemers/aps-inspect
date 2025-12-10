@@ -11,6 +11,7 @@ type WizardStore = {
   previousStep: () => void;
   setStep: (step: number) => void;
   updateData: (data: Record<string, any>) => void;
+  clearData: () => void;
 };
 
 export const useWizardStore = create<WizardStore>((set) => ({
@@ -27,4 +28,5 @@ export const useWizardStore = create<WizardStore>((set) => ({
   setStep: (step) => set({ currentStep: step }),
   updateData: (data) =>
     set((state) => ({ sessionData: { ...state.sessionData, ...data } })),
+  clearData: () => set({ sessionData: {} }),
 }));

@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -8,6 +7,8 @@ interface ReportNameToggleProps {
   initValue: string;
   value: string;
   type: string;
+  enabled: boolean;
+  onToggle: (enabled: boolean) => void;
   onChange: (value: string) => void;
 }
 
@@ -16,16 +17,16 @@ export function ReportNameToggle({
   initValue,
   value,
   type,
+  enabled,
+  onToggle,
   onChange,
 }: ReportNameToggleProps) {
-  const [enabled, setEnabled] = useState(true);
-
   return (
     <div
       className={cn(
         "rounded-lg p-4 space-y-3 cursor-pointer border",
         enabled &&
-          "bg-accent border-accent-foreground border-2 text-accent-foreground"
+          "bg-accent/60 border-accent-foreground border-2 text-accent-foreground"
       )}
     >
       {/* Clickable header */}
@@ -39,8 +40,8 @@ export function ReportNameToggle({
           checked={enabled}
           onCheckedChange={(v) => {
             const isChecked = Boolean(v);
-            setEnabled(isChecked);
-            if (isChecked) {
+            onToggle(isChecked);
+            if (isChecked && !value) {
               onChange(initValue + " - " + type);
             }
           }}
@@ -51,13 +52,18 @@ export function ReportNameToggle({
       {/* Conditional input */}
       {enabled && (
         <div className="">
-          <label className="text-sm text-muted-foreground block mb-1">
+          <label
+            className="text-sm text-muted-foreground block mb-1"
+            htmlFor={type}
+          >
             Generated Report Name
           </label>
           <Input
+            id={type}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onClick={(e) => e.stopPropagation()} // prevents re-toggle
+            className="bg-background text-foreground"
           />
         </div>
       )}

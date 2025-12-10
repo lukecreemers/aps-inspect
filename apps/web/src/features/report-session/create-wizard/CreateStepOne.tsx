@@ -8,23 +8,35 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import React from "react";
 import { ReportNameToggle } from "../components/ReportNameToggle";
 import { Separator } from "@/components/ui/separator";
 import { useWizardStore } from "@/components/wizard/WizardStore";
+import { Button } from "@/components/ui/button";
 
 const CreateStepOne = () => {
-  // 1. Connect to the store
-  const { sessionData, updateData } = useWizardStore();
+  const { sessionData, updateData, clearData } = useWizardStore();
+  const { nextStep } = useWizardStore();
 
-  // 2. Helper to update specific fields
   const handleChange = (field: string, value: any) => {
     updateData({ [field]: value });
   };
 
+  const onCancel = () => {
+    clearData();
+  };
+
+  const isAnyReportSelected =
+    sessionData.isRoofReportEnabled || sessionData.isExteriorReportEnabled;
+
   return (
     <div className="w-full max-w-md">
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!isAnyReportSelected) return;
+          nextStep();
+        }}
+      >
         <FieldGroup>
           <FieldSet>
             <FieldGroup>
@@ -34,7 +46,6 @@ const CreateStepOne = () => {
                   id="sessionTitle"
                   placeholder="UOA Annual Inspection 2025"
                   required
-                  // 3. Bind value and onChange
                   value={sessionData.sessionTitle || ""}
                   onChange={(e) => handleChange("sessionTitle", e.target.value)}
                 />
@@ -51,7 +62,6 @@ const CreateStepOne = () => {
                 <Input
                   id="reportingPeriod"
                   placeholder="e.g. Jan 2025 - Mar - 2025"
-                  required
                   value={sessionData.reportingPeriod || ""}
                   onChange={(e) =>
                     handleChange("reportingPeriod", e.target.value)
@@ -63,7 +73,6 @@ const CreateStepOne = () => {
                 <Textarea
                   id="notes"
                   placeholder="Enter any notes about the session"
-                  required
                   value={sessionData.notes || ""}
                   onChange={(e) => handleChange("notes", e.target.value)}
                 />
@@ -72,13 +81,14 @@ const CreateStepOne = () => {
           </FieldSet>
           <Separator />
           <FieldSet>
-            <FieldLegend variant="label">Included Reports</FieldLegend>
+            <FieldLegend variant="label">Included Report Types</FieldLegend>
             <FieldGroup className="flex flex-col gap-4">
-              {/* ReportNameToggle expects props based on your file definition */}
               <ReportNameToggle
                 title="Roof Inspection"
                 initValue={sessionData.sessionTitle || ""}
                 value={sessionData.roofReportName || ""}
+                enabled={!!sessionData.isRoofReportEnabled}
+                onToggle={(val) => handleChange("isRoofReportEnabled", val)}
                 onChange={(val) => handleChange("roofReportName", val)}
                 type="Roof Inspection"
               />
@@ -86,11 +96,21 @@ const CreateStepOne = () => {
                 title="Exterior Inspection"
                 initValue={sessionData.sessionTitle || ""}
                 value={sessionData.exteriorReportName || ""}
+                enabled={!!sessionData.isExteriorReportEnabled}
+                onToggle={(val) => handleChange("isExteriorReportEnabled", val)}
                 onChange={(val) => handleChange("exteriorReportName", val)}
                 type="Exterior Inspection"
               />
             </FieldGroup>
           </FieldSet>
+          <Field orientation="horizontal" className="flex justify-end gap-2">
+            <Button variant="outline" type="button" onClick={onCancel}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={!isAnyReportSelected}>
+              Continue
+            </Button>
+          </Field>
         </FieldGroup>
       </form>
     </div>

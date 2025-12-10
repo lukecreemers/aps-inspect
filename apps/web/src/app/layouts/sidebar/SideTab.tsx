@@ -16,9 +16,9 @@ export default function SideTab({ label, to, icon }: SideTabProps) {
           variant="ghost"
           asChild
           className={cn(
-            "w-full justify-start gap-3 px-4 py-5 rounded-md",
+            "w-full justify-start gap-3 px-5 py-6 rounded-md",
             isActive
-              ? "bg-accent text-accent-foreground  bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)] hover:text-white"
+              ? "bg-accent text-accent-foreground border-accent-foreground "
               : " hover:bg-accent hover:text-accent-foreground"
           )}
         >
