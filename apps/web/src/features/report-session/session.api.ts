@@ -1,5 +1,13 @@
 import { request } from "@/lib/request";
-import type { ReportResponse } from "@aps/shared-types";
+import {
+  organizeBuildingsLocations,
+  type LocationsAndBuildingsResponse,
+} from "@/utils/building.util";
+import type {
+  BuildingResponse,
+  LocationResponse,
+  ReportResponse,
+} from "@aps/shared-types";
 
 export const getCurrentReport = async (clientId: string) => {
   const reports = await request<ReportResponse[]>({
@@ -11,4 +19,25 @@ export const getCurrentReport = async (clientId: string) => {
     },
   });
   return reports[0] || null;
+};
+
+export const getLocationsAndBuildings = async (
+  clientId: string
+): Promise<LocationsAndBuildingsResponse> => {
+  const locations = await request<LocationResponse[]>({
+    method: "GET",
+    url: "/locations",
+    params: {
+      clientId,
+    },
+  });
+  const buildings = await request<BuildingResponse[]>({
+    method: "GET",
+    url: "/buildings",
+    params: {
+      clientId,
+    },
+  });
+
+  return organizeBuildingsLocations(buildings, locations);
 };
