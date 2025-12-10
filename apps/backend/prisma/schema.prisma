@@ -82,7 +82,8 @@ model Client {
   buildings         Building[]
   maps              Map[]
   reports           Report[]
-  users             User[]
+  users             User[]          @relation("ClientUsers")
+  selectedByUsers   User[]          @relation("SelectedClient")
 
   @@map("clients")
 }
@@ -580,9 +581,11 @@ model User {
   role              UserRole
   clientId          String?
   createdAt         DateTime        @default(now())
+  selectedClientId  String?
 
   // Relations 
-  client            Client?         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  client            Client?         @relation("ClientUsers", fields: [clientId], references: [id], onDelete: Cascade)
+  selectedClient    Client?         @relation("SelectedClient", fields: [selectedClientId], references: [id])
 
   @@map("user")
 }

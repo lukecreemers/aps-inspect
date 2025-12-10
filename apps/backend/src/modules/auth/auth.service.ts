@@ -1,6 +1,7 @@
 import {
   LoginDto,
   RefreshTokenDto,
+  SelectClientDto,
   User,
   UserResponse,
 } from '@aps/shared-types';
@@ -15,6 +16,17 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
   ) {}
+
+  async selectClient(selectClientDto: SelectClientDto, userId: string) {
+    const { clientId } = selectClientDto;
+
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: { selectedClientId: clientId },
+    });
+
+    return user;
+  }
 
   async login(loginDto: LoginDto) {
     const user = await this.validateUser(loginDto.email, loginDto.password);

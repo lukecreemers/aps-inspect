@@ -8,6 +8,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -21,6 +22,8 @@ import {
   LoginResponseSchema,
   RefreshTokenResponse,
   RefreshTokenResponseSchema,
+  SelectClientDto,
+  SelectClientSchema,
   UserResponse,
   UserResponseSchema,
 } from '@aps/shared-types/src/auth/output/login.output';
@@ -58,5 +61,16 @@ export class AuthController {
     @Body() refreshToken: RefreshTokenDto,
   ): Promise<RefreshTokenResponse> {
     return this.authService.refresh(refreshToken);
+  }
+
+  @Patch('select-client')
+  @UsePipes(new ZodValidationPipe(SelectClientSchema))
+  @ZodResponse(UserResponseSchema)
+  @UseGuards(JwtAuthGuard)
+  async selectClient(
+    @Body() body: SelectClientDto,
+    @Req() req: RequestWithUser,
+  ): Promise<UserResponse> {
+    return this.authService.selectClient(body, req.user.userId);
   }
 }

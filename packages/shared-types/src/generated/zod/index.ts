@@ -110,7 +110,7 @@ export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','is
 
 export const SubIssueInspectionScalarFieldEnumSchema = z.enum(['id','subIssueId','issueInspectionId','action','xCoord','yCoord','metadata','createdAt','updatedAt']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','passwordHash','passwordSalt','refreshTokenHash','role','clientId','createdAt']);
+export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','passwordHash','passwordSalt','refreshTokenHash','role','clientId','createdAt','selectedClientId']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -607,6 +607,7 @@ export const UserSchema = z.object({
   refreshTokenHash: z.string().nullable(),
   clientId: z.string().nullable(),
   createdAt: z.coerce.date(),
+  selectedClientId: z.string().nullable(),
 })
 
 export type User = z.infer<typeof UserSchema>

@@ -5,6 +5,7 @@ export const UserResponseSchema = z.object({
   id: z.string(),
   email: z.string(),
   role: UserRoleSchema,
+  selectedClientId: z.string().nullable(),
 });
 
 export type UserResponse = z.infer<typeof UserResponseSchema>;
@@ -23,3 +24,9 @@ export const RefreshTokenResponseSchema = z.object({
 });
 
 export type RefreshTokenResponse = z.infer<typeof RefreshTokenResponseSchema>;
+
+export const SelectClientSchema = z.object({
+  clientId: z.string(),
+});
+
+export type SelectClientDto = z.infer<typeof SelectClientSchema>;
