@@ -13,7 +13,8 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: UserApi.login,
     onSuccess: (data) => {
-      localStorage.setItem("token", data.accessToken);
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
       queryClient.invalidateQueries({ queryKey: authKeys.currentUser });
     },
   });
@@ -31,7 +32,8 @@ export const useLogout = () => {
   const queryClient = useQueryClient();
 
   return () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     queryClient.setQueryData(authKeys.currentUser, null);
     queryClient.invalidateQueries({ queryKey: authKeys.currentUser });
   };

@@ -3,7 +3,7 @@ import ClientDropdown from "./ClientDropdown";
 import SideTab from "./SideTab";
 import { ProfileMenu } from "./Profile";
 
-import { Card, CardDescription } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 

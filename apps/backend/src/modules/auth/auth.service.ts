@@ -113,12 +113,12 @@ export class AuthService {
   private signAccessToken(user: User) {
     return this.jwtService.signAsync(
       { userId: user.id, role: user.role },
-      { expiresIn: '15m' },
+      { expiresIn: '5s' },
     );
   }
 
   private signRefreshToken(user: User) {
-    return this.jwtService.signAsync({ userId: user.id }, { expiresIn: '30d' });
+    return this.jwtService.signAsync({ userId: user.id }, { expiresIn: '1m' });
   }
 
   async validateUser(email: string, password: string): Promise<User> {
