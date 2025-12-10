@@ -6,7 +6,7 @@ const authKeys = {
   currentUser: ["currentUser"] as const,
 };
 
-export function useLogin() {
+export const useLogin = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -16,16 +16,17 @@ export function useLogin() {
       queryClient.invalidateQueries({ queryKey: authKeys.currentUser });
     },
   });
-}
+};
 
-export function useCurrentUser() {
+export const useCurrentUser = () => {
   return useQuery({
     queryKey: authKeys.currentUser,
     queryFn: UserApi.fetchCurrentUser,
+    staleTime: 5 * 60 * 1000,
   });
-}
+};
 
-export function useLogout() {
+export const useLogout = () => {
   const queryClient = useQueryClient();
 
   return () => {
@@ -33,4 +34,4 @@ export function useLogout() {
     queryClient.setQueryData(authKeys.currentUser, null);
     queryClient.invalidateQueries({ queryKey: authKeys.currentUser });
   };
-}
+};
