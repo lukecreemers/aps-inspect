@@ -3,6 +3,7 @@ import {
   Location,
   UpdateLocationDto,
 } from '@aps/shared-types';
+import { GetLocationQueryDto } from '@aps/shared-types/src/location/dto/get-location-query.dto';
 import { Injectable } from '@nestjs/common';
 import {
   BasePrismaService,
@@ -25,6 +26,17 @@ export class LocationService extends BasePrismaService<
       >,
       'Location',
     );
+  }
+
+  async findLocations(query: GetLocationQueryDto): Promise<Location[]> {
+    return this.prisma.location.findMany({
+      where: {
+        clientId: query.clientId,
+        isActive: query.isActive,
+      },
+      take: query.take,
+      skip: query.skip,
+    });
   }
 
   async findAllByClient(clientId: string): Promise<Location[]> {

@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { LocationService } from './location.service';
@@ -18,10 +19,23 @@ import {
   UpdateLocationSchema,
 } from '@aps/shared-types';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
+import {
+  GetLocationQueryDto,
+  GetLocationQuerySchema,
+} from '@aps/shared-types/src/location/dto/get-location-query.dto';
 
 @Controller('locations')
 export class LocationController {
   constructor(private locationService: LocationService) {}
+
+  @Get()
+  @ZodResponse(LocationResponseSchema.array())
+  @UsePipes(new ZodValidationPipe(GetLocationQuerySchema))
+  async findLocations(
+    @Query() query: GetLocationQueryDto,
+  ): Promise<Location[]> {
+    return this.locationService.findLocations(query);
+  }
 
   @Get('client/:clientId')
   @ZodResponse(LocationResponseSchema.array())
