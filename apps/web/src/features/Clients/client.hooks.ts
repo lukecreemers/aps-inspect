@@ -1,5 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as ClientApi from "./client.api";
+import { authKeys } from "../auth/auth.hooks";
 
 const clientKeys = {
   all: ["clients"] as const,
@@ -13,8 +14,13 @@ export const useGetClients = () => {
   });
 };
 
-export const useSelectClient = (clientId: string) => {
+export const useSelectClient = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ClientApi.selectClient,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: authKeys.currentUser });
+    },
   });
 };

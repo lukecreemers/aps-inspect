@@ -1,21 +1,23 @@
-import { useGetClients } from "../../../features/clients/client.hooks";
+import {
+  useGetClients,
+  useSelectClient,
+} from "../../../features/clients/client.hooks";
 import tempLogo from "../../../assets/client-logo.svg";
 import { ChevronDown } from "lucide-react";
-import useAppStore from "../../store/app.store";
+import {
+  useCurrentClient,
+  useCurrentUser,
+} from "../../../features/auth/auth.hooks";
 import { useEffect, useRef, useState } from "react";
 
 const ClientDropdown = () => {
   // TODO: Implement client global state
   const { data: clients } = useGetClients();
-  const { client, setClient } = useAppStore();
-  const [isOpen, setOpen] = useState(false);
+  const { data: currentUser } = useCurrentUser();
+  const { mutate: selectClient } = useSelectClient();
+  const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!client && clients?.[0]) {
-      setClient(clients[0]);
-    }
-  }, [clients, setClient]);
+  const currentClient = useCurrentClient();
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -28,9 +30,14 @@ const ClientDropdown = () => {
   }, []);
 
   return (
-    <div ref={ref} onClick={() => setOpen(!isOpen)} className="relative">
-      <div className="m-4 flex items-center gap-3 justify-between items-center my-6 cursor-pointer">
-        <div className="w-18 h-18  overflow-hidden flex items-center justify-center bg-gray-100">
+    <div ref={ref} className="relative" onClick={() => setOpen(!open)}>
+      <div
+        className="m-4 flex items-center gap-3 justify-between items-center 
+      my-6 cursor-pointer 
+      hover:bg-[var(--color-primary)]/10 rounded-md
+      hover:text-[var(--color-primary)]"
+      >
+        <div className="w-18 h-18  overflow-hidden flex items-center justify-center">
           <img
             src={tempLogo}
             alt="Client Logo"
@@ -38,22 +45,15 @@ const ClientDropdown = () => {
           />
         </div>
 
-        <span className="leading-tight font-medium flex-1">{client?.name}</span>
-        <ChevronDown />
+        <span className="leading-tight font-medium flex-1">
+          {currentClient?.name ?? "Select Client"}
+        </span>
+        <ChevronDown className="mr-2" />
       </div>
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border rounded-md shadow-lg z-50">
+      {open && (
+        <div className="absolute flex flex-col gap-2 top-full left-0 right-0 mt-2 bg-white border rounded-md shadow-lg z-50">
           {clients?.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => {
-                setClient(c);
-                setOpen(false);
-              }}
-              className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
-                client?.id === c.id ? "bg-gray-50 font-medium" : ""
-              }`}
-            >
+            <button key={c.id} onClick={() => selectClient({ clientId: c.id })}>
               {c.name}
             </button>
           ))}

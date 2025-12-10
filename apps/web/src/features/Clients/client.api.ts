@@ -12,10 +12,10 @@ export const getClients = async () => {
   });
 };
 
-export const selectClient = async (clientId: string) => {
+export const selectClient = async (dto: SelectClientDto) => {
   return await request<UserResponse>({
     method: "PATCH",
     url: "/auth/select-client",
-    data: { clientId } as SelectClientDto,
+    data: dto,
   });
 };

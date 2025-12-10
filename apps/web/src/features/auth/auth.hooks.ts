@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as UserApi from "./auth.api";
+import { useGetClients } from "../clients/client.hooks";
 
-const authKeys = {
+export const authKeys = {
   login: ["login"] as const,
   currentUser: ["currentUser"] as const,
 };
@@ -34,4 +35,13 @@ export const useLogout = () => {
     queryClient.setQueryData(authKeys.currentUser, null);
     queryClient.invalidateQueries({ queryKey: authKeys.currentUser });
   };
+};
+
+export const useCurrentClient = () => {
+  const { data: clients } = useGetClients();
+  const { data: currentUser } = useCurrentUser();
+
+  if (!clients || !currentUser?.selectedClientId) return null;
+
+  return clients.find((c) => c.id === currentUser.selectedClientId) ?? null;
 };
