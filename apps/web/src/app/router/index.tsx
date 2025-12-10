@@ -6,6 +6,7 @@ import { RequireRole } from "./RequireRole";
 import { AppLayout } from "../layouts/AppLayout";
 import { LoginPage } from "../../features/auth/LoginPage";
 import ClientPage from "../../features/clients/ClientPage";
+import ReportSessionPage from "@/features/report-session/ReportSessionPage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -23,7 +24,7 @@ export const router = createBrowserRouter([
             children: [
               { index: true, element: <div>Admin Dashboard</div> },
               { path: "overview", element: <div>Admin Overview</div> },
-              { path: "report-session", element: <div>Admin Reports</div> },
+              { path: "report-session", element: <ReportSessionPage /> },
               { path: "archive", element: <div>Admin Archive</div> },
               { path: "quotes", element: <div>Admin Quotes</div> },
               { path: "credentials", element: <div>Admin Credentials</div> },
