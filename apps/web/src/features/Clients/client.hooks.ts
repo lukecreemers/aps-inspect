@@ -19,7 +19,8 @@ export const useSelectClient = () => {
 
   return useMutation({
     mutationFn: ClientApi.selectClient,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      queryClient.setQueryData(authKeys.currentUser, data);
       queryClient.invalidateQueries({ queryKey: authKeys.currentUser });
     },
   });

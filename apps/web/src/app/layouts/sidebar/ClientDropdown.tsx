@@ -3,7 +3,7 @@ import {
   useSelectClient,
 } from "../../../features/clients/client.hooks";
 import tempLogo from "../../../assets/client-logo.svg";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Check } from "lucide-react";
 import {
   useCurrentClient,
   useCurrentUser,
@@ -11,13 +11,16 @@ import {
 import { useEffect, useRef, useState } from "react";
 
 const ClientDropdown = () => {
-  // TODO: Implement client global state
   const { data: clients } = useGetClients();
-  const { data: currentUser } = useCurrentUser();
   const { mutate: selectClient } = useSelectClient();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const currentClient = useCurrentClient();
+
+  const handleSelectClient = (clientId: string) => {
+    selectClient({ clientId });
+    setOpen(false);
+  };
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -30,14 +33,23 @@ const ClientDropdown = () => {
   }, []);
 
   return (
-    <div ref={ref} className="relative" onClick={() => setOpen(!open)}>
+    <div ref={ref} className="relative z-50">
       <div
-        className="m-4 flex items-center gap-3 justify-between items-center 
-      my-6 cursor-pointer 
-      hover:bg-[var(--color-primary)]/10 rounded-md
-      hover:text-[var(--color-primary)]"
+        className="
+          m-4 flex items-center gap-3 justify-between 
+          my-6 cursor-pointer 
+          hover:bg-[var(--color-primary)]/20 rounded-md
+          hover:text-[var(--color-primary)]
+          transition-colors
+          data-[open=true]:border-[var(--color-primary)] border-2 border-transparent
+          data-[open=true]:text-[var(--color-primary)]
+          data-[open=true]:bg-[var(--color-primary)]/20
+          data-[open=true]:shadow-md
+        "
+        data-open={open}
+        onClick={() => setOpen(!open)}
       >
-        <div className="w-18 h-18  overflow-hidden flex items-center justify-center">
+        <div className="w-18 h-18 overflow-hidden flex items-center justify-center">
           <img
             src={tempLogo}
             alt="Client Logo"
@@ -48,15 +60,48 @@ const ClientDropdown = () => {
         <span className="leading-tight font-medium flex-1">
           {currentClient?.name ?? "Select Client"}
         </span>
-        <ChevronDown className="mr-2" />
+
+        <ChevronDown
+          className="mr-2 transition-transform"
+          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
       </div>
+
       {open && (
-        <div className="absolute flex flex-col gap-2 top-full left-0 right-0 mt-2 bg-white border rounded-md shadow-lg z-50">
-          {clients?.map((c) => (
-            <button key={c.id} onClick={() => selectClient({ clientId: c.id })}>
-              {c.name}
-            </button>
-          ))}
+        <div
+          className="
+            absolute left-4 right-4 mt-[-16px] 
+            bg-white rounded-md overflow-hidden
+            /* IMPROVEMENT: Deep shadow + subtle border for pop */
+            shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2)]
+            border border-slate-100
+            animate-in fade-in zoom-in-95 duration-200
+          "
+        >
+          <div className="flex flex-col py-1">
+            {clients?.map((c) => {
+              const isActive = currentClient?.id === c.id;
+
+              return (
+                <button
+                  key={c.id}
+                  onClick={() => handleSelectClient(c.id)}
+                  className={`
+                    w-full text-left px-4 py-3 
+                    flex items-center justify-between
+                    transition-all border-l-4
+                    ${
+                      isActive
+                        ? "bg-[var(--color-primary)]/5 text-[var(--color-primary)] font-semibold border-[var(--color-primary)]"
+                        : "border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    }
+                  `}
+                >
+                  <span className="truncate">{c.name}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

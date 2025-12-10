@@ -6,6 +6,8 @@ export const UserResponseSchema = z.object({
   email: z.string(),
   role: UserRoleSchema,
   selectedClientId: z.string().nullable(),
+  firstName: z.string(),
+  lastName: z.string(),
 });
 
 export type UserResponse = z.infer<typeof UserResponseSchema>;
