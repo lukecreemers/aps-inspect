@@ -1,109 +1,132 @@
+import * as React from "react";
+import { Check, ChevronDown } from "lucide-react";
+
 import {
   useGetClients,
   useSelectClient,
 } from "../../../features/clients/client.hooks";
+import { useCurrentClient } from "../../../features/auth/auth.hooks";
+
 import tempLogo from "../../../assets/client-logo.svg";
-import { ChevronDown, Check } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 import {
-  useCurrentClient,
-  useCurrentUser,
-} from "../../../features/auth/auth.hooks";
-import { useEffect, useRef, useState } from "react";
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const ClientDropdown = () => {
   const { data: clients } = useGetClients();
   const { mutate: selectClient } = useSelectClient();
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
   const currentClient = useCurrentClient();
+
+  const [open, setOpen] = React.useState(false);
 
   const handleSelectClient = (clientId: string) => {
     selectClient({ clientId });
     setOpen(false);
   };
 
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
   return (
-    <div ref={ref} className="relative z-50">
-      <div
-        className="
-          m-4 flex items-center gap-3 justify-between 
-          my-6 cursor-pointer 
-          hover:bg-[var(--color-primary)]/20 rounded-md
-          hover:text-[var(--color-primary)]
-          transition-colors
-          data-[open=true]:border-[var(--color-primary)] border-2 border-transparent
-          data-[open=true]:text-[var(--color-primary)]
-          data-[open=true]:bg-[var(--color-primary)]/20
-          data-[open=true]:shadow-md
-        "
-        data-open={open}
-        onClick={() => setOpen(!open)}
-      >
-        <div className="w-18 h-18 overflow-hidden flex items-center justify-center">
-          <img
-            src={tempLogo}
-            alt="Client Logo"
-            className="w-18 h-18 object-cover"
-          />
-        </div>
+    <div className="relative z-50">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          {/* TRIGGER: same structure/classes as your original */}
+          <div
+            className={cn(
+              `
+              m-4 flex items-center gap-3 justify-between 
+              my-6 cursor-pointer 
+              hover:bg-[var(--color-primary)]/20 rounded-md
+              hover:text-[var(--color-primary)]
+              transition-colors
+              border-2 border-transparent
+            `,
+              open &&
+                `
+                border-[var(--color-primary)]
+                text-[var(--color-primary)]
+                bg-[var(--color-primary)]/20
+                shadow-md
+              `
+            )}
+            data-open={open}
+          >
+            <div className="w-18 h-18 overflow-hidden flex items-center justify-center">
+              <img
+                src={tempLogo}
+                alt="Client Logo"
+                className="w-18 h-18 object-cover"
+              />
+            </div>
 
-        <span className="leading-tight font-medium flex-1">
-          {currentClient?.name ?? "Select Client"}
-        </span>
+            <span className="leading-tight font-medium flex-1">
+              {currentClient?.name ?? "Select Client"}
+            </span>
 
-        <ChevronDown
-          className="mr-2 transition-transform"
-          style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
-        />
-      </div>
+            <ChevronDown
+              className="mr-2 transition-transform"
+              style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+            />
+          </div>
+        </PopoverTrigger>
 
-      {open && (
-        <div
+        {/* DROPDOWN: same feel as original, but using Popover + Command */}
+        <PopoverContent
+          align="center"
+          sideOffset={-24} // like your mt-[-16px] overlap
           className="
-            absolute left-4 right-4 mt-[-16px] 
+            w-[var(--radix-popover-trigger-width)]
             bg-white rounded-md overflow-hidden
-            /* IMPROVEMENT: Deep shadow + subtle border for pop */
             shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2)]
             border border-slate-100
+            p-2
+            mt-8
             animate-in fade-in zoom-in-95 duration-200
           "
         >
-          <div className="flex flex-col py-1">
-            {clients?.map((c) => {
-              const isActive = currentClient?.id === c.id;
+          <Command>
+            <CommandInput placeholder="Search clients..." className="" />
 
-              return (
-                <button
-                  key={c.id}
-                  onClick={() => handleSelectClient(c.id)}
-                  className={`
-                    w-full text-left px-4 py-3 
-                    flex items-center justify-between
-                    transition-all border-l-4
-                    ${
-                      isActive
-                        ? "bg-[var(--color-primary)]/5 text-[var(--color-primary)] font-semibold border-[var(--color-primary)]"
-                        : "border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                    }
-                  `}
-                >
-                  <span className="truncate">{c.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+            <CommandList>
+              <CommandEmpty>No client found.</CommandEmpty>
+
+              <CommandGroup>
+                {clients?.map((c) => {
+                  const isActive = currentClient?.id === c.id;
+
+                  return (
+                    <CommandItem
+                      key={c.id}
+                      value={c.name}
+                      onSelect={() => handleSelectClient(c.id)}
+                      className="flex items-center justify-between p-2"
+                    >
+                      <span>{c.name}</span>
+
+                      <Check
+                        className={cn(
+                          "ml-4 h-8 w-8 text-[var(--color-primary)]",
+                          isActive ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };
