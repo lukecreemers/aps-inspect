@@ -25,7 +25,7 @@ export const router = createBrowserRouter([
               { index: true, element: <div>Admin Dashboard</div> },
               { path: "overview", element: <div>Admin Overview</div> },
               { path: "report-session", element: <ReportSessionPage /> },
-              { path: "archive", element: <div>Admin Archive</div> },
+              { path: "archive", element: <ClientPage /> },
               { path: "quotes", element: <div>Admin Quotes</div> },
               { path: "credentials", element: <div>Admin Credentials</div> },
             ],

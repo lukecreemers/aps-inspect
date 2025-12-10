@@ -39,5 +39,9 @@ export const getLocationsAndBuildings = async (
     },
   });
 
-  return organizeBuildingsLocations(buildings, locations);
+  console.log(buildings);
+
+  const output = organizeBuildingsLocations(buildings, locations);
+  console.log(output);
+  return output;
 };
