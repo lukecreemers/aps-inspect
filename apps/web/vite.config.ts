@@ -12,6 +12,7 @@ export default defineConfig({
         __dirname,
         "../../packages/shared-types/src"
       ),
+      "@": path.resolve(__dirname, "./src"),
     },
   },
 });
