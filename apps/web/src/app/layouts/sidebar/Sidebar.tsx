@@ -1,7 +1,11 @@
 import React from "react";
-import SideTab from "./SideTab";
 import ClientDropdown from "./ClientDropdown";
-import Profile from "./Profile";
+import SideTab from "./SideTab";
+import { ProfileMenu } from "./Profile";
+
+import { Card, CardDescription } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SidebarProps {
   tabs: {
@@ -14,20 +18,38 @@ interface SidebarProps {
 
 const Sidebar = ({ tabs, handleLogout }: SidebarProps) => {
   return (
-    <div className="w-80 bg-[var(--color-bg-sidebar)] justify-between flex flex-col">
+    <Card
+      className="
+        w-80 h-screen
+        flex flex-col
+        rounded-none
+        border-r
+        bg-sidebar
+        text-sidebar-foreground
+        py-0
+      "
+    >
+      {/* TOP */}
       <div>
         <ClientDropdown />
-        <div className="flex flex-col gap-1 m-4">
-          {tabs.map((t) => (
-            <SideTab label={t.label} to={t.to} icon={t.icon} />
-          ))}
-        </div>
+
+        <Separator />
+
+        <ScrollArea className="flex-1">
+          <div className="flex flex-col gap-1 p-2 mt-2">
+            {tabs.map((t) => (
+              <SideTab key={t.to} label={t.label} to={t.to} icon={t.icon} />
+            ))}
+          </div>
+        </ScrollArea>
       </div>
-      <div className="m-4">
-        {/* <button onClick={handleLogout}>Logout</button> */}
-        <Profile />
+
+      {/* BOTTOM */}
+      <div className="p-2 mt-auto">
+        {/* <Separator className="mb-4" /> */}
+        <ProfileMenu onLogout={handleLogout} />
       </div>
-    </div>
+    </Card>
   );
 };
 

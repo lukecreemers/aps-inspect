@@ -40,12 +40,11 @@ const ClientDropdown = () => {
     <div className="relative z-50">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          {/* TRIGGER: same structure/classes as your original */}
           <div
             className={cn(
               `
-              m-4 flex items-center gap-3 justify-between 
-              my-6 cursor-pointer 
+              m-2 flex items-center gap-3 justify-between 
+              my-2 cursor-pointer 
               hover:bg-[var(--color-primary)]/20 rounded-md
               hover:text-[var(--color-primary)]
               transition-colors
@@ -61,11 +60,11 @@ const ClientDropdown = () => {
             )}
             data-open={open}
           >
-            <div className="w-18 h-18 overflow-hidden flex items-center justify-center">
+            <div className="w-16 h-16 overflow-hidden flex items-center justify-center">
               <img
                 src={tempLogo}
                 alt="Client Logo"
-                className="w-18 h-18 object-cover"
+                className="w-16 h-16 object-cover"
               />
             </div>
 
@@ -80,10 +79,9 @@ const ClientDropdown = () => {
           </div>
         </PopoverTrigger>
 
-        {/* DROPDOWN: same feel as original, but using Popover + Command */}
         <PopoverContent
           align="center"
-          sideOffset={-24} // like your mt-[-16px] overlap
+          sideOffset={-24}
           className="
             w-[var(--radix-popover-trigger-width)]
             bg-white rounded-md overflow-hidden
