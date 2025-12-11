@@ -4,34 +4,22 @@ import CreateStepOne from "./create-wizard/CreateStepOne";
 import CreateStepTwo from "./create-wizard/CreateStepTwo";
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
 import CreateStepThree from "./create-wizard/CreateStepThree";
-
-const steps = [
-  { id: 1, title: "Session Details" },
-  { id: 2, title: "Previous Report" },
-  { id: 3, title: "Review and Submit" },
-];
+import { useCurrentReport } from "./session.hooks";
+import { useCurrentClient, useCurrentUser } from "../auth/auth.hooks";
 
 const ReportSessionPage = () => {
-  const { currentStep, setTotalSteps } = useReportWizardStore();
+  const currentClient = useCurrentClient();
+  const { data: currentReport } = useCurrentReport(currentClient?.id);
 
-  useEffect(() => {
-    setTotalSteps(3);
-  }, [setTotalSteps]);
-
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <CreateStepOne />;
-      case 2:
-        return <CreateStepTwo />;
-      case 3:
-        return <CreateStepThree />;
-    }
-  };
+  console.log(currentReport);
 
   return (
     <div className="flex-1">
-      <WizardLayout steps={steps}>{renderStep()}</WizardLayout>
+      {currentReport ? (
+        <div>Current report found</div>
+      ) : (
+        <div>No report found</div>
+      )}
     </div>
   );
 };
