@@ -10,6 +10,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { MapPin, Plus, Minus } from "lucide-react";
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
+import {
+  Field,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from "@/components/ui/field";
 
 const CreateStepTwo = () => {
   const currentClient = useCurrentClient();
@@ -62,72 +70,88 @@ const CreateStepTwo = () => {
   };
 
   return (
-    <div className="w-full max-w-2xl border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm">
-      <div className="flex items-center gap-4 bg-muted/40 p-4 border-b text-sm font-medium text-muted-foreground">
-        <Checkbox
-          id="all-buildings"
-          onCheckedChange={handleDeselectBuildings}
-          checked={isAllSelected()}
-        />
-        <div className="flex-1">Select All</div>
-        <div className="w-8" />
-      </div>
+    <FieldGroup>
+      <FieldSet>
+        <FieldLegend>Location Selection</FieldLegend>
+        <FieldDescription>
+          Select the buildings and locations you want to include in the report.
+        </FieldDescription>
+        <div className="w-full max-w border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm">
+          <div className="flex items-center gap-4 bg-muted/40 p-4 border-b text-sm font-medium text-muted-foreground">
+            <Checkbox
+              id="all-buildings"
+              onCheckedChange={handleDeselectBuildings}
+              checked={isAllSelected()}
+            />
+            <div className="flex-1">Select All</div>
+            <div className="w-8" />
+          </div>
 
-      <div className="divide-y">
-        {locations?.map(({ location, buildings }) => (
-          <Collapsible key={location.id} className="group">
-            <div className="flex items-center hover:bg-muted/50 transition-colors pr-4">
-              <label
-                htmlFor={location.id}
-                className="flex flex-1 items-center gap-4 p-4 cursor-pointer"
-              >
-                <Checkbox
-                  id={location.id}
-                  onCheckedChange={(value) =>
-                    handleResetLocation(value === true, location.id)
-                  }
-                  checked={isLocationAllSelected(location.id)}
-                />
-                <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="font-medium text-base">{location.name}</span>
-              </label>
+          <div className="divide-y">
+            {locations?.map(({ location, buildings }) => (
+              <Collapsible key={location.id} className="group">
+                <div className="flex items-center hover:bg-muted/50 transition-colors pr-4">
+                  <label
+                    htmlFor={location.id}
+                    className="flex flex-1 items-center gap-4 p-4 cursor-pointer"
+                  >
+                    <Checkbox
+                      id={location.id}
+                      onCheckedChange={(value) =>
+                        handleResetLocation(value === true, location.id)
+                      }
+                      checked={isLocationAllSelected(location.id)}
+                    />
+                    <MapPin className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-base">
+                      {location.name}
+                    </span>
+                  </label>
 
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 p-0 shrink-0"
-                >
-                  <Plus className="h-4 w-4 group-data-[state=open]:hidden" />
-                  <Minus className="h-4 w-4 hidden group-data-[state=open]:block" />
-                  <span className="sr-only">Toggle {location.name}</span>
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-            <CollapsibleContent>
-              <div className="border-t bg-muted/10 pl-8">
-                {buildings.map((building) => (
-                  <BuildingSelect
-                    key={building.id}
-                    building={building}
-                    className="border-b last:border-0"
-                    isChecked={selectedBuildings.has(building.id)}
-                  />
-                ))}
-              </div>
-            </CollapsibleContent>
-          </Collapsible>
-        ))}
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 p-0 shrink-0"
+                    >
+                      <Plus className="h-4 w-4 group-data-[state=open]:hidden" />
+                      <Minus className="h-4 w-4 hidden group-data-[state=open]:block" />
+                      <span className="sr-only">Toggle {location.name}</span>
+                    </Button>
+                  </CollapsibleTrigger>
+                </div>
+                <CollapsibleContent>
+                  <div className="border-t bg-muted/10 pl-8">
+                    {buildings.map((building) => (
+                      <BuildingSelect
+                        key={building.id}
+                        building={building}
+                        className="border-b last:border-0"
+                        isChecked={selectedBuildings.has(building.id)}
+                      />
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            ))}
 
-        {unattachedBuildings?.map((building) => (
-          <BuildingSelect
-            key={building.id}
-            building={building}
-            isChecked={selectedBuildings.has(building.id)}
-          />
-        ))}
-      </div>
-    </div>
+            {unattachedBuildings?.map((building) => (
+              <BuildingSelect
+                key={building.id}
+                building={building}
+                isChecked={selectedBuildings.has(building.id)}
+              />
+            ))}
+          </div>
+        </div>
+      </FieldSet>
+      <Field orientation="horizontal" className="flex justify-end gap-2">
+        <Button variant="outline" type="button">
+          Cancel
+        </Button>
+        <Button type="submit">Continue</Button>
+      </Field>
+    </FieldGroup>
   );
 };
 
