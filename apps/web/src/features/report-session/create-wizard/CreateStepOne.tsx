@@ -12,6 +12,7 @@ import { ReportNameToggle } from "../components/ReportNameToggle";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
+import { useEffect, useRef } from "react";
 
 const CreateStepOne = () => {
   const { nextStep, clearData } = useReportWizardStore();
@@ -29,13 +30,19 @@ const CreateStepOne = () => {
   };
 
   const isAnyReportSelected = isRoofReportEnabled || isExteriorReportEnabled;
+  const validationInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (validationInputRef.current) {
+      validationInputRef.current.setCustomValidity("");
+    }
+  }, [isAnyReportSelected]);
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-xl">
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (!isAnyReportSelected) return;
           nextStep();
         }}
       >
@@ -80,8 +87,21 @@ const CreateStepOne = () => {
             </FieldGroup>
           </FieldSet>
           <Separator />
-          <FieldSet>
+          <FieldSet className="relative">
             <FieldLegend variant="label">Included Report Types</FieldLegend>
+            <input
+              ref={validationInputRef}
+              type="text"
+              className="absolute opacity-0 h-px w-px -z-10 left-1/2 bottom-0"
+              value={isAnyReportSelected ? "ok" : ""}
+              onChange={() => {}}
+              required
+              onInvalid={(e) =>
+                e.currentTarget.setCustomValidity(
+                  "Please select at least one report type."
+                )
+              }
+            />
             <FieldGroup className="flex flex-col gap-4">
               <ReportNameToggle
                 title="Roof Inspection"
@@ -104,15 +124,10 @@ const CreateStepOne = () => {
             </FieldGroup>
           </FieldSet>
           <Field orientation="horizontal" className="flex justify-end gap-2">
-            <Button variant="outline" type="button" onClick={onCancel}>
+            <Button variant="cancel" type="button" onClick={onCancel}>
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={!isAnyReportSelected || !sessionTitle}
-            >
-              Continue
-            </Button>
+            <Button type="submit">Continue</Button>
           </Field>
         </FieldGroup>
       </form>

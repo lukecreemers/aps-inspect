@@ -22,10 +22,16 @@ import {
 const CreateStepTwo = () => {
   const currentClient = useCurrentClient();
   const { data: buildingGroups } = useCurrentBuildings(currentClient?.id);
-  const { selectedBuildings, deselectBuildings, setBuildings } =
-    useReportWizardStore();
+  const {
+    selectedBuildings,
+    deselectBuildings,
+    setBuildings,
+    nextStep,
+    previousStep,
+  } = useReportWizardStore();
   const unattachedBuildings = buildingGroups?.unattachedBuildings;
   const locations = buildingGroups?.locations;
+  const hasBuildings = selectedBuildings.size > 0;
 
   const getAllBuildingIds = (): string[] => {
     const buildings = [
@@ -69,14 +75,18 @@ const CreateStepTwo = () => {
     }
   };
 
+  const handleNextStep = () => {
+    nextStep();
+  };
+
   return (
-    <FieldGroup>
+    <FieldGroup className="w-full max-w-xl">
       <FieldSet>
         <FieldLegend>Location Selection</FieldLegend>
         <FieldDescription>
           Select the buildings and locations you want to include in the report.
         </FieldDescription>
-        <div className="w-full max-w border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm">
+        <div className="w-full  border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm">
           <div className="flex items-center gap-4 bg-muted/40 p-4 border-b text-sm font-medium text-muted-foreground">
             <Checkbox
               id="all-buildings"
@@ -146,10 +156,12 @@ const CreateStepTwo = () => {
         </div>
       </FieldSet>
       <Field orientation="horizontal" className="flex justify-end gap-2">
-        <Button variant="outline" type="button">
-          Cancel
+        <Button variant="outline" type="button" onClick={previousStep}>
+          Previous
         </Button>
-        <Button type="submit">Continue</Button>
+        <Button onClick={handleNextStep} disabled={!hasBuildings}>
+          Continue
+        </Button>
       </Field>
     </FieldGroup>
   );
