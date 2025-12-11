@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useCurrentUser, useLogout } from "../../features/auth/auth.hooks";
 import AppSidebar from "./sidebar/AppSidebar";
 import {
@@ -18,14 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import type { Tab } from "./sidebar/sidebar.types";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
+import AppBreadCrumb from "./AppBreadCrumb";
 
 export function AppLayout() {
   const { data: currentUser } = useCurrentUser();
@@ -57,6 +50,9 @@ export function AppLayout() {
   ];
 
   const tabs = currentUser?.role === "ADMIN" ? adminTabs : clientTabs;
+  const location = useLocation();
+  const pathname = location.pathname;
+  const currentTab = tabs.find((tab) => tab.to === pathname);
 
   const handleLogout = () => {
     logout();
@@ -73,19 +69,7 @@ export function AppLayout() {
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Building Your Application
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <AppBreadCrumb currentTab={currentTab} />
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4">
           <Outlet />
