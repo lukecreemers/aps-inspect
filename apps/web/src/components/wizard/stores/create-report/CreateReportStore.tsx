@@ -23,7 +23,7 @@ type ReportWizardStore = {
   // Step Two
   selectedBuildings: Set<string>;
   toggleBuilding: (buildingId: string) => void;
-  resetBuildings: (buildings: string[]) => void;
+  deselectBuildings: (buildings: string[]) => void;
   setBuildings: (buildings: string[]) => void;
 } & WizardSlice;
 
@@ -74,7 +74,7 @@ export const useReportWizardStore = create<ReportWizardStore>()((...args) => {
           : newSet.add(buildingId);
         return { selectedBuildings: newSet };
       }),
-    resetBuildings: (buildings: string[]) =>
+    deselectBuildings: (buildings: string[]) =>
       set((state) => {
         const newSet = new Set(state.selectedBuildings);
         buildings.forEach((buildingId) => {

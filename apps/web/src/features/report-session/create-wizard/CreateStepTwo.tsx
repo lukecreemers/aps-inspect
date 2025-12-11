@@ -14,7 +14,7 @@ import { useReportWizardStore } from "@/components/wizard/stores/create-report/C
 const CreateStepTwo = () => {
   const currentClient = useCurrentClient();
   const { data: buildingGroups } = useCurrentBuildings(currentClient?.id);
-  const { selectedBuildings, resetBuildings, setBuildings } =
+  const { selectedBuildings, deselectBuildings, setBuildings } =
     useReportWizardStore();
   const unattachedBuildings = buildingGroups?.unattachedBuildings;
   const locations = buildingGroups?.locations;
@@ -45,19 +45,19 @@ const CreateStepTwo = () => {
     return buildingIds.every((item) => selectedBuildings.has(item)) ?? false;
   };
 
-  const handleResetBuildings = (value: boolean) => {
+  const handleDeselectBuildings = (value: boolean) => {
     if (value) {
       setBuildings(getAllBuildingIds());
     } else if (isAllSelected()) {
-      resetBuildings(getAllBuildingIds());
+      deselectBuildings(getAllBuildingIds());
     }
   };
 
   const handleResetLocation = (value: boolean, locationId: string) => {
     if (value) {
       setBuildings(getAllBuildingIdsByLocation(locationId));
-    } else if (isAllSelected()) {
-      resetBuildings(getAllBuildingIdsByLocation(locationId));
+    } else if (isLocationAllSelected(locationId)) {
+      deselectBuildings(getAllBuildingIdsByLocation(locationId));
     }
   };
 
@@ -66,7 +66,7 @@ const CreateStepTwo = () => {
       <div className="flex items-center gap-4 bg-muted/40 p-4 border-b text-sm font-medium text-muted-foreground">
         <Checkbox
           id="all-buildings"
-          onCheckedChange={handleResetBuildings}
+          onCheckedChange={handleDeselectBuildings}
           checked={isAllSelected()}
         />
         <div className="flex-1">Select All</div>
