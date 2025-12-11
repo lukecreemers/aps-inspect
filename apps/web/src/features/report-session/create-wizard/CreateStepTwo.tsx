@@ -10,22 +10,59 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { MapPin, Plus, Minus } from "lucide-react";
+import { useEffect } from "react";
+import type { LocationGroup } from "@/utils/building.util";
+import type { BuildingResponse } from "@aps/shared-types";
 
 const CreateStepTwo = () => {
   useWizardStore();
   const currentClient = useCurrentClient();
   const { data: buildingGroups } = useCurrentBuildings(currentClient?.id);
-
+  const { sessionData, updateData, clearData } = useWizardStore();
   const unattachedBuildings = buildingGroups?.unattachedBuildings;
   const locations = buildingGroups?.locations;
+
+  useEffect(() => {
+    updateData({
+      selectedBuildings: new Set<string>(),
+    });
+  }, []);
+
+  const getAllBuildings = (): BuildingResponse[] => {
+    return [
+      ...(unattachedBuildings || []),
+      ...(locations?.flatMap((item) => item.buildings) || []),
+    ];
+  };
+
+  const handleSelectAll = (value: boolean) => {
+    if (value) {
+      const allBuildings = getAllBuildings();
+      const newSet = new Set<string>(
+        allBuildings.map((building) => building.id)
+      );
+      updateData({
+        selectedBuildings: newSet,
+      });
+    } else if (isAllSelected()) {
+      updateData({
+        selectedBuildings: new Set<string>(),
+      });
+    }
+  };
+
+  const isAllSelected = (): boolean => {
+    const allBuildings = getAllBuildings();
+    const selectedBuildings: Set<string> = sessionData.selectedBuildings;
+    return allBuildings.every((item) => selectedBuildings.has(item.id));
+  };
 
   return (
     <div className="w-full max-w-2xl border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm">
       {/* Table Header */}
       <div className="flex items-center gap-4 bg-muted/40 p-4 border-b text-sm font-medium text-muted-foreground">
-        <div className="w-4" /> {/* Visual alignment for checkbox */}
-        <div className="w-4" /> {/* Visual alignment for icon */}
-        <div className="flex-1">Location / Building</div>
+        <Checkbox id="all-buildings" onCheckedChange={handleSelectAll} />
+        <div className="flex-1">Select All</div>
         <div className="w-8" /> {/* Visual alignment for actions */}
       </div>
 
@@ -61,6 +98,7 @@ const CreateStepTwo = () => {
                     key={building.id}
                     building={building}
                     className="border-b last:border-0"
+                    isChecked={sessionData.selectedBuildings.has(building.id)}
                   />
                 ))}
               </div>
@@ -69,7 +107,11 @@ const CreateStepTwo = () => {
         ))}
 
         {unattachedBuildings?.map((building) => (
-          <BuildingSelect key={building.id} building={building} />
+          <BuildingSelect
+            key={building.id}
+            building={building}
+            isChecked={sessionData.selectedBuildings.has(building.id)}
+          />
         ))}
       </div>
     </div>

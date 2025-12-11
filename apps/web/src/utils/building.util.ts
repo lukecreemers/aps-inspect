@@ -1,6 +1,6 @@
 import type { BuildingResponse, LocationResponse } from "@aps/shared-types";
 
-type LocationGroup = {
+export type LocationGroup = {
   location: LocationResponse;
   buildings: BuildingResponse[];
 };

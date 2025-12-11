@@ -5,11 +5,16 @@ import { Building2 } from "lucide-react";
 
 interface BuildingSelectProps {
   building: BuildingResponse;
+  isChecked: boolean;
   onSelect?: (buildingId: string) => void;
   className?: string;
 }
 
-const BuildingSelect = ({ building, className }: BuildingSelectProps) => {
+const BuildingSelect = ({
+  building,
+  className,
+  isChecked,
+}: BuildingSelectProps) => {
   return (
     <label
       htmlFor={building.id}
@@ -18,7 +23,7 @@ const BuildingSelect = ({ building, className }: BuildingSelectProps) => {
         className
       )}
     >
-      <Checkbox id={building.id} />
+      <Checkbox id={building.id} checked={isChecked} />
       <Building2 className="h-4 w-4 text-muted-foreground" />
       <span className="flex-1 font-normal text-sm text-foreground">
         {building.name}
