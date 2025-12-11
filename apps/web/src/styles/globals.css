@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 :root {
   /* FONT */
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "Geist", system-ui, sans-serif;
 
   /* COLORS */
   /* --color-bg-default: #ffffff;

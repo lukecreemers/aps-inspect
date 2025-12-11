@@ -7,6 +7,7 @@ import { AppLayout } from "../layouts/AppLayout";
 import { LoginPage } from "../../features/auth/LoginPage";
 import ClientPage from "../../features/clients/ClientPage";
 import ReportSessionPage from "@/features/report-session/ReportSessionPage";
+import CreateSessionPage from "@/features/report-session/CreateSessionPage";
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
@@ -25,7 +26,7 @@ export const router = createBrowserRouter([
               { index: true, element: <div>Admin Dashboard</div> },
               { path: "overview", element: <div>Admin Overview</div> },
               { path: "report-session", element: <ReportSessionPage /> },
-              { path: "archive", element: <ClientPage /> },
+              { path: "archive", element: <CreateSessionPage /> },
               { path: "quotes", element: <div>Admin Quotes</div> },
               { path: "credentials", element: <div>Admin Credentials</div> },
             ],
