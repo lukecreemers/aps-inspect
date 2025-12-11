@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { useWizardStore } from "./wizard/WizardStore";
+import { useReportWizardStore } from "./wizard/stores/create-report/CreateReportStore";
 
 type StepHeaderProps = {
   steps: { id: number; title: string }[];
@@ -7,7 +7,7 @@ type StepHeaderProps = {
 };
 
 export function StepHeader({ steps, currentStep }: StepHeaderProps) {
-  const { setStep } = useWizardStore();
+  const { setStep } = useReportWizardStore();
 
   const handleStepClick = (stepId: number) => {
     if (stepId < currentStep) {

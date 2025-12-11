@@ -51,6 +51,8 @@ const CreateStepTwo = () => {
     }
   };
 
+  const handleSelectBuilding = (value: boolean) => {};
+
   const isAllSelected = (): boolean => {
     const allBuildings = getAllBuildings();
     const selectedBuildings: Set<string> = sessionData.selectedBuildings;

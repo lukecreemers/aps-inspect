@@ -1,6 +1,6 @@
 import React from "react";
-import { useWizardStore } from "./WizardStore";
 import { StepHeader } from "../StepHeader";
+import { useReportWizardStore } from "./stores/create-report/CreateReportStore";
 
 interface WizardLayoutProps {
   steps: { id: number; title: string }[];
@@ -8,7 +8,8 @@ interface WizardLayoutProps {
 }
 
 const WizardLayout = ({ steps, children }: WizardLayoutProps) => {
-  const { currentStep, totalSteps, nextStep, previousStep } = useWizardStore();
+  const { currentStep, totalSteps, nextStep, previousStep } =
+    useReportWizardStore();
   return (
     <div className="max-w-3xl mx-auto relative">
       <StepHeader steps={steps} currentStep={currentStep} />

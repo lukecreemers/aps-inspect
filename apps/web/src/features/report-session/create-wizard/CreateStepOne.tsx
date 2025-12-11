@@ -10,23 +10,25 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ReportNameToggle } from "../components/ReportNameToggle";
 import { Separator } from "@/components/ui/separator";
-import { useWizardStore } from "@/components/wizard/WizardStore";
 import { Button } from "@/components/ui/button";
+import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
 
 const CreateStepOne = () => {
-  const { sessionData, updateData, clearData } = useWizardStore();
-  const { nextStep } = useWizardStore();
-
-  const handleChange = (field: string, value: any) => {
-    updateData({ [field]: value });
-  };
+  const { nextStep, clearData } = useReportWizardStore();
+  const { sessionTitle, setSessionTitle } = useReportWizardStore();
+  const { reportingPeriod, setReportingPeriod } = useReportWizardStore();
+  const { notes, setNotes } = useReportWizardStore();
+  const { isRoofReportEnabled, setRoofReportEnabled } = useReportWizardStore();
+  const { isExteriorReportEnabled, setExteriorReportEnabled } =
+    useReportWizardStore();
+  const { roofReportName, setRoofReportName } = useReportWizardStore();
+  const { exteriorReportName, setExteriorReportName } = useReportWizardStore();
 
   const onCancel = () => {
     clearData();
   };
 
-  const isAnyReportSelected =
-    sessionData.isRoofReportEnabled || sessionData.isExteriorReportEnabled;
+  const isAnyReportSelected = isRoofReportEnabled || isExteriorReportEnabled;
 
   return (
     <div className="w-full max-w-md">
@@ -46,8 +48,8 @@ const CreateStepOne = () => {
                   id="sessionTitle"
                   placeholder="UOA Annual Inspection 2025"
                   required
-                  value={sessionData.sessionTitle || ""}
-                  onChange={(e) => handleChange("sessionTitle", e.target.value)}
+                  value={sessionTitle || ""}
+                  onChange={(e) => setSessionTitle(e.target.value)}
                 />
                 <FieldDescription className="text-xs text-muted-foreground">
                   This title is used as the base for naming all reports in the
@@ -62,10 +64,8 @@ const CreateStepOne = () => {
                 <Input
                   id="reportingPeriod"
                   placeholder="e.g. Jan 2025 - Mar - 2025"
-                  value={sessionData.reportingPeriod || ""}
-                  onChange={(e) =>
-                    handleChange("reportingPeriod", e.target.value)
-                  }
+                  value={reportingPeriod}
+                  onChange={(e) => setReportingPeriod(e.target.value)}
                 />
               </Field>
               <Field>
@@ -73,8 +73,8 @@ const CreateStepOne = () => {
                 <Textarea
                   id="notes"
                   placeholder="Enter any notes about the session"
-                  value={sessionData.notes || ""}
-                  onChange={(e) => handleChange("notes", e.target.value)}
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
                 />
               </Field>
             </FieldGroup>
@@ -85,20 +85,20 @@ const CreateStepOne = () => {
             <FieldGroup className="flex flex-col gap-4">
               <ReportNameToggle
                 title="Roof Inspection"
-                initValue={sessionData.sessionTitle || ""}
-                value={sessionData.roofReportName || ""}
-                enabled={!!sessionData.isRoofReportEnabled}
-                onToggle={(val) => handleChange("isRoofReportEnabled", val)}
-                onChange={(val) => handleChange("roofReportName", val)}
+                initValue={sessionTitle}
+                value={roofReportName}
+                enabled={isRoofReportEnabled}
+                onToggle={(val) => setRoofReportEnabled(val)}
+                onChange={(val) => setRoofReportName(val)}
                 type="Roof Inspection"
               />
               <ReportNameToggle
                 title="Exterior Inspection"
-                initValue={sessionData.sessionTitle || ""}
-                value={sessionData.exteriorReportName || ""}
-                enabled={!!sessionData.isExteriorReportEnabled}
-                onToggle={(val) => handleChange("isExteriorReportEnabled", val)}
-                onChange={(val) => handleChange("exteriorReportName", val)}
+                initValue={sessionTitle}
+                value={exteriorReportName}
+                enabled={isExteriorReportEnabled}
+                onToggle={(val) => setExteriorReportEnabled(val)}
+                onChange={(val) => setExteriorReportName(val)}
                 type="Exterior Inspection"
               />
             </FieldGroup>
@@ -109,7 +109,7 @@ const CreateStepOne = () => {
             </Button>
             <Button
               type="submit"
-              disabled={!isAnyReportSelected || !sessionData.sessionTitle}
+              disabled={!isAnyReportSelected || !sessionTitle}
             >
               Continue
             </Button>
