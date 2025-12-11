@@ -11,6 +11,7 @@ export function LoginPage() {
     mutate: loginMutation,
     isPending,
     isError: isLoginError,
+    isSuccess: isLoginSuccess,
     reset: resetLogin,
   } = useLogin();
   const { data: currentUser } = useCurrentUser();
@@ -84,7 +85,7 @@ export function LoginPage() {
             <PrimaryButton
               label="Login"
               onClick={handleLogin}
-              isLoading={isPending}
+              isLoading={isPending || isLoginSuccess}
             />
           </div>
         </div>

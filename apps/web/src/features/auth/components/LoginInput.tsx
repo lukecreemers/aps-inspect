@@ -34,7 +34,7 @@ const LoginInput = ({
           placeholder={placeholder}
           onChange={(e) => onChange(e.target.value)}
           value={value}
-          className={`border w-full rounded-2xl px-4 py-4 bg-[var(--color-bg-muted)] outline-none border-none 
+          className={`border w-full rounded-2xl px-4 py-4 bg-[#F4F4F4] outline-none border-none 
             transition-all duration-200 
             ${
               isError
