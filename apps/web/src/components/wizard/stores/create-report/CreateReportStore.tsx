@@ -1,8 +1,8 @@
-import type { ReportTypeType } from "@aps/shared-types";
-import type { WizardStore } from "../../WizardStore";
+import { createWizardSlice, type WizardSlice } from "../../WizardStore";
 import { create } from "zustand";
 
 type ReportWizardStore = {
+  clearData: () => void;
   // Step One
   sessionTitle: string;
   reportingPeriod: string;
@@ -25,76 +25,70 @@ type ReportWizardStore = {
   toggleBuilding: (buildingId: string) => void;
   resetBuildings: (buildings: string[]) => void;
   setBuildings: (buildings: string[]) => void;
-} & WizardStore;
+} & WizardSlice;
 
-export const useReportWizardStore = create<ReportWizardStore>((set) => ({
-  // Base Wizard
-  currentStep: 1,
-  totalSteps: 1,
+export const useReportWizardStore = create<ReportWizardStore>()((...args) => {
+  const [set] = args;
+  return {
+    ...createWizardSlice(...args),
 
-  setTotalSteps: (totalSteps) => set({ totalSteps }),
-  nextStep: () =>
-    set((state) => ({
-      currentStep: Math.min(state.currentStep + 1, state.totalSteps),
-    })),
-  previousStep: () =>
-    set((state) => ({ currentStep: Math.max(state.currentStep - 1, 1) })),
-  setStep: (step) => set({ currentStep: step }),
-  clearData: () =>
-    set({
-      sessionTitle: "",
-      reportingPeriod: "",
-      notes: "",
-      isRoofReportEnabled: false,
-      isExteriorReportEnabled: false,
-      roofReportName: "",
-      exteriorReportName: "",
-    }),
+    clearData: () =>
+      set({
+        sessionTitle: "",
+        reportingPeriod: "",
+        notes: "",
+        isRoofReportEnabled: false,
+        isExteriorReportEnabled: false,
+        roofReportName: "",
+        exteriorReportName: "",
+        selectedBuildings: new Set(),
+      }),
 
-  // Step One
-  sessionTitle: "",
-  reportingPeriod: "",
-  notes: "",
-  isRoofReportEnabled: false,
-  isExteriorReportEnabled: false,
-  roofReportName: "",
-  exteriorReportName: "",
+    // Step One
+    sessionTitle: "",
+    reportingPeriod: "",
+    notes: "",
+    isRoofReportEnabled: false,
+    isExteriorReportEnabled: false,
+    roofReportName: "",
+    exteriorReportName: "",
 
-  setSessionTitle: (newTitle: string) => set({ sessionTitle: newTitle }),
-  setReportingPeriod: (newPeriod: string) =>
-    set({ reportingPeriod: newPeriod }),
-  setNotes: (notes: string) => set({ notes: notes }),
-  setRoofReportEnabled: (enabled: boolean) =>
-    set({ isRoofReportEnabled: enabled }),
-  setExteriorReportEnabled: (enabled: boolean) =>
-    set({ isExteriorReportEnabled: enabled }),
-  setRoofReportName: (name: string) => set({ roofReportName: name }),
-  setExteriorReportName: (name: string) => set({ exteriorReportName: name }),
+    setSessionTitle: (newTitle: string) => set({ sessionTitle: newTitle }),
+    setReportingPeriod: (newPeriod: string) =>
+      set({ reportingPeriod: newPeriod }),
+    setNotes: (notes: string) => set({ notes: notes }),
+    setRoofReportEnabled: (enabled: boolean) =>
+      set({ isRoofReportEnabled: enabled }),
+    setExteriorReportEnabled: (enabled: boolean) =>
+      set({ isExteriorReportEnabled: enabled }),
+    setRoofReportName: (name: string) => set({ roofReportName: name }),
+    setExteriorReportName: (name: string) => set({ exteriorReportName: name }),
 
-  // Step Two
-  selectedBuildings: new Set<string>(),
-  toggleBuilding: (buildingId: string) =>
-    set((state) => {
-      const newSet = new Set(state.selectedBuildings);
-      newSet.has(buildingId)
-        ? newSet.delete(buildingId)
-        : newSet.add(buildingId);
-      return { selectedBuildings: newSet };
-    }),
-  resetBuildings: (buildings?: string[]) =>
-    set((state) => {
-      const newSet = new Set(state.selectedBuildings);
-      buildings?.forEach((buildingId) => {
-        newSet.delete(buildingId);
-      });
-      return { selectedBuildings: newSet };
-    }),
-  setBuildings: (buildings: string[]) =>
-    set((state) => {
-      const newSet = new Set(state.selectedBuildings);
-      buildings.forEach((buildingId) => {
-        newSet.add(buildingId);
-      });
-      return { selectedBuildings: newSet };
-    }),
-}));
+    // Step Two
+    selectedBuildings: new Set<string>(),
+    toggleBuilding: (buildingId: string) =>
+      set((state) => {
+        const newSet = new Set(state.selectedBuildings);
+        newSet.has(buildingId)
+          ? newSet.delete(buildingId)
+          : newSet.add(buildingId);
+        return { selectedBuildings: newSet };
+      }),
+    resetBuildings: (buildings: string[]) =>
+      set((state) => {
+        const newSet = new Set(state.selectedBuildings);
+        buildings.forEach((buildingId) => {
+          newSet.delete(buildingId);
+        });
+        return { selectedBuildings: newSet };
+      }),
+    setBuildings: (buildings: string[]) =>
+      set((state) => {
+        const newSet = new Set(state.selectedBuildings);
+        buildings.forEach((buildingId) => {
+          newSet.add(buildingId);
+        });
+        return { selectedBuildings: newSet };
+      }),
+  };
+});

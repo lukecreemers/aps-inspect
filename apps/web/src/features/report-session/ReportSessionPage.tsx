@@ -1,4 +1,3 @@
-import { StepHeader } from "@/components/StepHeader";
 import WizardLayout from "@/components/wizard/WizardLayout";
 import { useEffect } from "react";
 import CreateStepOne from "./create-wizard/CreateStepOne";

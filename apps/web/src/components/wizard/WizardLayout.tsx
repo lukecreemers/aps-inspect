@@ -8,8 +8,7 @@ interface WizardLayoutProps {
 }
 
 const WizardLayout = ({ steps, children }: WizardLayoutProps) => {
-  const { currentStep, totalSteps, nextStep, previousStep } =
-    useReportWizardStore();
+  const { currentStep, nextStep, previousStep } = useReportWizardStore();
   return (
     <div className="max-w-3xl mx-auto relative">
       <StepHeader steps={steps} currentStep={currentStep} />
