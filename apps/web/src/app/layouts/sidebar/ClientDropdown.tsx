@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, ChevronsUpDown, Plus } from "lucide-react";
 
 import {
   useGetClients,
@@ -23,6 +23,20 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const ClientDropdown = () => {
   const { data: clients } = useGetClients();
@@ -37,95 +51,70 @@ const ClientDropdown = () => {
   };
 
   return (
-    <div className="relative z-50">
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <div
-            className={cn(
-              `
-              m-2 flex items-center gap-3 justify-between 
-              my-2 cursor-pointer 
-              hover:bg-[var(--color-primary)]/20 rounded-md
-              hover:text-[var(--color-primary)]
-              transition-colors
-              border-2 border-transparent
-            `,
-              open &&
-                `
-                border-[var(--color-primary)]
-                text-[var(--color-primary)]
-                bg-[var(--color-primary)]/20
-                shadow-md
-              `
-            )}
-            data-open={open}
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent"
+            >
+              <div className="bg-sidebar-primary overflow-hidden flex aspect-square size-8 items-center justify-center rounded-lg shrink-0">
+                <img
+                  src={tempLogo}
+                  alt="Client Logo"
+                  className="w-full h-full object-contain scale-200"
+                />
+              </div>
+
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">
+                  {currentClient?.name}
+                </span>
+              </div>
+
+              <ChevronsUpDown className="ml-auto text-muted-foreground" />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            align="start"
+            side={"right"}
+            sideOffset={4}
           >
-            <div className="w-16 h-16 overflow-hidden flex items-center justify-center">
-              <img
-                src={tempLogo}
-                alt="Client Logo"
-                className="w-16 h-16 object-cover"
-              />
-            </div>
-
-            <span className="leading-tight font-medium flex-1">
-              {currentClient?.name ?? "Select Client"}
-            </span>
-
-            <ChevronDown
-              className="mr-2 transition-transform"
-              style={{ transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
-            />
-          </div>
-        </PopoverTrigger>
-
-        <PopoverContent
-          align="center"
-          sideOffset={-24}
-          className="
-            w-[var(--radix-popover-trigger-width)]
-            bg-white rounded-md overflow-hidden
-            shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2)]
-            border border-slate-100
-            p-2
-            mt-8
-            animate-in fade-in zoom-in-95 duration-200
-          "
-        >
-          <Command>
-            <CommandInput placeholder="Search clients..." className="" />
-
-            <CommandList>
-              <CommandEmpty>No client found.</CommandEmpty>
-
-              <CommandGroup>
-                {clients?.map((c) => {
-                  const isActive = currentClient?.id === c.id;
-
-                  return (
-                    <CommandItem
-                      key={c.id}
-                      value={c.name}
-                      onSelect={() => handleSelectClient(c.id)}
-                      className="flex items-center justify-between p-2"
-                    >
-                      <span>{c.name}</span>
-
-                      <Check
-                        className={cn(
-                          "ml-4 h-8 w-8 text-[var(--color-primary)]",
-                          isActive ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </div>
+            <DropdownMenuLabel className="text-muted-foreground text-xs">
+              Clients
+            </DropdownMenuLabel>
+            {clients?.map((client, index) => (
+              <DropdownMenuItem
+                key={client.name}
+                onClick={() => selectClient({ clientId: client.id })}
+                className="gap-2 p-2"
+              >
+                <div className="flex size-6 items-center justify-center rounded-md border overflow-hidden">
+                  <img
+                    src={tempLogo}
+                    alt="Client Logo"
+                    className="w-full h-full object-contain scale-200"
+                  />
+                </div>
+                {client.name}
+                {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
+              </DropdownMenuItem>
+            ))}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="gap-2 p-2">
+              <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                <Plus className="size-4" />
+              </div>
+              <div className="text-muted-foreground font-medium">
+                Add client
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 };
 
