@@ -7,8 +7,7 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { ChevronsUpDown, LogOut, MoreVertical } from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 import { useCurrentUser } from "@/features/auth/auth.hooks";
 import tempLogo from "../../../assets/client-logo.svg";
 import {

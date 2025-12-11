@@ -1,4 +1,3 @@
-import React from "react";
 import type { Tab } from "./sidebar.types";
 import {
   SidebarGroup,
@@ -6,22 +5,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface AppSideTabsProps {
   tabs: Tab[];
 }
 
 const AppSideTabs = ({ tabs }: AppSideTabsProps) => {
-  const navigate = useNavigate();
   return (
     <SidebarGroup>
       <SidebarMenu>
         {tabs.map((tab) => (
           <SidebarMenuItem key={tab.label}>
-            <SidebarMenuButton onClick={() => navigate(tab.to)}>
-              {tab.icon && <tab.icon />}
-              <span>{tab.label}</span>
+            <SidebarMenuButton asChild isActive={location.pathname === tab.to}>
+              <Link to={tab.to}>
+                {tab.icon && <tab.icon />}
+                <span>{tab.label}</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}

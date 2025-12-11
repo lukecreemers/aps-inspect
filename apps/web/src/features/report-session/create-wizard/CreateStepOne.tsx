@@ -107,7 +107,10 @@ const CreateStepOne = () => {
             <Button variant="outline" type="button" onClick={onCancel}>
               Cancel
             </Button>
-            <Button type="submit" disabled={!isAnyReportSelected}>
+            <Button
+              type="submit"
+              disabled={!isAnyReportSelected || !sessionData.sessionTitle}
+            >
               Continue
             </Button>
           </Field>

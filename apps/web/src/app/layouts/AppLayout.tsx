@@ -62,8 +62,8 @@ export function AppLayout() {
   return (
     <SidebarProvider>
       <AppSidebar tabs={tabs} handleLogout={handleLogout} />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+      <SidebarInset className="flex h-screen flex-col">
+        <header className=" z-30 flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
           <SidebarTrigger className="-ml-1" />
           <Separator
             orientation="vertical"
@@ -71,7 +71,7 @@ export function AppLayout() {
           />
           <AppBreadCrumb currentTab={currentTab} />
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4">
+        <main className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
           <Outlet />
         </main>
       </SidebarInset>

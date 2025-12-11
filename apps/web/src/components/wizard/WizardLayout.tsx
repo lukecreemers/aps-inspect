@@ -10,11 +10,13 @@ interface WizardLayoutProps {
 const WizardLayout = ({ steps, children }: WizardLayoutProps) => {
   const { currentStep, totalSteps, nextStep, previousStep } = useWizardStore();
   return (
-    <div className="max-w-3xl mx-auto mt-8">
+    <div className="max-w-3xl mx-auto relative">
       <StepHeader steps={steps} currentStep={currentStep} />
-      <div className="flex flex-col mt-12 gap-4">{children}</div>
-      <button onClick={previousStep}>Previous</button>
-      <button onClick={nextStep}>Next</button>
+      <div className="flex-1">
+        <div className="flex flex-col gap-4">{children}</div>
+        <button onClick={previousStep}>Previous</button>
+        <button onClick={nextStep}>Next</button>
+      </div>
     </div>
   );
 };

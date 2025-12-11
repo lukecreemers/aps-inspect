@@ -1,5 +1,4 @@
-import * as React from "react";
-import { Check, ChevronDown, ChevronsUpDown, Plus } from "lucide-react";
+import { ChevronsUpDown, Plus } from "lucide-react";
 
 import {
   useGetClients,
@@ -9,20 +8,6 @@ import { useCurrentClient } from "../../../features/auth/auth.hooks";
 
 import tempLogo from "../../../assets/client-logo.svg";
 
-import { cn } from "@/lib/utils";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -34,7 +19,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -42,13 +26,6 @@ const ClientDropdown = () => {
   const { data: clients } = useGetClients();
   const { mutate: selectClient } = useSelectClient();
   const currentClient = useCurrentClient();
-
-  const [open, setOpen] = React.useState(false);
-
-  const handleSelectClient = (clientId: string) => {
-    selectClient({ clientId });
-    setOpen(false);
-  };
 
   return (
     <SidebarMenu>

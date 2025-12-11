@@ -25,8 +25,7 @@ export function ReportNameToggle({
     <div
       className={cn(
         "rounded-lg p-4 space-y-3 cursor-pointer border",
-        enabled &&
-          "bg-accent/60 border-accent-foreground border-2 text-accent-foreground"
+        enabled && "bg-accent/60  text-accent-foreground"
       )}
     >
       {/* Clickable header */}
@@ -41,7 +40,7 @@ export function ReportNameToggle({
           onCheckedChange={(v) => {
             const isChecked = Boolean(v);
             onToggle(isChecked);
-            if (isChecked && !value) {
+            if (isChecked) {
               onChange(initValue + " - " + type);
             }
           }}

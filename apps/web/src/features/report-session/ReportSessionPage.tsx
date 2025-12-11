@@ -30,7 +30,7 @@ const ReportSessionPage = () => {
   };
 
   return (
-    <div>
+    <div className="flex-1">
       <WizardLayout steps={steps}>{renderStep()}</WizardLayout>
     </div>
   );
