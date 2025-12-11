@@ -1,9 +1,9 @@
 import { StepHeader } from "@/components/StepHeader";
 import WizardLayout from "@/components/wizard/WizardLayout";
-import { useWizardStore } from "@/components/wizard/WizardStore";
 import { useEffect } from "react";
 import CreateStepOne from "./create-wizard/CreateStepOne";
 import CreateStepTwo from "./create-wizard/CreateStepTwo";
+import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
 
 const steps = [
   { id: 1, title: "Session Details" },
@@ -12,7 +12,7 @@ const steps = [
 ];
 
 const ReportSessionPage = () => {
-  const { currentStep, setTotalSteps } = useWizardStore();
+  const { currentStep, setTotalSteps } = useReportWizardStore();
 
   useEffect(() => {
     setTotalSteps(3);

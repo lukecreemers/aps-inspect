@@ -21,6 +21,10 @@ type ReportWizardStore = {
   setExteriorReportName: (name: string) => void;
 
   // Step Two
+  selectedBuildings: Set<string>;
+  toggleBuilding: (buildingId: string) => void;
+  resetBuildings: (buildings: string[]) => void;
+  setBuildings: (buildings: string[]) => void;
 } & WizardStore;
 
 export const useReportWizardStore = create<ReportWizardStore>((set) => ({
@@ -68,4 +72,29 @@ export const useReportWizardStore = create<ReportWizardStore>((set) => ({
   setExteriorReportName: (name: string) => set({ exteriorReportName: name }),
 
   // Step Two
+  selectedBuildings: new Set<string>(),
+  toggleBuilding: (buildingId: string) =>
+    set((state) => {
+      const newSet = new Set(state.selectedBuildings);
+      newSet.has(buildingId)
+        ? newSet.delete(buildingId)
+        : newSet.add(buildingId);
+      return { selectedBuildings: newSet };
+    }),
+  resetBuildings: (buildings?: string[]) =>
+    set((state) => {
+      const newSet = new Set(state.selectedBuildings);
+      buildings?.forEach((buildingId) => {
+        newSet.delete(buildingId);
+      });
+      return { selectedBuildings: newSet };
+    }),
+  setBuildings: (buildings: string[]) =>
+    set((state) => {
+      const newSet = new Set(state.selectedBuildings);
+      buildings.forEach((buildingId) => {
+        newSet.add(buildingId);
+      });
+      return { selectedBuildings: newSet };
+    }),
 }));

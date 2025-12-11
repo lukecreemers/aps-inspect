@@ -2,6 +2,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import type { BuildingResponse } from "@aps/shared-types";
 import { cn } from "@/lib/utils";
 import { Building2 } from "lucide-react";
+import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
 
 interface BuildingSelectProps {
   building: BuildingResponse;
@@ -15,6 +16,7 @@ const BuildingSelect = ({
   className,
   isChecked,
 }: BuildingSelectProps) => {
+  const { toggleBuilding } = useReportWizardStore();
   return (
     <label
       htmlFor={building.id}
@@ -23,7 +25,11 @@ const BuildingSelect = ({
         className
       )}
     >
-      <Checkbox id={building.id} checked={isChecked} />
+      <Checkbox
+        id={building.id}
+        checked={isChecked}
+        onCheckedChange={() => toggleBuilding(building.id)}
+      />
       <Building2 className="h-4 w-4 text-muted-foreground" />
       <span className="flex-1 font-normal text-sm text-foreground">
         {building.name}
