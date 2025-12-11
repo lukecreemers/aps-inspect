@@ -19,6 +19,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import type { Tab } from "./sidebar/sidebar.types";
 import AppBreadCrumb from "./AppBreadCrumb";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function AppLayout() {
   const { data: currentUser } = useCurrentUser();
@@ -71,9 +72,11 @@ export function AppLayout() {
           />
           <AppBreadCrumb currentTab={currentTab} />
         </header>
-        <main className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
-          <Outlet />
-        </main>
+        <ScrollArea className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
+          <main className="flex flex-1 flex-col gap-4  ">
+            <Outlet />
+          </main>
+        </ScrollArea>
       </SidebarInset>
     </SidebarProvider>
     // <div className="flex h-screen">

@@ -18,6 +18,7 @@ import {
   FieldLegend,
   FieldSet,
 } from "@/components/ui/field";
+import { useEffect, useRef } from "react";
 
 const CreateStepTwo = () => {
   const currentClient = useCurrentClient();
@@ -31,7 +32,6 @@ const CreateStepTwo = () => {
   } = useReportWizardStore();
   const unattachedBuildings = buildingGroups?.unattachedBuildings;
   const locations = buildingGroups?.locations;
-  const hasBuildings = selectedBuildings.size > 0;
 
   const getAllBuildingIds = (): string[] => {
     const buildings = [
@@ -79,91 +79,117 @@ const CreateStepTwo = () => {
     nextStep();
   };
 
+  const hasBuildings = selectedBuildings.size > 0;
+  const validationInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (validationInputRef.current) {
+      validationInputRef.current.setCustomValidity("");
+    }
+  }, [hasBuildings]);
+
   return (
-    <FieldGroup className="w-full max-w-xl">
-      <FieldSet>
-        <FieldLegend>Location Selection</FieldLegend>
-        <FieldDescription>
-          Select the buildings and locations you want to include in the report.
-        </FieldDescription>
-        <div className="w-full  border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm">
-          <div className="flex items-center gap-4 bg-muted/40 p-4 border-b text-sm font-medium text-muted-foreground">
-            <Checkbox
-              id="all-buildings"
-              onCheckedChange={handleDeselectBuildings}
-              checked={isAllSelected()}
-            />
-            <div className="flex-1">Select All</div>
-            <div className="w-8" />
-          </div>
-
-          <div className="divide-y">
-            {locations?.map(({ location, buildings }) => (
-              <Collapsible key={location.id} className="group">
-                <div className="flex items-center hover:bg-muted/50 transition-colors pr-4">
-                  <label
-                    htmlFor={location.id}
-                    className="flex flex-1 items-center gap-4 p-4 cursor-pointer"
-                  >
-                    <Checkbox
-                      id={location.id}
-                      onCheckedChange={(value) =>
-                        handleResetLocation(value === true, location.id)
-                      }
-                      checked={isLocationAllSelected(location.id)}
-                    />
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span className="font-medium text-base">
-                      {location.name}
-                    </span>
-                  </label>
-
-                  <CollapsibleTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 p-0 shrink-0"
-                    >
-                      <Plus className="h-4 w-4 group-data-[state=open]:hidden" />
-                      <Minus className="h-4 w-4 hidden group-data-[state=open]:block" />
-                      <span className="sr-only">Toggle {location.name}</span>
-                    </Button>
-                  </CollapsibleTrigger>
-                </div>
-                <CollapsibleContent>
-                  <div className="border-t bg-muted/10 pl-8">
-                    {buildings.map((building) => (
-                      <BuildingSelect
-                        key={building.id}
-                        building={building}
-                        className="border-b last:border-0"
-                        isChecked={selectedBuildings.has(building.id)}
-                      />
-                    ))}
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            ))}
-
-            {unattachedBuildings?.map((building) => (
-              <BuildingSelect
-                key={building.id}
-                building={building}
-                isChecked={selectedBuildings.has(building.id)}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleNextStep();
+      }}
+    >
+      <FieldGroup className="w-full max-w-xl relative">
+        <FieldSet>
+          <FieldLegend>Location Selection</FieldLegend>
+          <FieldDescription>
+            Select the buildings and locations you want to include in the
+            report.
+          </FieldDescription>
+          <div className="w-full  border rounded-lg overflow-hidden bg-card text-card-foreground shadow-sm">
+            <div className="flex items-center gap-4 bg-muted/40 p-4 border-b text-sm font-medium text-muted-foreground">
+              <Checkbox
+                id="all-buildings"
+                onCheckedChange={handleDeselectBuildings}
+                checked={isAllSelected()}
               />
-            ))}
+              <div className="flex-1">Select All</div>
+              <div className="w-8" />
+            </div>
+
+            <div className="divide-y">
+              {locations?.map(({ location, buildings }) => (
+                <Collapsible key={location.id} className="group">
+                  <div className="flex items-center hover:bg-muted/50 transition-colors pr-4">
+                    <label
+                      htmlFor={location.id}
+                      className="flex flex-1 items-center gap-4 p-4 cursor-pointer"
+                    >
+                      <Checkbox
+                        id={location.id}
+                        onCheckedChange={(value) =>
+                          handleResetLocation(value === true, location.id)
+                        }
+                        checked={isLocationAllSelected(location.id)}
+                      />
+                      <MapPin className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium text-base">
+                        {location.name}
+                      </span>
+                    </label>
+
+                    <CollapsibleTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 p-0 shrink-0"
+                      >
+                        <Plus className="h-4 w-4 group-data-[state=open]:hidden" />
+                        <Minus className="h-4 w-4 hidden group-data-[state=open]:block" />
+                        <span className="sr-only">Toggle {location.name}</span>
+                      </Button>
+                    </CollapsibleTrigger>
+                  </div>
+                  <CollapsibleContent>
+                    <div className="border-t bg-muted/10 pl-8">
+                      {buildings.map((building) => (
+                        <BuildingSelect
+                          key={building.id}
+                          building={building}
+                          className="border-b last:border-0"
+                          isChecked={selectedBuildings.has(building.id)}
+                        />
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              ))}
+
+              {unattachedBuildings?.map((building) => (
+                <BuildingSelect
+                  key={building.id}
+                  building={building}
+                  isChecked={selectedBuildings.has(building.id)}
+                />
+              ))}
+            </div>
+            <input
+              ref={validationInputRef}
+              value={hasBuildings ? "ok" : ""}
+              required
+              type="text"
+              className="absolute opacity-0 h-px w-px -z-10 left-1/2 top-1/2"
+              onInvalid={(e) =>
+                e.currentTarget.setCustomValidity(
+                  "Please select at least one building or location."
+                )
+              }
+            />
           </div>
-        </div>
-      </FieldSet>
-      <Field orientation="horizontal" className="flex justify-end gap-2">
-        <Button variant="outline" type="button" onClick={previousStep}>
-          Previous
-        </Button>
-        <Button onClick={handleNextStep} disabled={!hasBuildings}>
-          Continue
-        </Button>
-      </Field>
-    </FieldGroup>
+        </FieldSet>
+        <Field orientation="horizontal" className="flex justify-end gap-2">
+          <Button variant="outline" type="button" onClick={previousStep}>
+            Previous
+          </Button>
+          <Button type="submit">Continue</Button>
+        </Field>
+      </FieldGroup>
+    </form>
   );
 };
 

@@ -16,7 +16,7 @@ export function StepHeader({ steps, currentStep }: StepHeaderProps) {
   };
 
   return (
-    <div className="flex items-center gap-6 sticky top-[-16px] bg-background py-8 mt-[-16px]">
+    <div className="flex items-center gap-6 sticky top-[-16px] bg-background py-8 mt-[-16px] ml-[-4px] pl-1">
       {steps.map((step, index) => {
         const isActive = step.id === currentStep;
         const isCompleted = step.id < currentStep;

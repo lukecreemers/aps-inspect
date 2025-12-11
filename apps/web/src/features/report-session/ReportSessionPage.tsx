@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import CreateStepOne from "./create-wizard/CreateStepOne";
 import CreateStepTwo from "./create-wizard/CreateStepTwo";
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
+import CreateStepThree from "./create-wizard/CreateStepThree";
 
 const steps = [
   { id: 1, title: "Session Details" },
@@ -24,7 +25,7 @@ const ReportSessionPage = () => {
       case 2:
         return <CreateStepTwo />;
       case 3:
-        return <div>Step 3</div>;
+        return <CreateStepThree />;
     }
   };
 

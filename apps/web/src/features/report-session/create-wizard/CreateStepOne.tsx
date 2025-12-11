@@ -92,7 +92,7 @@ const CreateStepOne = () => {
             <input
               ref={validationInputRef}
               type="text"
-              className="absolute opacity-0 h-px w-px -z-10 left-1/2 bottom-0"
+              className="absolute opacity-0 h-px w-px -z-10 left-1/2 top-1/2"
               value={isAnyReportSelected ? "ok" : ""}
               onChange={() => {}}
               required
