@@ -25,8 +25,15 @@ export const router = createBrowserRouter([
             children: [
               { index: true, element: <div>Admin Dashboard</div> },
               { path: "overview", element: <div>Admin Overview</div> },
-              { path: "report-session", element: <ReportSessionPage /> },
-              { path: "archive", element: <CreateSessionPage /> },
+              {
+                path: "report-session",
+
+                children: [
+                  { index: true, element: <ReportSessionPage /> },
+                  { path: "create", element: <CreateSessionPage /> },
+                ],
+              },
+              { path: "archive", element: <div>Archive</div> },
               { path: "quotes", element: <div>Admin Quotes</div> },
               { path: "credentials", element: <div>Admin Credentials</div> },
             ],

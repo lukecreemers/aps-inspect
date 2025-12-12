@@ -8,6 +8,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { IconClipboardText } from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 
 const EmptyReport = () => {
   return (
@@ -25,7 +26,9 @@ const EmptyReport = () => {
         </EmptyHeader>
         <EmptyContent>
           <div className="flex gap-2">
-            <Button>Create Report</Button>
+            <Button asChild>
+              <Link to="/app/admin/report-session/create">Create Session</Link>
+            </Button>
             <Button variant="outline">View Old Reports</Button>
           </div>
         </EmptyContent>
