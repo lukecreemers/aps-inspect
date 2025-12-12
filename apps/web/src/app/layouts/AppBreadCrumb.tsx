@@ -9,20 +9,29 @@ import {
 import { Link } from "react-router-dom";
 import type { Tab } from "./sidebar/sidebar.types";
 import { LayoutGrid } from "lucide-react";
+import { useBreadCrumbs } from "../router/router.hooks";
 
-interface AppBreadCrumbProps {
-  currentTab?: Tab;
-  tabTree?: Tab[];
-}
-
-const AppBreadCrumb = ({
-  currentTab = { label: "Dashboard", to: "/app/admin", icon: LayoutGrid },
-  tabTree = [],
-}: AppBreadCrumbProps) => {
+const AppBreadCrumb = () => {
+  const tabTree = useBreadCrumbs();
+  tabTree;
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem className="hidden md:block">
+        {[...tabTree].reverse().map((tab, index) => (
+          <>
+            {index === tabTree.length - 1 ? (
+              <BreadcrumbPage>{tab.label}</BreadcrumbPage>
+            ) : (
+              <>
+                <BreadcrumbLink asChild>
+                  <Link to={tab.to}>{tab.label}</Link>
+                </BreadcrumbLink>
+                <BreadcrumbSeparator className="hidden md:block" />
+              </>
+            )}
+          </>
+        ))}
+        {/* <BreadcrumbItem className="hidden md:block">
           {tabTree.length === 0 ? (
             <BreadcrumbPage>{currentTab.label}</BreadcrumbPage>
           ) : (
@@ -45,7 +54,7 @@ const AppBreadCrumb = ({
               )}
             </BreadcrumbItem>
           </>
-        ))}
+        ))} */}
       </BreadcrumbList>
     </Breadcrumb>
   );

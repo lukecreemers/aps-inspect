@@ -20,40 +20,14 @@ import { Separator } from "@/components/ui/separator";
 import type { Tab } from "./sidebar/sidebar.types";
 import AppBreadCrumb from "./AppBreadCrumb";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { adminTabs, clientTabs } from "../router/routes.meta";
 
 export function AppLayout() {
   const { data: currentUser } = useCurrentUser();
   const navigate = useNavigate();
   const logout = useLogout();
 
-  const adminTabs: Tab[] = [
-    { label: "Dashboard", to: "/app/admin", icon: LayoutGrid },
-    { label: "Buildings & Map", to: "/app/admin/overview", icon: Map },
-    {
-      label: "Report Session",
-      to: "/app/admin/report-session",
-      icon: FileText,
-    },
-    {
-      label: "Report Archive",
-      to: "/app/admin/archive",
-      icon: Archive,
-    },
-    { label: "Quotes", to: "/app/admin/quotes", icon: Briefcase },
-    { label: "Credentials", to: "/app/admin/credentials", icon: Lock },
-  ];
-
-  const clientTabs: Tab[] = [
-    { label: "Dashboard", to: "/app/client", icon: Home },
-    { label: "Reports", to: "/app/client/reports", icon: FileText },
-    { label: "Invoices", to: "/app/client/invoices", icon: FileText },
-    { label: "Clients", to: "/app/client/clients", icon: Users },
-  ];
-
   const tabs = currentUser?.role === "ADMIN" ? adminTabs : clientTabs;
-  const location = useLocation();
-  const pathname = location.pathname;
-  const currentTab = tabs.find((tab) => tab.to === pathname);
 
   const handleLogout = () => {
     logout();
@@ -71,7 +45,7 @@ export function AppLayout() {
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <AppBreadCrumb currentTab={currentTab} />
+          <AppBreadCrumb />
         </header>
 
         <main className="flex flex-1 flex-col gap-4 overflow-y-auto p-4">
