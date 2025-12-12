@@ -1,16 +1,6 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useCurrentUser, useLogout } from "../../features/auth/auth.hooks";
 import AppSidebar from "./sidebar/AppSidebar";
-import {
-  Archive,
-  Briefcase,
-  FileText,
-  Home,
-  LayoutGrid,
-  Lock,
-  Map,
-  Users,
-} from "lucide-react";
 import {
   SidebarInset,
   SidebarProvider,
@@ -51,10 +41,5 @@ export function AppLayout() {
         </main>
       </SidebarInset>
     </SidebarProvider>
-
-    // <div className="flex h-screen">
-
-    //
-    // </div>
   );
 }

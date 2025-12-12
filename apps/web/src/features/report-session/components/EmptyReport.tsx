@@ -29,7 +29,9 @@ const EmptyReport = () => {
             <Button asChild>
               <Link to="/app/admin/report-session/create">Create Session</Link>
             </Button>
-            <Button variant="outline">View Old Reports</Button>
+            <Button variant="outline" asChild>
+              <Link to="/app/admin/archive">View Old Reports</Link>
+            </Button>
           </div>
         </EmptyContent>
       </Empty>

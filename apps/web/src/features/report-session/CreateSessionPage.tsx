@@ -1,5 +1,5 @@
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import CreateStepOne from "./create-wizard/CreateStepOne";
 import CreateStepThree from "./create-wizard/CreateStepThree";
 import CreateStepTwo from "./create-wizard/CreateStepTwo";

@@ -9,7 +9,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import { useCurrentUser } from "@/features/auth/auth.hooks";
-import tempLogo from "../../../assets/client-logo.svg";
 import {
   SidebarMenu,
   SidebarMenuButton,

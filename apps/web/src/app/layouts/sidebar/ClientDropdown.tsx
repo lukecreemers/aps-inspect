@@ -62,7 +62,7 @@ const ClientDropdown = () => {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Clients
             </DropdownMenuLabel>
-            {clients?.map((client, index) => (
+            {clients?.map((client) => (
               <DropdownMenuItem
                 key={client.name}
                 onClick={() => selectClient({ clientId: client.id })}
@@ -76,7 +76,6 @@ const ClientDropdown = () => {
                   />
                 </div>
                 {client.name}
-                {/* <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut> */}
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
