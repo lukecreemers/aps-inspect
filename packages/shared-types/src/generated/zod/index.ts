@@ -92,7 +92,7 @@ export const WindowTypeScalarFieldEnumSchema = z.enum(['id','code','description'
 
 export const ReportScalarFieldEnumSchema = z.enum(['id','clientId','title','status','isSystem','createdAt','updatedAt']);
 
-export const ReportTypeAssignmentScalarFieldEnumSchema = z.enum(['id','reportId','type']);
+export const ReportTypeAssignmentScalarFieldEnumSchema = z.enum(['id','reportId','type','title']);
 
 export const ReportBuildingScalarFieldEnumSchema = z.enum(['id','reportId','buildingId']);
 
@@ -452,6 +452,7 @@ export const ReportTypeAssignmentSchema = z.object({
   type: ReportTypeSchema,
   id: z.string(),
   reportId: z.string(),
+  title: z.string(),
 })
 
 export type ReportTypeAssignment = z.infer<typeof ReportTypeAssignmentSchema>

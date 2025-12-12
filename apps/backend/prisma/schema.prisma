@@ -391,6 +391,7 @@ model ReportTypeAssignment {
   id                String          @id @default(uuid())
   reportId          String
   type              ReportType
+  title             String
 
   report            Report          @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
