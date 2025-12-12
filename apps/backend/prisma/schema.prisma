@@ -366,6 +366,8 @@ model Report {
   id                String          @id @default(uuid())
   clientId          String
   title             String
+  period            String?
+  notes             String?
   status            ReportStatus    @default(IN_PROGRESS) 
   isSystem          Boolean         @default(false)
   createdAt         DateTime        @default(now())

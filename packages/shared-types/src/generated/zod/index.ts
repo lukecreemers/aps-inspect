@@ -90,7 +90,7 @@ export const WindowInspectionScalarFieldEnumSchema = z.enum(['id','windowId','re
 
 export const WindowTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
 
-export const ReportScalarFieldEnumSchema = z.enum(['id','clientId','title','status','isSystem','createdAt','updatedAt']);
+export const ReportScalarFieldEnumSchema = z.enum(['id','clientId','title','period','notes','status','isSystem','createdAt','updatedAt']);
 
 export const ReportTypeAssignmentScalarFieldEnumSchema = z.enum(['id','reportId','type','title']);
 
@@ -437,6 +437,8 @@ export const ReportSchema = z.object({
   id: z.string(),
   clientId: z.string(),
   title: z.string(),
+  period: z.string().nullable(),
+  notes: z.string().nullable(),
   isSystem: z.boolean(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),

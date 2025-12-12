@@ -5,6 +5,7 @@ import { PaginationSchema } from "../../helpers/pagination.dto";
 export const QueryReportTypeAssignmentSchema = PaginationSchema.extend({
   reportId: z.string().optional(),
   type: ReportTypeSchema.optional(),
+  title: z.string().optional(),
 });
 
 export type QueryReportTypeAssignmentDto = z.infer<
