@@ -3,6 +3,7 @@ import * as SessionApi from "./session.api";
 
 export const sessionKeys = {
   currentReport: (clientId: string) => ["currentReport", clientId] as const,
+  clientReports: (clientId: string) => ["clientReports", clientId] as const,
   currentBuildings: (clientId: string) =>
     ["currentBuildings", clientId] as const,
 };
@@ -26,5 +27,13 @@ export const useCurrentBuildings = (clientId: string | undefined) => {
 export const useCreateReport = () => {
   return useMutation({
     mutationFn: SessionApi.createReport,
+  });
+};
+
+export const useClientReports = (clientId: string | undefined) => {
+  return useQuery({
+    queryKey: sessionKeys.clientReports(clientId ?? ""),
+    queryFn: () => SessionApi.getClientReports(clientId ?? ""),
+    enabled: !!clientId,
   });
 };

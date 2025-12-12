@@ -22,6 +22,16 @@ export const getCurrentReport = async (clientId: string) => {
   return reports[0] || null;
 };
 
+export const getClientReports = async (clientId: string) => {
+  return await request<ReportResponse[]>({
+    method: "GET",
+    url: "/reports",
+    params: {
+      clientId,
+    },
+  });
+};
+
 export const getLocationsAndBuildings = async (
   clientId: string
 ): Promise<LocationsAndBuildingsResponse> => {
