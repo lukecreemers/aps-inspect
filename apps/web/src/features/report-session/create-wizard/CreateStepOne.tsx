@@ -13,6 +13,9 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
 import { useEffect, useRef } from "react";
+import { useCurrentClient } from "@/features/auth/auth.hooks";
+import { useClientReports } from "../session.hooks";
+import { Link } from "react-router-dom";
 
 const CreateStepOne = () => {
   const { nextStep, clearData } = useReportWizardStore();
@@ -24,6 +27,10 @@ const CreateStepOne = () => {
     useReportWizardStore();
   const { roofReportName, setRoofReportName } = useReportWizardStore();
   const { exteriorReportName, setExteriorReportName } = useReportWizardStore();
+
+  const currentClient = useCurrentClient();
+  const { data: clientReports } = useClientReports(currentClient?.id);
+  const reportTitles = new Set(clientReports?.map((report) => report.title));
 
   const onCancel = () => {
     clearData();
@@ -37,6 +44,20 @@ const CreateStepOne = () => {
       validationInputRef.current.setCustomValidity("");
     }
   }, [isAnyReportSelected]);
+
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!titleInputRef.current) return;
+
+    if (sessionTitle && reportTitles.has(sessionTitle)) {
+      titleInputRef.current.setCustomValidity(
+        "A report with this name already exists."
+      );
+    } else {
+      titleInputRef.current.setCustomValidity("");
+    }
+  }, [sessionTitle, reportTitles]);
 
   return (
     <div className="w-full max-w-xl">
@@ -53,6 +74,7 @@ const CreateStepOne = () => {
                 <FieldLabel htmlFor="sessionTitle">Session Title</FieldLabel>
                 <Input
                   id="sessionTitle"
+                  ref={titleInputRef}
                   placeholder="UOA Annual Inspection 2025"
                   required
                   value={sessionTitle || ""}
@@ -124,8 +146,8 @@ const CreateStepOne = () => {
             </FieldGroup>
           </FieldSet>
           <Field orientation="horizontal" className="flex justify-end gap-2">
-            <Button variant="cancel" type="button" onClick={onCancel}>
-              Cancel
+            <Button variant="cancel" type="button" asChild>
+              <Link to="/app/admin/report-session">Cancel</Link>
             </Button>
             <Button type="submit">Continue</Button>
           </Field>
