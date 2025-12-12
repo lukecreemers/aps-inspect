@@ -10,7 +10,6 @@ import { useBreadCrumbs } from "../router/router.hooks";
 
 const AppBreadCrumb = () => {
   const tabTree = useBreadCrumbs();
-  tabTree;
   return (
     <Breadcrumb>
       <BreadcrumbList>

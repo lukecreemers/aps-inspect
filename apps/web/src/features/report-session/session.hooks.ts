@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import * as SessionApi from "./session.api";
 
 export const sessionKeys = {
@@ -20,5 +20,11 @@ export const useCurrentBuildings = (clientId: string | undefined) => {
     queryKey: sessionKeys.currentBuildings(clientId ?? ""),
     queryFn: () => SessionApi.getLocationsAndBuildings(clientId ?? ""),
     enabled: !!clientId,
+  });
+};
+
+export const useCreateReport = () => {
+  return useMutation({
+    mutationFn: SessionApi.createReport,
   });
 };

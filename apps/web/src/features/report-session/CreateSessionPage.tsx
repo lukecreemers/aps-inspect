@@ -12,9 +12,12 @@ const steps = [
 ];
 
 const CreateSessionPage = () => {
-  const { currentStep, setTotalSteps } = useReportWizardStore();
+  const { currentStep, setTotalSteps, clearData, clearWizard } =
+    useReportWizardStore();
 
   useEffect(() => {
+    clearData();
+    clearWizard();
     setTotalSteps(3);
   }, [setTotalSteps]);
 

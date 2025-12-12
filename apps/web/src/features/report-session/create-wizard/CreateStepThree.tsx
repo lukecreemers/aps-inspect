@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardDescription,
@@ -6,12 +5,24 @@ import {
   CardTitle,
   CardContent,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
-import { Building } from "lucide-react";
+import { Building, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import { useCreateReport } from "../session.hooks";
+import { useCurrentClient } from "@/features/auth/auth.hooks";
+import type { ReportTypeType } from "@aps/shared-types";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+
+type ReportConfig = {
+  key: string;
+  label: string;
+  enabled: boolean;
+  name: string;
+  type: ReportTypeType;
+};
 
 const CreateStepThree = () => {
   const {
@@ -26,22 +37,48 @@ const CreateStepThree = () => {
     previousStep,
   } = useReportWizardStore();
 
-  const reportConfigs = [
+  const { mutate: createReportMutation, isPending } = useCreateReport();
+  const client = useCurrentClient();
+  const navigate = useNavigate();
+
+  const reportConfigs: ReportConfig[] = [
     {
       key: "roof",
       label: "Roof report",
       enabled: isRoofReportEnabled,
       name: roofReportName,
+      type: "ROOF",
     },
     {
       key: "exterior",
       label: "Exterior report",
       enabled: isExteriorReportEnabled,
       name: exteriorReportName,
+      type: "EXTERIOR",
     },
   ];
 
   const enabledReports = reportConfigs.filter((r) => r.enabled);
+
+  const handleCreateReport = () => {
+    createReportMutation(
+      {
+        clientId: client?.id ?? "N/A",
+        title: sessionTitle,
+        buildingIds: [...selectedBuildings],
+        reportTypes: enabledReports.map((report) => report.type),
+      },
+      {
+        onError: () => {
+          toast.error("Failed to create report");
+        },
+        onSuccess: () => {
+          toast.success("Succesfully created new report");
+          navigate("/app/admin/report-session");
+        },
+      }
+    );
+  };
 
   const safeText = (value?: string) =>
     value && value.trim().length > 0 ? (
@@ -162,7 +199,19 @@ const CreateStepThree = () => {
             <Button variant="outline" type="button" onClick={previousStep}>
               Previous
             </Button>
-            <Button type="submit">Create Report</Button>
+            <Button
+              type="submit"
+              onClick={handleCreateReport}
+              className="min-w-32"
+            >
+              {isPending ? (
+                <div>
+                  <Loader2 className="animate-spin size-5" />
+                </div>
+              ) : (
+                "Create Report"
+              )}
+            </Button>
           </Field>
         </CardContent>
       </Card>

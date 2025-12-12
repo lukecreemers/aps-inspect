@@ -5,6 +5,7 @@ import {
 } from "@/utils/building.util";
 import type {
   BuildingResponse,
+  CreateStandardReportDto,
   LocationResponse,
   ReportResponse,
 } from "@aps/shared-types";
@@ -44,4 +45,15 @@ export const getLocationsAndBuildings = async (
   const output = organizeBuildingsLocations(buildings, locations);
   console.log(output);
   return output;
+};
+
+export const createReport = async (
+  data: CreateStandardReportDto
+): Promise<ReportResponse> => {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return await request<ReportResponse>({
+    method: "POST",
+    url: "reports/standard",
+    data,
+  });
 };

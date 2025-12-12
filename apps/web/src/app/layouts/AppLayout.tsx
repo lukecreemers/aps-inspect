@@ -17,9 +17,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import type { Tab } from "./sidebar/sidebar.types";
 import AppBreadCrumb from "./AppBreadCrumb";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { adminTabs, clientTabs } from "../router/routes.meta";
 
 export function AppLayout() {
