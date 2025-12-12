@@ -60,7 +60,7 @@ const CreateStepOne = () => {
   }, [sessionTitle, reportTitles]);
 
   return (
-    <div className="w-full max-w-xl">
+    <div>
       <form
         onSubmit={(e) => {
           e.preventDefault();

@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
                   { path: "create", element: <CreateSessionPage /> },
                 ],
               },
-              { path: "archive", element: <div>Archive</div> },
+              { path: "archive", element: <CreateSessionPage /> },
               { path: "quotes", element: <div>Admin Quotes</div> },
               { path: "credentials", element: <div>Admin Credentials</div> },
             ],

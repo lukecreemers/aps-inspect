@@ -32,7 +32,7 @@ const CreateSessionPage = () => {
     }
   };
   return (
-    <div className="flex-1">
+    <div className="flex-1 w-full max-w-xl mx-auto">
       <WizardLayout steps={steps}>{renderStep()}</WizardLayout>
     </div>
   );

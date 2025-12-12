@@ -93,7 +93,7 @@ const CreateStepTwo = () => {
         handleNextStep();
       }}
     >
-      <FieldGroup className="w-full max-w-xl relative">
+      <FieldGroup>
         <FieldSet>
           <FieldLegend>Location Selection</FieldLegend>
           <FieldDescription>

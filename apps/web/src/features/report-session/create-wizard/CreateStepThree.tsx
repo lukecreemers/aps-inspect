@@ -88,7 +88,7 @@ const CreateStepThree = () => {
     );
 
   return (
-    <div className="w-full max-w-xl">
+    <div>
       <Card className="border-muted shadow-sm">
         <CardHeader className="space-y-2">
           <CardTitle className="font-medium text-lg">Session details</CardTitle>
