@@ -1,7 +1,3 @@
-import { Card } from "@/components/ui/card";
-import { Separator } from "@radix-ui/react-separator";
-import { Badge } from "lucide-react";
-import React from "react";
 import { useCurrentReport } from "../session.hooks";
 import { useCurrentClient } from "@/features/auth/auth.hooks";
 import StateBadge from "@/components/StateBadge";

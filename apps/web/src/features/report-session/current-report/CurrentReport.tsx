@@ -3,12 +3,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useCurrentReportTypesAuto } from "../session.hooks";
 import ReportTypeOverview from "../components/ReportTypeOverview";
+import ReportBuildingProgress from "../components/ReportBuildingProgress";
 
 const CurrentReport = () => {
   const reportTypes = useCurrentReportTypesAuto();
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 max-w-5xl w-full mx-auto">
       <ReportHeader />
       <div className="mt-6">
         <Tabs defaultValue="overview">
@@ -18,9 +19,14 @@ const CurrentReport = () => {
           </TabsList>
           <Separator />
           <TabsContent value="overview">
-            {reportTypes.map((type) => (
-              <ReportTypeOverview reportType={type} />
-            ))}
+            <div className="flex gap-4 flex-col">
+              <div className="flex gap-4 flex-wrap">
+                {reportTypes.map((type) => (
+                  <ReportTypeOverview key={type.id} reportType={type} />
+                ))}
+              </div>
+              <ReportBuildingProgress types={reportTypes} />
+            </div>
           </TabsContent>
           <TabsContent value="workblock">Workblock</TabsContent>
         </Tabs>
