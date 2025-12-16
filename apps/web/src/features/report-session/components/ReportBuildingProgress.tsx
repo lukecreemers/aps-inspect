@@ -73,8 +73,8 @@ const BuildingStatusTable = ({ types }: BuildingStatusTableProps) => {
         {/* Header */}
         <TableHeader>
           <TableRow className="bg-muted/40">
-            <TableHead className="w-[320px] p-4 text-muted-foreground">
-              Location / Building
+            <TableHead className="w-[320px] p-4 text-foreground text-md">
+              Coverage
             </TableHead>
             {types.map((type) => (
               <TableHead
@@ -85,7 +85,7 @@ const BuildingStatusTable = ({ types }: BuildingStatusTableProps) => {
                   type.type.slice(1).toLowerCase()}
               </TableHead>
             ))}
-            <TableHead className="w-[48px]" />
+            <TableHead className="w-[32px]" />
           </TableRow>
         </TableHeader>
 
@@ -113,7 +113,11 @@ const BuildingStatusTable = ({ types }: BuildingStatusTableProps) => {
 
                   <TableCell className="text-right">
                     <CollapsibleTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="group h-8 w-8"
+                      >
                         <Plus className="h-4 w-4 group-data-[state=open]:hidden" />
                         <Minus className="h-4 w-4 hidden group-data-[state=open]:block" />
                       </Button>

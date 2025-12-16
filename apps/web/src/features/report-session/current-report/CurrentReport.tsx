@@ -15,7 +15,7 @@ const CurrentReport = () => {
         <Tabs defaultValue="overview">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="workblock">Work Blocks</TabsTrigger>
+            <TabsTrigger value="map">Map</TabsTrigger>
           </TabsList>
           <Separator />
           <TabsContent value="overview">
@@ -28,7 +28,7 @@ const CurrentReport = () => {
               <ReportBuildingProgress types={reportTypes} />
             </div>
           </TabsContent>
-          <TabsContent value="workblock">Workblock</TabsContent>
+          <TabsContent value="map">Map</TabsContent>
         </Tabs>
       </div>
     </div>

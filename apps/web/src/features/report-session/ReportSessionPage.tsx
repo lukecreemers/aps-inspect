@@ -1,6 +1,5 @@
 import { useCurrentClient } from "../auth/auth.hooks";
 import EmptyReport from "./components/EmptyReport";
-import CreateSessionPage from "./CreateSessionPage";
 import CurrentReport from "./current-report/CurrentReport";
 import { useCurrentReport } from "./session.hooks";
 
