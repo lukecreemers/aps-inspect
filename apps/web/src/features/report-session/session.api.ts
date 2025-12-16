@@ -83,6 +83,6 @@ export const getCurrentReportTypes = async (reportId: string) => {
 export const getReportTypeStatus = async (reportTypeId: string) => {
   return await request<ReportTypeStatusResponse>({
     method: "GET",
-    url: "/report-type-assignments/",
+    url: `/report-type-assignments/status/${reportTypeId}`,
   });
 };

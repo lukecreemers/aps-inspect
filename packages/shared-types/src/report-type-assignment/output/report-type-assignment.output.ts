@@ -1,10 +1,7 @@
 import { z } from "zod";
 import { ReportTypeAssignmentSchema } from "../../generated/zod";
 
-export const ReportTypeAssignmentResponseSchema =
-  ReportTypeAssignmentSchema.omit({
-    id: true,
-  });
+export const ReportTypeAssignmentResponseSchema = ReportTypeAssignmentSchema;
 
 export type ReportTypeAssignmentResponse = z.infer<
   typeof ReportTypeAssignmentResponseSchema

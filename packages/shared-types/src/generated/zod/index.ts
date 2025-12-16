@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { Prisma } from '../../../../../apps/backend/node_modules/@prisma/client';
+import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -8,11 +8,17 @@ import { Prisma } from '../../../../../apps/backend/node_modules/@prisma/client'
 // JSON
 //------------------------------------------------------
 
-export type NullableJsonInput = Prisma.JsonValue | null | 'JsonNull' | 'DbNull' | Prisma.NullTypes.DbNull | Prisma.NullTypes.JsonNull;
+export type NullableJsonInput =
+  | Prisma.JsonValue
+  | null
+  | "JsonNull"
+  | "DbNull"
+  | Prisma.NullTypes.DbNull
+  | Prisma.NullTypes.JsonNull;
 
 export const transformJsonNull = (v?: NullableJsonInput) => {
-  if (!v || v === 'DbNull') return Prisma.NullTypes.DbNull;
-  if (v === 'JsonNull') return Prisma.NullTypes.JsonNull;
+  if (!v || v === "DbNull") return Prisma.NullTypes.DbNull;
+  if (v === "JsonNull") return Prisma.NullTypes.JsonNull;
   return v;
 };
 
@@ -22,7 +28,10 @@ export const JsonValueSchema: z.ZodType<Prisma.JsonValue> = z.lazy(() =>
     z.number(),
     z.boolean(),
     z.literal(null),
-    z.record(z.string(), z.lazy(() => JsonValueSchema.optional())),
+    z.record(
+      z.string(),
+      z.lazy(() => JsonValueSchema.optional())
+    ),
     z.array(z.lazy(() => JsonValueSchema)),
   ])
 );
@@ -30,129 +39,405 @@ export const JsonValueSchema: z.ZodType<Prisma.JsonValue> = z.lazy(() =>
 export type JsonValueType = z.infer<typeof JsonValueSchema>;
 
 export const NullableJsonValue = z
-  .union([JsonValueSchema, z.literal('DbNull'), z.literal('JsonNull')])
+  .union([JsonValueSchema, z.literal("DbNull"), z.literal("JsonNull")])
   .nullable()
   .transform((v) => transformJsonNull(v));
 
 export type NullableJsonValueType = z.infer<typeof NullableJsonValue>;
 
-export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.lazy(() =>
-  z.union([
-    z.string(),
-    z.number(),
-    z.boolean(),
-    z.object({ toJSON: z.any() }),
-    z.record(z.string(), z.lazy(() => z.union([InputJsonValueSchema, z.literal(null)]))),
-    z.array(z.lazy(() => z.union([InputJsonValueSchema, z.literal(null)]))),
-  ])
+export const InputJsonValueSchema: z.ZodType<Prisma.InputJsonValue> = z.lazy(
+  () =>
+    z.union([
+      z.string(),
+      z.number(),
+      z.boolean(),
+      z.object({ toJSON: z.any() }),
+      z.record(
+        z.string(),
+        z.lazy(() => z.union([InputJsonValueSchema, z.literal(null)]))
+      ),
+      z.array(z.lazy(() => z.union([InputJsonValueSchema, z.literal(null)]))),
+    ])
 );
 
 export type InputJsonValueType = z.infer<typeof InputJsonValueSchema>;
-
 
 /////////////////////////////////////////
 // ENUMS
 /////////////////////////////////////////
 
-export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
+export const TransactionIsolationLevelSchema = z.enum([
+  "ReadUncommitted",
+  "ReadCommitted",
+  "RepeatableRead",
+  "Serializable",
+]);
 
-export const ClientScalarFieldEnumSchema = z.enum(['id','name','metadata','createdAt','updatedAt']);
+export const ClientScalarFieldEnumSchema = z.enum([
+  "id",
+  "name",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const MapScalarFieldEnumSchema = z.enum(['id','clientId','name','width','height','metadata','createdAt','updatedAt']);
+export const MapScalarFieldEnumSchema = z.enum([
+  "id",
+  "clientId",
+  "name",
+  "width",
+  "height",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const MapImageScalarFieldEnumSchema = z.enum(['id','mapId','imageUrl','imageType','createdAt','updatedAt']);
+export const MapImageScalarFieldEnumSchema = z.enum([
+  "id",
+  "mapId",
+  "imageUrl",
+  "imageType",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const LocationScalarFieldEnumSchema = z.enum(['id','clientId','isActive','name','address','metadata','createdAt','updatedAt']);
+export const LocationScalarFieldEnumSchema = z.enum([
+  "id",
+  "clientId",
+  "isActive",
+  "name",
+  "address",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const BuildingScalarFieldEnumSchema = z.enum(['id','clientId','locationId','isActive','name','facilityNumber','accessInformation','metadata','createdAt','updatedAt']);
+export const BuildingScalarFieldEnumSchema = z.enum([
+  "id",
+  "clientId",
+  "locationId",
+  "isActive",
+  "name",
+  "facilityNumber",
+  "accessInformation",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const RoofScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
+export const RoofScalarFieldEnumSchema = z.enum([
+  "id",
+  "buildingId",
+  "removedAt",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const RoofInspectionScalarFieldEnumSchema = z.enum(['id','roofId','reportId','reportWorkUnitId','area','typeId','condition','paintCondition','color','metadata','createdAt','updatedAt']);
+export const RoofInspectionScalarFieldEnumSchema = z.enum([
+  "id",
+  "roofId",
+  "reportId",
+  "reportWorkUnitId",
+  "area",
+  "typeId",
+  "condition",
+  "paintCondition",
+  "color",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const RoofTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+export const RoofTypeScalarFieldEnumSchema = z.enum([
+  "id",
+  "code",
+  "description",
+  "uoaCodeNumber",
+  "isActive",
+]);
 
-export const GutterScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
+export const GutterScalarFieldEnumSchema = z.enum([
+  "id",
+  "buildingId",
+  "removedAt",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const GutterInspectionScalarFieldEnumSchema = z.enum(['id','gutterId','reportId','reportWorkUnitId','length','typeId','condition','metadata','createdAt','updatedAt']);
+export const GutterInspectionScalarFieldEnumSchema = z.enum([
+  "id",
+  "gutterId",
+  "reportId",
+  "reportWorkUnitId",
+  "length",
+  "typeId",
+  "condition",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const GutterTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+export const GutterTypeScalarFieldEnumSchema = z.enum([
+  "id",
+  "code",
+  "description",
+  "uoaCodeNumber",
+  "isActive",
+]);
 
-export const SubstrateScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
+export const SubstrateScalarFieldEnumSchema = z.enum([
+  "id",
+  "buildingId",
+  "removedAt",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const SubstrateInspectionScalarFieldEnumSchema = z.enum(['id','substrateId','reportId','reportWorkUnitId','typeId','condition','metadata','createdAt','updatedAt']);
+export const SubstrateInspectionScalarFieldEnumSchema = z.enum([
+  "id",
+  "substrateId",
+  "reportId",
+  "reportWorkUnitId",
+  "typeId",
+  "condition",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const SubstrateTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+export const SubstrateTypeScalarFieldEnumSchema = z.enum([
+  "id",
+  "code",
+  "description",
+  "uoaCodeNumber",
+  "isActive",
+]);
 
-export const WindowScalarFieldEnumSchema = z.enum(['id','buildingId','removedAt','createdAt','updatedAt']);
+export const WindowScalarFieldEnumSchema = z.enum([
+  "id",
+  "buildingId",
+  "removedAt",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const WindowInspectionScalarFieldEnumSchema = z.enum(['id','windowId','reportId','reportWorkUnitId','typeId','condition','metadata','createdAt','updatedAt']);
+export const WindowInspectionScalarFieldEnumSchema = z.enum([
+  "id",
+  "windowId",
+  "reportId",
+  "reportWorkUnitId",
+  "typeId",
+  "condition",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const WindowTypeScalarFieldEnumSchema = z.enum(['id','code','description','uoaCodeNumber','isActive']);
+export const WindowTypeScalarFieldEnumSchema = z.enum([
+  "id",
+  "code",
+  "description",
+  "uoaCodeNumber",
+  "isActive",
+]);
 
-export const ReportScalarFieldEnumSchema = z.enum(['id','clientId','title','period','notes','status','isSystem','createdAt','updatedAt']);
+export const ReportScalarFieldEnumSchema = z.enum([
+  "id",
+  "clientId",
+  "title",
+  "period",
+  "notes",
+  "status",
+  "isSystem",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const ReportTypeAssignmentScalarFieldEnumSchema = z.enum(['id','reportId','type','title']);
+export const ReportTypeAssignmentScalarFieldEnumSchema = z.enum([
+  "id",
+  "reportId",
+  "type",
+  "title",
+]);
 
-export const ReportBuildingScalarFieldEnumSchema = z.enum(['id','reportId','buildingId']);
+export const ReportBuildingScalarFieldEnumSchema = z.enum([
+  "id",
+  "reportId",
+  "buildingId",
+]);
 
-export const ContractorScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','phone','isActive','createdAt','updatedAt']);
+export const ContractorScalarFieldEnumSchema = z.enum([
+  "id",
+  "firstName",
+  "lastName",
+  "email",
+  "phone",
+  "isActive",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const ReportWorkUnitScalarFieldEnumSchema = z.enum(['id','reportBuildingId','type','contractorId','contractorName','reportWorkBlockId','status','assignedAt','firstPulledAt','submittedAt','reviewedAt']);
+export const ReportWorkUnitScalarFieldEnumSchema = z.enum([
+  "id",
+  "reportBuildingId",
+  "type",
+  "contractorId",
+  "contractorName",
+  "reportWorkBlockId",
+  "status",
+  "assignedAt",
+  "firstPulledAt",
+  "submittedAt",
+  "reviewedAt",
+]);
 
-export const ReportWorkBlockScalarFieldEnumSchema = z.enum(['id','reportId','contractorId','loginSecretText','status','createdAt','updatedAt']);
+export const ReportWorkBlockScalarFieldEnumSchema = z.enum([
+  "id",
+  "reportId",
+  "contractorId",
+  "loginSecretText",
+  "status",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const IssueScalarFieldEnumSchema = z.enum(['id','type','openingReportId','buildingId','createdAt','updatedAt','resolvedAt']);
+export const IssueScalarFieldEnumSchema = z.enum([
+  "id",
+  "type",
+  "openingReportId",
+  "buildingId",
+  "createdAt",
+  "updatedAt",
+  "resolvedAt",
+]);
 
-export const SubIssueScalarFieldEnumSchema = z.enum(['id','issueId','createdAt','updatedAt','resolvedAt']);
+export const SubIssueScalarFieldEnumSchema = z.enum([
+  "id",
+  "issueId",
+  "createdAt",
+  "updatedAt",
+  "resolvedAt",
+]);
 
-export const IssueInspectionScalarFieldEnumSchema = z.enum(['id','isInitial','issueId','reportId','workUnitId','timeframe','action','xCoord','yCoord','description','toFix','metadata','createdAt','updatedAt']);
+export const IssueInspectionScalarFieldEnumSchema = z.enum([
+  "id",
+  "isInitial",
+  "issueId",
+  "reportId",
+  "workUnitId",
+  "timeframe",
+  "action",
+  "xCoord",
+  "yCoord",
+  "description",
+  "toFix",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const SubIssueInspectionScalarFieldEnumSchema = z.enum(['id','subIssueId','issueInspectionId','action','xCoord','yCoord','metadata','createdAt','updatedAt']);
+export const SubIssueInspectionScalarFieldEnumSchema = z.enum([
+  "id",
+  "subIssueId",
+  "issueInspectionId",
+  "action",
+  "xCoord",
+  "yCoord",
+  "metadata",
+  "createdAt",
+  "updatedAt",
+]);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','email','passwordHash','passwordSalt','refreshTokenHash','role','clientId','createdAt','selectedClientId']);
+export const UserScalarFieldEnumSchema = z.enum([
+  "id",
+  "firstName",
+  "lastName",
+  "email",
+  "passwordHash",
+  "passwordSalt",
+  "refreshTokenHash",
+  "role",
+  "clientId",
+  "createdAt",
+  "selectedClientId",
+]);
 
-export const SortOrderSchema = z.enum(['asc','desc']);
+export const SortOrderSchema = z.enum(["asc", "desc"]);
 
-export const NullableJsonNullValueInputSchema = z.enum(['DbNull','JsonNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value);
+export const NullableJsonNullValueInputSchema = z
+  .enum(["DbNull", "JsonNull"])
+  .transform((value) =>
+    value === "JsonNull"
+      ? Prisma.JsonNull
+      : value === "DbNull"
+        ? Prisma.DbNull
+        : value
+  );
 
-export const QueryModeSchema = z.enum(['default','insensitive']);
+export const QueryModeSchema = z.enum(["default", "insensitive"]);
 
-export const JsonNullValueFilterSchema = z.enum(['DbNull','JsonNull','AnyNull',]).transform((value) => value === 'JsonNull' ? Prisma.JsonNull : value === 'DbNull' ? Prisma.DbNull : value === 'AnyNull' ? Prisma.AnyNull : value);
+export const JsonNullValueFilterSchema = z
+  .enum(["DbNull", "JsonNull", "AnyNull"])
+  .transform((value) =>
+    value === "JsonNull"
+      ? Prisma.JsonNull
+      : value === "DbNull"
+        ? Prisma.DbNull
+        : value === "AnyNull"
+          ? Prisma.AnyNull
+          : value
+  );
 
-export const NullsOrderSchema = z.enum(['first','last']);
+export const NullsOrderSchema = z.enum(["first", "last"]);
 
-export const MapImageTypeSchema = z.enum(['BASE','WIREFRAME','ANNOTATED','BLUEPRINT']);
+export const MapImageTypeSchema = z.enum([
+  "BASE",
+  "WIREFRAME",
+  "ANNOTATED",
+  "BLUEPRINT",
+]);
 
-export type MapImageTypeType = `${z.infer<typeof MapImageTypeSchema>}`
+export type MapImageTypeType = `${z.infer<typeof MapImageTypeSchema>}`;
 
-export const ReportTypeSchema = z.enum(['ROOF','EXTERIOR']);
+export const ReportTypeSchema = z.enum(["ROOF", "EXTERIOR"]);
 
-export type ReportTypeType = `${z.infer<typeof ReportTypeSchema>}`
+export type ReportTypeType = `${z.infer<typeof ReportTypeSchema>}`;
 
-export const ReportStatusSchema = z.enum(['IN_PROGRESS','FOR_REVIEW','COMPLETED']);
+export const ReportStatusSchema = z.enum([
+  "IN_PROGRESS",
+  "FOR_REVIEW",
+  "COMPLETED",
+]);
 
-export type ReportStatusType = `${z.infer<typeof ReportStatusSchema>}`
+export type ReportStatusType = `${z.infer<typeof ReportStatusSchema>}`;
 
-export const WorkUnitStatusSchema = z.enum(['PENDING','IN_PROGRESS','SUBMITTED']);
+export const WorkUnitStatusSchema = z.enum([
+  "PENDING",
+  "IN_PROGRESS",
+  "SUBMITTED",
+]);
 
-export type WorkUnitStatusType = `${z.infer<typeof WorkUnitStatusSchema>}`
+export type WorkUnitStatusType = `${z.infer<typeof WorkUnitStatusSchema>}`;
 
-export const WorkBlockStatusSchema = z.enum(['ASSIGNED','IN_PROGRESS','SUBMITTED']);
+export const WorkBlockStatusSchema = z.enum([
+  "ASSIGNED",
+  "IN_PROGRESS",
+  "SUBMITTED",
+]);
 
-export type WorkBlockStatusType = `${z.infer<typeof WorkBlockStatusSchema>}`
+export type WorkBlockStatusType = `${z.infer<typeof WorkBlockStatusSchema>}`;
 
-export const TimeFrameSchema = z.enum(['IMMEDIATE','URGENT','NONURGENT']);
+export const TimeFrameSchema = z.enum(["IMMEDIATE", "URGENT", "NONURGENT"]);
 
-export type TimeFrameType = `${z.infer<typeof TimeFrameSchema>}`
+export type TimeFrameType = `${z.infer<typeof TimeFrameSchema>}`;
 
-export const IssueActionSchema = z.enum(['OPENED','UPDATED','RESOLVED']);
+export const IssueActionSchema = z.enum(["OPENED", "UPDATED", "RESOLVED"]);
 
-export type IssueActionType = `${z.infer<typeof IssueActionSchema>}`
+export type IssueActionType = `${z.infer<typeof IssueActionSchema>}`;
 
-export const UserRoleSchema = z.enum(['ADMIN','CLIENT']);
+export const UserRoleSchema = z.enum(["ADMIN", "CLIENT"]);
 
-export type UserRoleType = `${z.infer<typeof UserRoleSchema>}`
+export type UserRoleType = `${z.infer<typeof UserRoleSchema>}`;
 
 /////////////////////////////////////////
 // MODELS
@@ -168,9 +453,9 @@ export const ClientSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Client = z.infer<typeof ClientSchema>
+export type Client = z.infer<typeof ClientSchema>;
 
 /////////////////////////////////////////
 // MAP SCHEMA
@@ -185,9 +470,9 @@ export const MapSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Map = z.infer<typeof MapSchema>
+export type Map = z.infer<typeof MapSchema>;
 
 /////////////////////////////////////////
 // MAP IMAGE SCHEMA
@@ -200,9 +485,9 @@ export const MapImageSchema = z.object({
   imageUrl: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type MapImage = z.infer<typeof MapImageSchema>
+export type MapImage = z.infer<typeof MapImageSchema>;
 
 /////////////////////////////////////////
 // LOCATION SCHEMA
@@ -217,9 +502,9 @@ export const LocationSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Location = z.infer<typeof LocationSchema>
+export type Location = z.infer<typeof LocationSchema>;
 
 /////////////////////////////////////////
 // BUILDING SCHEMA
@@ -236,9 +521,9 @@ export const BuildingSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Building = z.infer<typeof BuildingSchema>
+export type Building = z.infer<typeof BuildingSchema>;
 
 /////////////////////////////////////////
 // ROOF SCHEMA
@@ -250,9 +535,9 @@ export const RoofSchema = z.object({
   removedAt: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Roof = z.infer<typeof RoofSchema>
+export type Roof = z.infer<typeof RoofSchema>;
 
 /////////////////////////////////////////
 // ROOF INSPECTION SCHEMA
@@ -271,9 +556,9 @@ export const RoofInspectionSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type RoofInspection = z.infer<typeof RoofInspectionSchema>
+export type RoofInspection = z.infer<typeof RoofInspectionSchema>;
 
 /////////////////////////////////////////
 // ROOF TYPE SCHEMA
@@ -285,9 +570,9 @@ export const RoofTypeSchema = z.object({
   description: z.string(),
   uoaCodeNumber: z.string().nullable(),
   isActive: z.boolean(),
-})
+});
 
-export type RoofType = z.infer<typeof RoofTypeSchema>
+export type RoofType = z.infer<typeof RoofTypeSchema>;
 
 /////////////////////////////////////////
 // GUTTER SCHEMA
@@ -299,9 +584,9 @@ export const GutterSchema = z.object({
   removedAt: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Gutter = z.infer<typeof GutterSchema>
+export type Gutter = z.infer<typeof GutterSchema>;
 
 /////////////////////////////////////////
 // GUTTER INSPECTION SCHEMA
@@ -318,9 +603,9 @@ export const GutterInspectionSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type GutterInspection = z.infer<typeof GutterInspectionSchema>
+export type GutterInspection = z.infer<typeof GutterInspectionSchema>;
 
 /////////////////////////////////////////
 // GUTTER TYPE SCHEMA
@@ -332,9 +617,9 @@ export const GutterTypeSchema = z.object({
   description: z.string(),
   uoaCodeNumber: z.string().nullable(),
   isActive: z.boolean(),
-})
+});
 
-export type GutterType = z.infer<typeof GutterTypeSchema>
+export type GutterType = z.infer<typeof GutterTypeSchema>;
 
 /////////////////////////////////////////
 // SUBSTRATE SCHEMA
@@ -346,9 +631,9 @@ export const SubstrateSchema = z.object({
   removedAt: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Substrate = z.infer<typeof SubstrateSchema>
+export type Substrate = z.infer<typeof SubstrateSchema>;
 
 /////////////////////////////////////////
 // SUBSTRATE INSPECTION SCHEMA
@@ -364,9 +649,9 @@ export const SubstrateInspectionSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type SubstrateInspection = z.infer<typeof SubstrateInspectionSchema>
+export type SubstrateInspection = z.infer<typeof SubstrateInspectionSchema>;
 
 /////////////////////////////////////////
 // SUBSTRATE TYPE SCHEMA
@@ -378,9 +663,9 @@ export const SubstrateTypeSchema = z.object({
   description: z.string(),
   uoaCodeNumber: z.string().nullable(),
   isActive: z.boolean(),
-})
+});
 
-export type SubstrateType = z.infer<typeof SubstrateTypeSchema>
+export type SubstrateType = z.infer<typeof SubstrateTypeSchema>;
 
 /////////////////////////////////////////
 // WINDOW SCHEMA
@@ -392,9 +677,9 @@ export const WindowSchema = z.object({
   removedAt: z.coerce.date().nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Window = z.infer<typeof WindowSchema>
+export type Window = z.infer<typeof WindowSchema>;
 
 /////////////////////////////////////////
 // WINDOW INSPECTION SCHEMA
@@ -410,9 +695,9 @@ export const WindowInspectionSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type WindowInspection = z.infer<typeof WindowInspectionSchema>
+export type WindowInspection = z.infer<typeof WindowInspectionSchema>;
 
 /////////////////////////////////////////
 // WINDOW TYPE SCHEMA
@@ -424,9 +709,9 @@ export const WindowTypeSchema = z.object({
   description: z.string(),
   uoaCodeNumber: z.string().nullable(),
   isActive: z.boolean(),
-})
+});
 
-export type WindowType = z.infer<typeof WindowTypeSchema>
+export type WindowType = z.infer<typeof WindowTypeSchema>;
 
 /////////////////////////////////////////
 // REPORT SCHEMA
@@ -442,9 +727,9 @@ export const ReportSchema = z.object({
   isSystem: z.boolean(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Report = z.infer<typeof ReportSchema>
+export type Report = z.infer<typeof ReportSchema>;
 
 /////////////////////////////////////////
 // REPORT TYPE ASSIGNMENT SCHEMA
@@ -455,9 +740,9 @@ export const ReportTypeAssignmentSchema = z.object({
   id: z.string(),
   reportId: z.string(),
   title: z.string(),
-})
+});
 
-export type ReportTypeAssignment = z.infer<typeof ReportTypeAssignmentSchema>
+export type ReportTypeAssignment = z.infer<typeof ReportTypeAssignmentSchema>;
 
 /////////////////////////////////////////
 // REPORT BUILDING SCHEMA
@@ -467,9 +752,9 @@ export const ReportBuildingSchema = z.object({
   id: z.string(),
   reportId: z.string(),
   buildingId: z.string(),
-})
+});
 
-export type ReportBuilding = z.infer<typeof ReportBuildingSchema>
+export type ReportBuilding = z.infer<typeof ReportBuildingSchema>;
 
 /////////////////////////////////////////
 // CONTRACTOR SCHEMA
@@ -484,9 +769,9 @@ export const ContractorSchema = z.object({
   isActive: z.boolean(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type Contractor = z.infer<typeof ContractorSchema>
+export type Contractor = z.infer<typeof ContractorSchema>;
 
 /////////////////////////////////////////
 // REPORT WORK UNIT SCHEMA
@@ -504,9 +789,9 @@ export const ReportWorkUnitSchema = z.object({
   firstPulledAt: z.coerce.date().nullable(),
   submittedAt: z.coerce.date().nullable(),
   reviewedAt: z.coerce.date().nullable(),
-})
+});
 
-export type ReportWorkUnit = z.infer<typeof ReportWorkUnitSchema>
+export type ReportWorkUnit = z.infer<typeof ReportWorkUnitSchema>;
 
 /////////////////////////////////////////
 // REPORT WORK BLOCK SCHEMA
@@ -520,9 +805,9 @@ export const ReportWorkBlockSchema = z.object({
   loginSecretText: z.string(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type ReportWorkBlock = z.infer<typeof ReportWorkBlockSchema>
+export type ReportWorkBlock = z.infer<typeof ReportWorkBlockSchema>;
 
 /////////////////////////////////////////
 // ISSUE SCHEMA
@@ -536,9 +821,9 @@ export const IssueSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   resolvedAt: z.coerce.date().nullable(),
-})
+});
 
-export type Issue = z.infer<typeof IssueSchema>
+export type Issue = z.infer<typeof IssueSchema>;
 
 /////////////////////////////////////////
 // SUB ISSUE SCHEMA
@@ -550,9 +835,9 @@ export const SubIssueSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   resolvedAt: z.coerce.date().nullable(),
-})
+});
 
-export type SubIssue = z.infer<typeof SubIssueSchema>
+export type SubIssue = z.infer<typeof SubIssueSchema>;
 
 /////////////////////////////////////////
 // ISSUE INSPECTION SCHEMA
@@ -573,9 +858,9 @@ export const IssueInspectionSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type IssueInspection = z.infer<typeof IssueInspectionSchema>
+export type IssueInspection = z.infer<typeof IssueInspectionSchema>;
 
 /////////////////////////////////////////
 // SUB ISSUE INSPECTION SCHEMA
@@ -591,9 +876,9 @@ export const SubIssueInspectionSchema = z.object({
   metadata: JsonValueSchema.nullable(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
-})
+});
 
-export type SubIssueInspection = z.infer<typeof SubIssueInspectionSchema>
+export type SubIssueInspection = z.infer<typeof SubIssueInspectionSchema>;
 
 /////////////////////////////////////////
 // USER SCHEMA
@@ -611,6 +896,6 @@ export const UserSchema = z.object({
   clientId: z.string().nullable(),
   createdAt: z.coerce.date(),
   selectedClientId: z.string().nullable(),
-})
+});
 
-export type User = z.infer<typeof UserSchema>
+export type User = z.infer<typeof UserSchema>;

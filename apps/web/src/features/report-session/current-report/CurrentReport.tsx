@@ -1,9 +1,7 @@
-import React from "react";
 import ReportHeader from "../components/ReportHeader";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { useCurrentClient } from "@/features/auth/auth.hooks";
-import { useCurrentReport, useCurrentReportTypesAuto } from "../session.hooks";
+import { useCurrentReportTypesAuto } from "../session.hooks";
 import ReportTypeOverview from "../components/ReportTypeOverview";
 
 const CurrentReport = () => {
