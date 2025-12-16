@@ -38,9 +38,10 @@ export class ReportCreatorService {
     });
 
     await tx.reportTypeAssignment.createMany({
-      data: data.reportTypes.map((type) => ({
+      data: data.reportNameTypes.map((type) => ({
         reportId: report.id,
-        type,
+        type: type.type,
+        title: type.title,
       })),
     });
 
@@ -58,9 +59,9 @@ export class ReportCreatorService {
 
     await tx.reportWorkUnit.createMany({
       data: reportBuildings.flatMap((rb) =>
-        data.reportTypes.map((type) => ({
+        data.reportNameTypes.map((type) => ({
           reportBuildingId: rb.id,
-          type,
+          type: type.type,
           status: 'PENDING',
         })),
       ),

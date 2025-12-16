@@ -16,21 +16,27 @@ import { useEffect, useRef } from "react";
 import { useCurrentClient } from "@/features/auth/auth.hooks";
 import { useClientReports } from "../session.hooks";
 import { Link } from "react-router-dom";
+import { useReportTitleValidation } from "@/hooks/use-report-title-validation";
 
 const CreateStepOne = () => {
-  const { nextStep, clearData } = useReportWizardStore();
-  const { sessionTitle, setSessionTitle } = useReportWizardStore();
-  const { reportingPeriod, setReportingPeriod } = useReportWizardStore();
-  const { notes, setNotes } = useReportWizardStore();
-  const { isRoofReportEnabled, setRoofReportEnabled } = useReportWizardStore();
-  const { isExteriorReportEnabled, setExteriorReportEnabled } =
-    useReportWizardStore();
-  const { roofReportName, setRoofReportName } = useReportWizardStore();
-  const { exteriorReportName, setExteriorReportName } = useReportWizardStore();
-
-  const currentClient = useCurrentClient();
-  const { data: clientReports } = useClientReports(currentClient?.id);
-  const reportTitles = new Set(clientReports?.map((report) => report.title));
+  const {
+    nextStep,
+    clearData,
+    sessionTitle,
+    setSessionTitle,
+    reportingPeriod,
+    setReportingPeriod,
+    notes,
+    setNotes,
+    isRoofReportEnabled,
+    setRoofReportEnabled,
+    isExteriorReportEnabled,
+    setExteriorReportEnabled,
+    roofReportName,
+    setRoofReportName,
+    exteriorReportName,
+    setExteriorReportName,
+  } = useReportWizardStore();
 
   const onCancel = () => {
     clearData();
@@ -46,18 +52,7 @@ const CreateStepOne = () => {
   }, [isAnyReportSelected]);
 
   const titleInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!titleInputRef.current) return;
-
-    if (sessionTitle && reportTitles.has(sessionTitle)) {
-      titleInputRef.current.setCustomValidity(
-        "A report with this name already exists."
-      );
-    } else {
-      titleInputRef.current.setCustomValidity("");
-    }
-  }, [sessionTitle, reportTitles]);
+  useReportTitleValidation(sessionTitle, titleInputRef);
 
   return (
     <div>

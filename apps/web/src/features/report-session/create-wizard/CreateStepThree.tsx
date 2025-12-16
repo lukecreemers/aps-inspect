@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { useCreateReport } from "../session.hooks";
 import { useCurrentClient } from "@/features/auth/auth.hooks";
-import type { ReportTypeType } from "@aps/shared-types";
+import type { ReportNameType, ReportTypeType } from "@aps/shared-types";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -20,8 +20,7 @@ type ReportConfig = {
   key: string;
   label: string;
   enabled: boolean;
-  name: string;
-  type: ReportTypeType;
+  type: ReportNameType;
 };
 
 const CreateStepThree = () => {
@@ -46,15 +45,19 @@ const CreateStepThree = () => {
       key: "roof",
       label: "Roof report",
       enabled: isRoofReportEnabled,
-      name: roofReportName,
-      type: "ROOF",
+      type: {
+        title: roofReportName,
+        type: "ROOF",
+      },
     },
     {
       key: "exterior",
       label: "Exterior report",
       enabled: isExteriorReportEnabled,
-      name: exteriorReportName,
-      type: "EXTERIOR",
+      type: {
+        title: exteriorReportName,
+        type: "EXTERIOR",
+      },
     },
   ];
 
@@ -66,7 +69,7 @@ const CreateStepThree = () => {
         clientId: client?.id ?? "N/A",
         title: sessionTitle,
         buildingIds: [...selectedBuildings],
-        reportTypes: enabledReports.map((report) => report.type),
+        reportNameTypes: enabledReports.map((report) => report.type),
       },
       {
         onError: () => {
@@ -156,7 +159,7 @@ const CreateStepThree = () => {
                         Report name
                       </p>
                       <p className="text-sm">
-                        {safeText(report.name || undefined)}
+                        {safeText(report.type.title || undefined)}
                       </p>
                     </div>
                   </div>
