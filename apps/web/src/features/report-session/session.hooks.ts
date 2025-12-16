@@ -13,6 +13,7 @@ export const sessionKeys = {
     ["reportTypeStatus", reportTypeId] as const,
   reportStatus: (reportTypeId: string) =>
     ["reportStatus", reportTypeId] as const,
+  reportTypes: (reportId: string) => ["reportTypes", reportId] as const,
 };
 
 export const useCurrentReport = (clientId: string | undefined) => {
@@ -73,5 +74,13 @@ export const useReportStatus = (reportTypeId: string | undefined) => {
     queryKey: sessionKeys.reportStatus(reportTypeId ?? ""),
     queryFn: () => SessionApi.getReportStatus(reportTypeId ?? ""),
     enabled: !!reportTypeId,
+  });
+};
+
+export const useReportTypes = (reportId: string | undefined) => {
+  return useQuery({
+    queryKey: sessionKeys.reportTypes(reportId ?? ""),
+    queryFn: () => SessionApi.getReportTypes(reportId ?? ""),
+    enabled: !!reportId,
   });
 };

@@ -25,7 +25,7 @@ const CurrentReport = () => {
                   <ReportTypeOverview key={type.id} reportType={type} />
                 ))}
               </div>
-              <ReportBuildingProgress types={reportTypes} />
+              <ReportBuildingProgress />
             </div>
           </TabsContent>
           <TabsContent value="map">Map</TabsContent>
