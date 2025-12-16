@@ -4,6 +4,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useCurrentClient } from "@/features/auth/auth.hooks";
 import { useCurrentReport, useCurrentReportTypesAuto } from "../session.hooks";
+import ReportTypeOverview from "../components/ReportTypeOverview";
 
 const CurrentReport = () => {
   const reportTypes = useCurrentReportTypesAuto();
@@ -20,7 +21,7 @@ const CurrentReport = () => {
           <Separator />
           <TabsContent value="overview">
             {reportTypes.map((type) => (
-              <div>{type.title}</div>
+              <ReportTypeOverview reportType={type} />
             ))}
           </TabsContent>
           <TabsContent value="workblock">Workblock</TabsContent>
