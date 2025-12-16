@@ -10,6 +10,7 @@ import {
   type LocationResponse,
   type ReportResponse,
   type ReportTypeAssignmentResponse,
+  type ReportStatusResponse,
 } from "@aps/shared-types";
 
 export const getCurrentReport = async (clientId: string) => {
@@ -84,5 +85,12 @@ export const getReportTypeStatus = async (reportTypeId: string) => {
   return await request<ReportTypeStatusResponse>({
     method: "GET",
     url: `/report-type-assignments/status/${reportTypeId}`,
+  });
+};
+
+export const getReportStatus = async (reportId: string) => {
+  return await request<ReportStatusResponse>({
+    method: "GET",
+    url: `/reports/${reportId}/status`,
   });
 };
