@@ -18,6 +18,8 @@ import {
   QueryReportTypeAssignmentSchema,
   ReportTypeAssignment,
   ReportTypeAssignmentResponseSchema,
+  ReportTypeStatusResponse,
+  ReportTypeStatusResponseSchema,
 } from '@aps/shared-types';
 
 @Controller('report-type-assignments')
@@ -56,5 +58,11 @@ export class ReportTypeAssignmentController {
   @ZodResponse(ReportTypeAssignmentResponseSchema)
   async delete(@Param('id') id: string): Promise<ReportTypeAssignment> {
     return this.reportTypeAssignmentService.delete(id);
+  }
+
+  @Get('status/:id')
+  @ZodResponse(ReportTypeStatusResponseSchema)
+  async status(@Param('id') id: string): Promise<ReportTypeStatusResponse> {
+    return this.reportTypeAssignmentService.status(id);
   }
 }

@@ -3,12 +3,13 @@ import {
   organizeBuildingsLocations,
   type LocationsAndBuildingsResponse,
 } from "@/utils/building.util";
-import type {
-  BuildingResponse,
-  CreateStandardReportDto,
-  LocationResponse,
-  ReportResponse,
-  ReportTypeAssignmentResponse,
+import {
+  type ReportTypeStatusResponse,
+  type BuildingResponse,
+  type CreateStandardReportDto,
+  type LocationResponse,
+  type ReportResponse,
+  type ReportTypeAssignmentResponse,
 } from "@aps/shared-types";
 
 export const getCurrentReport = async (clientId: string) => {
@@ -76,5 +77,12 @@ export const getCurrentReportTypes = async (reportId: string) => {
     params: {
       reportId,
     },
+  });
+};
+
+export const getReportTypeStatus = async (reportTypeId: string) => {
+  return await request<ReportTypeStatusResponse>({
+    method: "GET",
+    url: "/report-type-assignments/",
   });
 };
