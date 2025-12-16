@@ -8,6 +8,7 @@ import type {
   CreateStandardReportDto,
   LocationResponse,
   ReportResponse,
+  ReportTypeAssignmentResponse,
 } from "@aps/shared-types";
 
 export const getCurrentReport = async (clientId: string) => {
@@ -64,6 +65,16 @@ export const getClientReports = async (clientId: string) => {
     url: "/reports",
     params: {
       clientId,
+    },
+  });
+};
+
+export const getCurrentReportTypes = async (reportId: string) => {
+  return await request<ReportTypeAssignmentResponse[]>({
+    method: "GET",
+    url: "/report-type-assignments",
+    params: {
+      reportId,
     },
   });
 };

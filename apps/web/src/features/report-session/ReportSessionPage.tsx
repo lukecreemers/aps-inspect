@@ -9,7 +9,7 @@ const ReportSessionPage = () => {
   const { data: currentReport } = useCurrentReport(currentClient?.id);
 
   return (
-    <div className="flex flex-1 flex-col h-full max-w-xl w-full mx-auto">
+    <div className="flex flex-1 flex-col h-full w-full mx-auto">
       {currentReport ? <CurrentReport /> : <EmptyReport />}
     </div>
   );
