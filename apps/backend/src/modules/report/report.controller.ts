@@ -18,6 +18,8 @@ import {
   GetReportsQueryDto,
   Report,
   ReportResponseSchema,
+  ReportStatusResponse,
+  ReportStatusResponseSchema,
   UpdateReportDto,
   UpdateReportSchema,
 } from '@aps/shared-types';
@@ -50,6 +52,14 @@ export class ReportController {
     @Body() createStandardReportDto: CreateStandardReportDto,
   ): Promise<Report> {
     return this.reportService.createStandardReport(createStandardReportDto);
+  }
+
+  @Get(':id/status')
+  @ZodResponse(ReportStatusResponseSchema)
+  async getReportStatus(
+    @Param('id') id: string,
+  ): Promise<ReportStatusResponse> {
+    return this.reportService.getReportStatus(id);
   }
 
   @Get(':id')
