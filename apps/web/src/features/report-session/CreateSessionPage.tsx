@@ -19,7 +19,7 @@ const CreateSessionPage = () => {
     clearData();
     clearWizard();
     setTotalSteps(3);
-  }, [setTotalSteps]);
+  }, [setTotalSteps, clearData, clearWizard]);
 
   const renderStep = () => {
     switch (currentStep) {

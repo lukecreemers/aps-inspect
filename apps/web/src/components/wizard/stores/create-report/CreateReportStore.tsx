@@ -69,11 +69,14 @@ export const useReportWizardStore = create<ReportWizardStore>()((...args) => {
     toggleBuilding: (buildingId: string) =>
       set((state) => {
         const newSet = new Set(state.selectedBuildings);
-        newSet.has(buildingId)
-          ? newSet.delete(buildingId)
-          : newSet.add(buildingId);
+        if (newSet.has(buildingId)) {
+          newSet.delete(buildingId);
+        } else {
+          newSet.add(buildingId);
+        }
         return { selectedBuildings: newSet };
       }),
+
     deselectBuildings: (buildings: string[]) =>
       set((state) => {
         const newSet = new Set(state.selectedBuildings);

@@ -7,12 +7,12 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
-import { Building, Loader2 } from "lucide-react";
+import { Building2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { useCreateReport } from "../session.hooks";
 import { useCurrentClient } from "@/features/auth/auth.hooks";
-import type { ReportNameType, ReportTypeType } from "@aps/shared-types";
+import type { ReportNameType } from "@aps/shared-types";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
@@ -179,7 +179,7 @@ const CreateStepThree = () => {
             <div className="flex items-center justify-between rounded-md border bg-muted/40 px-4 py-3">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
-                  <Building className="h-5 w-5 text-muted-foreground" />
+                  <Building2 className="h-5 w-5 text-muted-foreground" />
                 </div>
 
                 <div className="space-y-0.5">

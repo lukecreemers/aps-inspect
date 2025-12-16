@@ -13,15 +13,12 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useReportWizardStore } from "@/components/wizard/stores/create-report/CreateReportStore";
 import { useEffect, useRef } from "react";
-import { useCurrentClient } from "@/features/auth/auth.hooks";
-import { useClientReports } from "../session.hooks";
 import { Link } from "react-router-dom";
 import { useReportTitleValidation } from "@/hooks/use-report-title-validation";
 
 const CreateStepOne = () => {
   const {
     nextStep,
-    clearData,
     sessionTitle,
     setSessionTitle,
     reportingPeriod,
@@ -37,10 +34,6 @@ const CreateStepOne = () => {
     exteriorReportName,
     setExteriorReportName,
   } = useReportWizardStore();
-
-  const onCancel = () => {
-    clearData();
-  };
 
   const isAnyReportSelected = isRoofReportEnabled || isExteriorReportEnabled;
   const validationInputRef = useRef<HTMLInputElement>(null);

@@ -22,11 +22,7 @@ import {
   MinusCircle,
   Building2,
 } from "lucide-react";
-import type {
-  ReportStatusType,
-  ReportTypeAssignmentResponse,
-  WorkUnitStatusType,
-} from "@aps/shared-types";
+import type { WorkUnitStatusType } from "@aps/shared-types";
 import {
   useCurrentReport,
   useReportStatus,
