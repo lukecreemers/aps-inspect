@@ -24,7 +24,7 @@ export const CreateWorkBlockModal = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <form>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Create Work Block</DialogTitle>
             <DialogDescription>

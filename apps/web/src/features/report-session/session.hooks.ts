@@ -16,6 +16,7 @@ export const sessionKeys = {
   reportTypes: (reportId: string) => ["reportTypes", reportId] as const,
   reportWorkBlocks: (reportId: string) =>
     ["reportWorkBlocks", reportId] as const,
+  contractors: () => ["contractors"] as const,
 };
 
 export const useCurrentReport = (clientId: string | undefined) => {
@@ -92,5 +93,12 @@ export const useReportWorkBlocks = (reportId: string | undefined) => {
     queryKey: sessionKeys.reportWorkBlocks(reportId ?? ""),
     queryFn: () => SessionApi.getReportWorkBlocks(reportId ?? ""),
     enabled: !!reportId,
+  });
+};
+
+export const useContractors = () => {
+  return useQuery({
+    queryKey: sessionKeys.contractors(),
+    queryFn: () => SessionApi.getContractors(),
   });
 };
