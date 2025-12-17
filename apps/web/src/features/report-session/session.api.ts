@@ -12,6 +12,7 @@ import {
   type ReportTypeAssignmentResponse,
   type ReportStatusResponse,
   type ReportWorkBlockResponse,
+  type ReportWorkBlockOverviewResponse,
 } from "@aps/shared-types";
 
 export const getCurrentReport = async (clientId: string) => {
@@ -107,11 +108,8 @@ export const getReportTypes = async (reportId: string) => {
 };
 
 export const getReportWorkBlocks = async (reportId: string) => {
-  return await request<ReportWorkBlockResponse[]>({
+  return await request<ReportWorkBlockOverviewResponse[]>({
     method: "GET",
-    url: `/report-work-blocks`,
-    params: {
-      reportId,
-    },
+    url: `/report-work-blocks/${reportId}/overview`,
   });
 };
