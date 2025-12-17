@@ -14,10 +14,9 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import type { ReportTypeType, WorkBlockStatusType } from "@aps/shared-types";
 
 // Mock Types
-type ReportTypeType = "EXTERIOR" | "ROOF";
-type WorkBlockStatusType = "ASSIGNED" | "IN_PROGRESS" | "SUBMITTED";
 
 const WorkBlockRow = () => {
   const contractor = "John Smith";
@@ -45,7 +44,7 @@ const WorkBlockRow = () => {
   };
 
   return (
-    <Card className="p-4 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors">
+    <Card className="p-4 hover:border-border transition-colors">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
         {/* LEFT STACK */}
         <div className="flex flex-col gap-3 w-full sm:w-auto">
@@ -56,7 +55,7 @@ const WorkBlockRow = () => {
                 <Badge
                   key={type}
                   variant="secondary"
-                  className="rounded-md font-medium text-[10px] px-2 py-0.5 border-zinc-200 bg-zinc-50 text-zinc-600"
+                  className="rounded-md font-medium text-[10px] px-2 py-0.5"
                 >
                   {type}
                 </Badge>
@@ -76,12 +75,12 @@ const WorkBlockRow = () => {
 
           {/* Row 2: Person */}
           <div className="flex items-center gap-2.5">
-            <Avatar className="h-8 w-8 border border-zinc-200">
-              <AvatarFallback className="text-[10px] bg-zinc-100 font-bold text-zinc-500">
+            <Avatar className="h-8 w-8 border">
+              <AvatarFallback className="text-[10px] bg-muted font-bold text-muted-foreground">
                 {initials}
               </AvatarFallback>
             </Avatar>
-            <span className="font-semibold text-sm text-zinc-800 dark:text-zinc-200">
+            <span className="font-semibold text-sm text-foreground">
               {contractor}
             </span>
           </div>
@@ -99,7 +98,7 @@ const WorkBlockRow = () => {
               className={cn(
                 "rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide border",
                 state === "ASSIGNED" &&
-                  "bg-white text-zinc-700 border-zinc-300 shadow-sm"
+                  "bg-card text-foreground border-border shadow-sm"
               )}
             >
               {state}
@@ -109,10 +108,10 @@ const WorkBlockRow = () => {
           {/* Row 2: Credentials + View Button */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
             {/* Credential Box */}
-            <div className="flex-1 sm:flex-none flex items-center gap-1 bg-zinc-50/80 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 pl-2.5 pr-1 rounded-md h-9">
-              <div className="flex items-center gap-1.5 border-r border-zinc-200 dark:border-zinc-800 pr-2 mr-1 h-5">
-                <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
-                <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-tight">
+            <div className="flex-1 sm:flex-none flex items-center gap-1 bg-muted/50 border pl-2.5 pr-1 rounded-md h-9">
+              <div className="flex items-center gap-1.5 border-r pr-2 mr-1 h-5">
+                <KeyRound className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-tight">
                   Creds
                 </span>
               </div>
@@ -122,8 +121,8 @@ const WorkBlockRow = () => {
                 className={cn(
                   "text-xs font-mono w-[110px] truncate",
                   showCredential
-                    ? "text-zinc-700 dark:text-zinc-300"
-                    : "text-zinc-300 dark:text-zinc-700 tracking-widest"
+                    ? "text-foreground"
+                    : "text-muted-foreground/50 tracking-widest"
                 )}
               >
                 {showCredential ? credential : "••••••••••••"}
@@ -133,7 +132,7 @@ const WorkBlockRow = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 hover:bg-white hover:shadow-sm rounded-sm text-zinc-400 hover:text-zinc-700"
+                className="h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground"
                 onClick={() => setShowCredential(!showCredential)}
               >
                 {showCredential ? (
@@ -147,7 +146,7 @@ const WorkBlockRow = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-7 w-7 hover:bg-white hover:shadow-sm rounded-sm text-zinc-400 hover:text-zinc-700"
+                className="h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground"
                 onClick={handleCopy}
               >
                 {copied ? (
@@ -159,10 +158,7 @@ const WorkBlockRow = () => {
             </div>
 
             {/* View Button - Matches h-9 height */}
-            <Button
-              size="sm"
-              className="h-9 px-4 text-xs bg-zinc-900 text-white hover:bg-zinc-800 shadow-sm"
-            >
+            <Button size="sm" className="h-9 px-4 text-xs shadow-sm">
               View
               <ChevronRight className="ml-1 h-3 w-3 opacity-70" />
             </Button>
