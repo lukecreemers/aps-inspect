@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import type { WorkUnitStatusType } from "@aps/shared-types";
-import { CheckCircle2, Loader2, MinusCircle } from "lucide-react";
 
 interface StatusOrbProps {
   status: WorkUnitStatusType;
