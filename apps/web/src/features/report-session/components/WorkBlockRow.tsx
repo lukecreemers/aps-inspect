@@ -16,21 +16,21 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type {
   ReportTypeType,
-  ReportWorkBlockResponse,
+  ReportWorkBlockOverviewResponse,
   WorkBlockStatusType,
 } from "@aps/shared-types";
 
 // Mock Types
 
 interface WorkBlockRowProps {
-  workBlock: ReportWorkBlockResponse;
+  workBlock: ReportWorkBlockOverviewResponse;
 }
 
 const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
-  const contractor = "John Smith";
+  const contractor = workBlock.contractorName;
   const data = "2 days ago";
-  const types: ReportTypeType[] = ["EXTERIOR", "ROOF"];
-  const buildingCount = 4;
+  const types: ReportTypeType[] = workBlock.types;
+  const buildingCount = workBlock.buildingCount;
   const state: WorkBlockStatusType = workBlock.status;
   const credential = workBlock.loginSecretText;
 
