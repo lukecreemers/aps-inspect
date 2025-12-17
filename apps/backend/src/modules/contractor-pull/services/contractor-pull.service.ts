@@ -56,7 +56,6 @@ export class ContractorPullService {
       );
 
       await this.assignWorkBlock(tx, workBlockId);
-      await this.assignWorkUnits(tx, workBlockId);
 
       const response: ContractorPullResponse = {
         syncToken: crypto.randomBytes(32).toString('hex'),
@@ -110,16 +109,6 @@ export class ContractorPullService {
     await tx.reportWorkBlock.update({
       where: { id: workBlockId },
       data: { status: WorkBlockStatus.IN_PROGRESS },
-    });
-  }
-
-  private async assignWorkUnits(
-    tx: Prisma.TransactionClient,
-    workBlockId: string,
-  ) {
-    await tx.reportWorkUnit.updateMany({
-      where: { reportWorkBlockId: workBlockId },
-      data: { status: WorkUnitStatus.IN_PROGRESS },
     });
   }
 }

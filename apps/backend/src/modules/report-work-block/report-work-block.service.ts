@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, WorkUnitStatus } from '@prisma/client';
 import {
   BasePrismaService,
   PrismaDelegate,
@@ -76,6 +76,7 @@ export class ReportWorkBlockService extends BasePrismaService<
           reportWorkUnitIds,
         );
       }
+
       return reportWorkBlock;
     });
   }
@@ -97,7 +98,7 @@ export class ReportWorkBlockService extends BasePrismaService<
 
     await tx.reportWorkUnit.updateMany({
       where: { id: { in: uniqueIds } },
-      data: { reportWorkBlockId },
+      data: { reportWorkBlockId, status: 'IN_PROGRESS' },
     });
   }
 
