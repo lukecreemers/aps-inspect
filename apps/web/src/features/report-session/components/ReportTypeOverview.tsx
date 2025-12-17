@@ -1,7 +1,6 @@
 import type { ReportTypeAssignmentResponse } from "@aps/shared-types";
 import { useReportTypeStatus } from "../session.hooks";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { CheckCircle2, Timer, Layers } from "lucide-react";
 
 interface ReportTypeOverviewProps {
