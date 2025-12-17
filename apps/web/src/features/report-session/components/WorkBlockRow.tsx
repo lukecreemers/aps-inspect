@@ -14,17 +14,25 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import type { ReportTypeType, WorkBlockStatusType } from "@aps/shared-types";
+import type {
+  ReportTypeType,
+  ReportWorkBlockResponse,
+  WorkBlockStatusType,
+} from "@aps/shared-types";
 
 // Mock Types
 
-const WorkBlockRow = () => {
+interface WorkBlockRowProps {
+  workBlock: ReportWorkBlockResponse;
+}
+
+const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
   const contractor = "John Smith";
   const data = "2 days ago";
   const types: ReportTypeType[] = ["EXTERIOR", "ROOF"];
   const buildingCount = 4;
-  const state: WorkBlockStatusType = "ASSIGNED";
-  const credential = "secret password";
+  const state: WorkBlockStatusType = workBlock.status;
+  const credential = workBlock.loginSecretText;
 
   const [showCredential, setShowCredential] = useState(false);
   const [copied, setCopied] = useState(false);
