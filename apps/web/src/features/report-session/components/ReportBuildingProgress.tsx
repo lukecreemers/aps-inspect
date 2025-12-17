@@ -22,25 +22,19 @@ import {
   MinusCircle,
   Building2,
 } from "lucide-react";
-import type { WorkUnitStatusType } from "@aps/shared-types";
+import type {
+  ReportStatusBuildingView,
+  ReportTypeAssignmentResponse,
+  ReportTypeType,
+  WorkUnitStatusType,
+} from "@aps/shared-types";
 import {
   useCurrentReport,
   useReportStatus,
   useReportTypes,
 } from "../session.hooks";
 import { useCurrentClient } from "@/features/auth/auth.hooks";
-
-/* ---------- Status icon ---------- */
-
-const StatusIcon = ({ status }: { status: WorkUnitStatusType }) => {
-  if (status === "SUBMITTED")
-    return <CheckCircle2 className="h-4 w-4 text-green-600" />;
-  if (status === "IN_PROGRESS")
-    return <Loader2 className="h-4 w-4 text-amber-500" />;
-  return <MinusCircle className="h-4 w-4 text-muted-foreground" />;
-};
-
-/* ---------- Component ---------- */
+import StatusOrb from "@/components/StatusOrb";
 
 const BuildingStatusTable = () => {
   const currentClient = useCurrentClient();
@@ -75,10 +69,18 @@ const BuildingStatusTable = () => {
     });
   })();
 
+  const locationCounts = (
+    buildings: ReportStatusBuildingView[],
+    type: ReportTypeType
+  ) => {
+    return buildings
+      .flatMap((building) => building.types)
+      .filter((t) => t.type === type && t.status === "SUBMITTED").length;
+  };
+
   return (
     <div className="border rounded-lg overflow-hidden bg-card shadow-sm">
       <Table>
-        {/* Header */}
         <TableHeader>
           <TableRow className="bg-muted/40">
             <TableHead className="w-[320px] p-4 text-foreground text-md">
@@ -117,7 +119,8 @@ const BuildingStatusTable = () => {
                           key={type.id}
                           className="text-center text-xs text-muted-foreground"
                         >
-                          1 / {buildings.length}
+                          {locationCounts(buildings, type.type)} /{" "}
+                          {buildings.length}
                         </TableCell>
                       ))}
 
@@ -138,20 +141,27 @@ const BuildingStatusTable = () => {
                     {/* Buildings */}
                     <CollapsibleContent asChild>
                       <>
-                        {buildings.map(({ building, types }) => (
+                        {buildings.map(({ building, types: buildingTypes }) => (
                           <TableRow key={building.id} className="bg-muted/10">
                             <TableCell className="flex gap-4 p-3 pl-10 text-foreground items-center">
                               <Building2 className="h-4 w-4 text-muted-foreground" />
                               <span>{building.name}</span>
                             </TableCell>
 
-                            {types.map((type) => (
-                              <TableCell key={type.type} className="w-[96px]">
-                                <div className="flex items-center justify-center">
-                                  <StatusIcon status={type.status} />
-                                </div>
-                              </TableCell>
-                            ))}
+                            {types.map((type) => {
+                              const buildingType = buildingTypes.find(
+                                (bt) => bt.type === type.type
+                              );
+                              return (
+                                <TableCell key={type.type} className="w-[96px]">
+                                  <div className="flex items-center justify-center">
+                                    {buildingType && (
+                                      <StatusOrb status={buildingType.status} />
+                                    )}
+                                  </div>
+                                </TableCell>
+                              );
+                            })}
 
                             <TableCell />
                           </TableRow>
@@ -162,24 +172,33 @@ const BuildingStatusTable = () => {
                 </Collapsible>
               ))}
               <>
-                {reportStatus.unattachedBuildings.map(({ building, types }) => (
-                  <TableRow key={building.id} className="bg-muted/10">
-                    <TableCell className="flex gap-4 p-3 pl-4 text-foreground items-center">
-                      <Building2 className="h-4 w-4 text-muted-foreground" />
-                      <span>{building.name}</span>
-                    </TableCell>
-
-                    {types.map((type) => (
-                      <TableCell key={type.type} className="w-[96px]">
-                        <div className="flex items-center justify-center">
-                          <StatusIcon status={type.status} />
-                        </div>
+                {reportStatus.unattachedBuildings.map(
+                  ({ building, types: buildingTypes }) => (
+                    <TableRow key={building.id} className="bg-muted/10">
+                      <TableCell className="flex gap-4 p-3 pl-4 text-foreground items-center">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <span>{building.name}</span>
                       </TableCell>
-                    ))}
 
-                    <TableCell />
-                  </TableRow>
-                ))}
+                      {types.map((type) => {
+                        const buildingType = buildingTypes.find(
+                          (bt) => bt.type === type.type
+                        );
+                        return (
+                          <TableCell key={type.type} className="w-[96px]">
+                            <div className="flex items-center justify-center">
+                              {buildingType && (
+                                <StatusOrb status={buildingType.status} />
+                              )}
+                            </div>
+                          </TableCell>
+                        );
+                      })}
+
+                      <TableCell />
+                    </TableRow>
+                  )
+                )}
               </>
             </>
           )}
