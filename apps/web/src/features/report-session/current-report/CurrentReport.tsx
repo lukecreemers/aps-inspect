@@ -4,6 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { useCurrentReportTypesAuto } from "../session.hooks";
 import ReportTypeOverview from "../components/ReportTypeOverview";
 import ReportBuildingProgress from "../components/ReportBuildingProgress";
+import WorkBlocks from "../components/WorkBlockRow";
+import WorkBlockRow from "../components/WorkBlockRow";
 
 const CurrentReport = () => {
   const reportTypes = useCurrentReportTypesAuto();
@@ -26,6 +28,7 @@ const CurrentReport = () => {
                 ))}
               </div>
               <ReportBuildingProgress />
+              <WorkBlockRow />
             </div>
           </TabsContent>
           <TabsContent value="map">Map</TabsContent>
