@@ -15,9 +15,11 @@ import {
   AddWorkUnitsToReportWorkBlockDto,
   RemoveWorkUnitsFromReportWorkBlockDto,
   GetReportWorkBlocksQueryDto,
+  ReportWorkBlockOverviewResponse,
 } from '@aps/shared-types';
 import { PrismaService } from 'src/database/prisma.service';
 import * as crypto from 'crypto';
+import { ReportWorkBlockOverviewService } from './report-work-block-overview.service';
 
 @Injectable()
 export class ReportWorkBlockService extends BasePrismaService<
@@ -25,7 +27,10 @@ export class ReportWorkBlockService extends BasePrismaService<
   CreateReportWorkBlockDto,
   UpdateReportWorkBlockDto
 > {
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private reportWorkBlockOverviewService: ReportWorkBlockOverviewService,
+  ) {
     super(
       prisma.reportWorkBlock as unknown as PrismaDelegate<
         ReportWorkBlock,
@@ -34,6 +39,12 @@ export class ReportWorkBlockService extends BasePrismaService<
       >,
       'ReportWorkBlock',
     );
+  }
+
+  async getOverview(
+    reportId: string,
+  ): Promise<ReportWorkBlockOverviewResponse[]> {
+    return this.reportWorkBlockOverviewService.getOverview(reportId);
   }
 
   async findAll(

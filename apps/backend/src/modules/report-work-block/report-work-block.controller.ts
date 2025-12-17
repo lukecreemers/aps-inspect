@@ -22,6 +22,8 @@ import {
   RemoveWorkUnitsFromReportWorkBlockDto,
   RemoveWorkUnitsFromReportWorkBlockSchema,
   ReportWorkBlock,
+  ReportWorkBlockOverviewResponse,
+  ReportWorkBlockOverviewResponseSchema,
   ReportWorkBlockResponseSchema,
   UpdateReportWorkBlockDto,
   UpdateReportWorkBlockSchema,
@@ -32,6 +34,14 @@ export class ReportWorkBlockController {
   constructor(
     private readonly reportWorkBlockService: ReportWorkBlockService,
   ) {}
+
+  @Get(':reportId/overview')
+  @ZodResponse(ReportWorkBlockOverviewResponseSchema.array())
+  async getOverview(
+    @Param('reportId') reportId: string,
+  ): Promise<ReportWorkBlockOverviewResponse[]> {
+    return this.reportWorkBlockService.getOverview(reportId);
+  }
 
   @Get()
   @ZodResponse(GetReportWorkBlocksQuerySchema.array())
