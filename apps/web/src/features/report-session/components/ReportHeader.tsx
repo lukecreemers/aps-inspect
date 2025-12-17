@@ -10,7 +10,7 @@ const ReportHeader = () => {
     <div className="flex flex-col gap-1">
       {/* Top row */}
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold">{currentReport?.title}</h1>
+        <h1 className="text-2xl font-semibold">{currentReport?.title}</h1>
         <StateBadge state="IN_PROGRESS" />
       </div>
 

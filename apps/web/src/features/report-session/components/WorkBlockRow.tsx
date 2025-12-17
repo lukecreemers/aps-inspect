@@ -166,7 +166,7 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
             </div>
 
             {/* View Button - Matches h-9 height */}
-            <Button size="sm" className="h-9 px-4 text-xs shadow-sm">
+            <Button size="sm" className="h-9 px-4 text-xs shadow-sm ">
               View
               <ChevronRight className="ml-1 h-3 w-3 opacity-70" />
             </Button>
