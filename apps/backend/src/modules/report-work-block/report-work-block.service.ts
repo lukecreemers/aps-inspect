@@ -14,6 +14,7 @@ import {
   UpdateReportWorkBlockDto,
   AddWorkUnitsToReportWorkBlockDto,
   RemoveWorkUnitsFromReportWorkBlockDto,
+  GetReportWorkBlocksQueryDto,
 } from '@aps/shared-types';
 import { PrismaService } from 'src/database/prisma.service';
 import * as crypto from 'crypto';
@@ -33,6 +34,14 @@ export class ReportWorkBlockService extends BasePrismaService<
       >,
       'ReportWorkBlock',
     );
+  }
+
+  async findAll(
+    query: GetReportWorkBlocksQueryDto,
+  ): Promise<ReportWorkBlock[]> {
+    return this.prisma.reportWorkBlock.findMany({
+      where: query,
+    });
   }
 
   async create(

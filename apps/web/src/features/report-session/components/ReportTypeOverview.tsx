@@ -31,7 +31,7 @@ const ReportTypeOverview = ({ reportType }: ReportTypeOverviewProps) => {
             <Layers className="h-3.5 w-3.5" />
           </div>
           <span className="text-sm font-semibold tracking-tight text-foreground">
-            {type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()}
+            {type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()} Report
           </span>
         </div>
         <span className="text-xs font-medium text-muted-foreground">

@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UsePipes,
 } from '@nestjs/common';
 import { ZodResponse } from 'src/common/decorators/zod-response.decorator';
@@ -16,6 +17,8 @@ import {
   AddWorkUnitsToReportWorkBlockSchema,
   CreateReportWorkBlockDto,
   CreateReportWorkBlockSchema,
+  GetReportWorkBlocksQueryDto,
+  GetReportWorkBlocksQuerySchema,
   RemoveWorkUnitsFromReportWorkBlockDto,
   RemoveWorkUnitsFromReportWorkBlockSchema,
   ReportWorkBlock,
@@ -29,6 +32,15 @@ export class ReportWorkBlockController {
   constructor(
     private readonly reportWorkBlockService: ReportWorkBlockService,
   ) {}
+
+  @Get()
+  @ZodResponse(GetReportWorkBlocksQuerySchema.array())
+  @UsePipes(new ZodValidationPipe(GetReportWorkBlocksQuerySchema))
+  async findAll(
+    @Query() query: GetReportWorkBlocksQueryDto,
+  ): Promise<ReportWorkBlock[]> {
+    return this.reportWorkBlockService.findAll(query);
+  }
 
   @Post()
   @ZodResponse(ReportWorkBlockResponseSchema)
