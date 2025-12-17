@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/select";
 import BuildingStatusTable from "./ReportBuildingProgress";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import BuildingSelect from "./BuildingSelect";
+import WorkBlockSelect from "./WorkBlockSelect";
 
 interface CreateWorkBlockModalProps {
   open: boolean;
@@ -34,7 +36,7 @@ export const CreateWorkBlockModal = ({
   const { data: contractors } = useContractors();
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="max-h-[95vh] flex flex-col">
+      <DialogContent className="max-h-[95vh] flex flex-col min-w-xl">
         {/* Header (fixed height) */}
         <DialogHeader>
           <DialogTitle>Create Work Block</DialogTitle>
@@ -63,8 +65,8 @@ export const CreateWorkBlockModal = ({
           </div>
 
           {/* Scrolls ONLY when it must */}
-          <div className="flex-1 min-h-0 overflow-y-auto rounded-md border">
-            <BuildingStatusTable />
+          <div className="flex-1 min-h-0 overflow-y-auto ">
+            <WorkBlockSelect />
           </div>
         </div>
 
