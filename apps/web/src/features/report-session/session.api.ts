@@ -121,3 +121,8 @@ export const getContractors = async () => {
     url: "/contractors",
   });
 };
+
+export const createWorkBlock = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  throw new Error("createWorkBlock is not implemented.");
+};

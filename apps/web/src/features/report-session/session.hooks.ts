@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as SessionApi from "./session.api";
 import { useCurrentClient } from "../auth/auth.hooks";
 
@@ -100,5 +100,19 @@ export const useContractors = () => {
   return useQuery({
     queryKey: sessionKeys.contractors(),
     queryFn: () => SessionApi.getContractors(),
+  });
+};
+
+export const useCreateWorkBlock = () => {
+  const queryClient = useQueryClient();
+  const currentClient = useCurrentClient();
+  const { data: currentReport } = useCurrentReport(currentClient?.id);
+  return useMutation({
+    mutationFn: SessionApi.createWorkBlock,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: sessionKeys.reportWorkBlocks(currentReport?.id ?? ""),
+      });
+    },
   });
 };

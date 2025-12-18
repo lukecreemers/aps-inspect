@@ -32,13 +32,22 @@ import type {
 
 type CheckBoxStatus = "ASSIGNED" | "FULL" | "PARIAL";
 type SelectedWork = Record<string, Set<ReportTypeType>>;
+
+interface WorkBlockSelectProps {
+  selectedWork: SelectedWork;
+  setSelectedWork: React.Dispatch<React.SetStateAction<SelectedWork>>;
+}
+
 /**
  * UI-only table for assigning work blocks
  * - Default: only unassigned (PENDING) work
  * - Optional toggle to show all buildings
  * - Checkboxes are NOT wired to state
  */
-const WorkBlockSelect = () => {
+const WorkBlockSelect = ({
+  selectedWork,
+  setSelectedWork,
+}: WorkBlockSelectProps) => {
   const currentClient = useCurrentClient();
   const { data: currentReport } = useCurrentReport(currentClient?.id);
   const { data: reportStatus } = useReportStatus(currentReport?.id);
@@ -46,7 +55,6 @@ const WorkBlockSelect = () => {
 
   const [showAll, setShowAll] = useState(false);
   const types = reportTypes ?? [];
-  const [selectedWork, setSelectedWork] = useState<SelectedWork>({});
 
   if (!reportStatus) return null;
 
@@ -89,9 +97,6 @@ const WorkBlockSelect = () => {
         buildingHasPending(b.types)
       );
 
-  // Select All
-
-  // Location type is assigned
   const isLocationAssigned = (
     location: ReportStatusLocationView,
     type: ReportTypeType
@@ -126,7 +131,6 @@ const WorkBlockSelect = () => {
     return isFull;
   };
 
-  // Assign Location type
   const handleCheckLocation = (
     location: ReportStatusLocationView,
     type: ReportTypeType,
@@ -138,6 +142,47 @@ const WorkBlockSelect = () => {
         building.types.find((t) => t.type === type),
         enabled
       );
+    });
+  };
+
+  const getAllPendingUnits = () => {
+    const units: { buildingId: string; type: ReportStatusTypeStatus }[] = [];
+
+    const handleBuildings = (buildings: ReportStatusBuildingView[]) => {
+      buildings.forEach((building) => {
+        building.types.forEach((type) => {
+          if (type.status === "PENDING") {
+            units.push({ buildingId: building.building.id, type: type });
+          }
+        });
+      });
+    };
+
+    reportStatus.locations.forEach((location) => {
+      handleBuildings(location.buildings);
+    });
+    handleBuildings(reportStatus.unattachedBuildings);
+
+    return units;
+  };
+
+  const isAllSelected = (): boolean => {
+    const pendingUnits = getAllPendingUnits();
+    console.log(pendingUnits);
+    if (pendingUnits.length === 0) return false;
+
+    const value = pendingUnits.every(({ buildingId, type }) =>
+      selectedWork[buildingId]?.has(type.type)
+    );
+
+    console.log(value);
+    return value;
+  };
+
+  const handleCheckAll = (enabled: boolean) => {
+    const pendingUnits = getAllPendingUnits();
+    pendingUnits.forEach((unit) => {
+      handleCheck(unit.buildingId, unit.type, enabled);
     });
   };
 
@@ -159,7 +204,10 @@ const WorkBlockSelect = () => {
           <TableHeader>
             <TableRow className="bg-muted/40">
               <TableHead className="w-[240px] p-4 m-1 text-muted-foreground flex items-center gap-4">
-                <Checkbox />{" "}
+                <Checkbox
+                  checked={isAllSelected()}
+                  onCheckedChange={handleCheckAll}
+                />
                 <span className="text-sm font-medium">Select All</span>
               </TableHead>
 
@@ -185,7 +233,7 @@ const WorkBlockSelect = () => {
                   {/* Location row */}
                   <TableRow className="hover:bg-muted/50">
                     <TableCell className="font-medium p-4">
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 text-[16px]">
                         <MapPin className="h-4 w-4 text-muted-foreground" />
                         {location.name}
                       </div>
@@ -292,7 +340,13 @@ const WorkBlockSelect = () => {
                     return (
                       <TableCell key={type.id}>
                         <div className="flex justify-center">
-                          <AssignCheckbox isAssigned={!isPending} />
+                          <AssignCheckbox
+                            isAssigned={!isPending}
+                            checked={isSelected(building.id, type.type)}
+                            onChange={(checked) =>
+                              handleCheck(building.id, buildingType, checked)
+                            }
+                          />
                         </div>
                       </TableCell>
                     );
