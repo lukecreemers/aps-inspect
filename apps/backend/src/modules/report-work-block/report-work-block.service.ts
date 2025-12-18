@@ -198,4 +198,12 @@ export class ReportWorkBlockService extends BasePrismaService<
       return reportWorkBlock;
     });
   }
+
+  async regenerateSecretText(id: string): Promise<ReportWorkBlock> {
+    const newToken = crypto.randomBytes(4).toString('hex');
+    return this.prisma.reportWorkBlock.update({
+      where: { id },
+      data: { loginSecretText: newToken },
+    });
+  }
 }

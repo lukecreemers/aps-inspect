@@ -18,7 +18,7 @@ interface ConfirmDeleteProps {
   cancelText?: string;
 }
 
-const ConfirmDelete = ({
+const ConfirmDialog = ({
   open,
   setOpen,
   onConfirm,
@@ -46,4 +46,4 @@ const ConfirmDelete = ({
   );
 };
 
-export default ConfirmDelete;
+export default ConfirmDialog;

@@ -23,7 +23,7 @@ import type {
 } from "@aps/shared-types";
 import { formatTimeAgo } from "@/utils/date.util";
 import { useDeleteWorkBlock } from "../session.hooks";
-import ConfirmDelete from "@/components/ConfirmDelete";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import ViewWorkBlockModal from "./ViewWorkBlockModal";
 import WorkBlockState from "@/components/WorkBlockState";
 
@@ -72,7 +72,7 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
         setOpen={(value: boolean) => setViewWorkBlockOpen(value)}
         workBlock={workBlock}
       />
-      <ConfirmDelete
+      <ConfirmDialog
         open={confirmDeleteOpen}
         setOpen={setConfirmDeleteOpen}
         onConfirm={deleteWorkBlockMutation}

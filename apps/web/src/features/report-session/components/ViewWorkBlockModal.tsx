@@ -22,47 +22,16 @@ import {
   Clock,
   Eye,
   EyeOff,
+  Loader2,
+  Trash2,
 } from "lucide-react";
 import type { ReportWorkBlockOverviewResponse } from "@aps/shared-types";
 import { formatTimeAgo } from "@/utils/date.util";
 import WorkBlockState from "@/components/WorkBlockState";
 import { cn } from "@/lib/utils";
 import { getInitials, toTitleCase } from "@/utils/text.util";
-
-// --- DUMMY DATA ---
-const DUMMY_DATA = {
-  contractor: {
-    name: "Alex Rivera",
-    initials: "AR",
-    status: "ASSIGNED",
-    assignedAt: "Just now",
-  },
-  buildings: [
-    {
-      id: 1,
-      name: "Sector 100 - Main Hub",
-      reports: ["Roof", "Exterior Cladding"],
-    },
-    {
-      id: 2,
-      name: "Sector 200 - Warehouse",
-      reports: ["Roof"],
-    },
-    {
-      id: 3,
-      name: "Sector 300 - Annex",
-      reports: ["Exterior Cladding", "Guttering", "Safety Systems"],
-    },
-    {
-      id: 4,
-      name: "Sector 400 - Office Block",
-      reports: ["Interior Common Areas"],
-    },
-  ],
-  credentials: {
-    token: "wb_8923_xk92_####", // Masked by default per brief
-  },
-};
+import { useDeleteWorkBlock, useRegenerateSecretText } from "../session.hooks";
+import ConfirmDialog from "@/components/ConfirmDialog";
 
 interface ViewWorkBlockModalProps {
   open: boolean;
@@ -77,7 +46,16 @@ const ViewWorkBlockModal = ({
 }: ViewWorkBlockModalProps) => {
   const [showCredential, setShowCredential] = useState(false);
   const [copied, setCopied] = useState(false);
-
+  const { mutate: regenerateSecretText, isPending } = useRegenerateSecretText(
+    workBlock.id,
+    workBlock.reportId
+  );
+  const { mutate: deleteWorkBlock, isPending: isDeleting } = useDeleteWorkBlock(
+    workBlock.id,
+    workBlock.reportId
+  );
+  const [confirmRefreshOpen, setConfirmRefreshOpen] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   useEffect(() => {
     if (!open) {
       setShowCredential(false);
@@ -97,6 +75,22 @@ const ViewWorkBlockModal = ({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
+      <ConfirmDialog
+        open={confirmRefreshOpen}
+        setOpen={setConfirmRefreshOpen}
+        onConfirm={regenerateSecretText}
+        description="This will regenerate the secret text for the work block. The old secret text will no longer work."
+        confirmText="Regenerate"
+        cancelText="Cancel"
+      />
+      <ConfirmDialog
+        open={confirmDeleteOpen}
+        setOpen={setConfirmDeleteOpen}
+        onConfirm={deleteWorkBlock}
+        description="This will delete the work block. All contractor progress will be lost."
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
       <DialogContent className="max-h-[95vh] flex flex-col min-w-xl sm:max-w-[600px] p-8 pt-10">
         {/* --- 1. Header (Context & Reassurance) --- */}
         <DialogHeader className="space-y-4 pb-2">
@@ -236,8 +230,17 @@ const ViewWorkBlockModal = ({
                       <Copy className="w-4 h-4" />
                     )}
                   </Button>
-                  <Button variant="ghost" size="icon" title="Regenerate token">
-                    <RefreshCw className="w-4 h-4 text-muted-foreground" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    title="Regenerate token"
+                    onClick={() => setConfirmRefreshOpen(true)}
+                  >
+                    {isPending ? (
+                      <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />
+                    ) : (
+                      <RefreshCw className="w-4 h-4 text-muted-foreground" />
+                    )}
                   </Button>
                 </div>
 
@@ -258,9 +261,21 @@ const ViewWorkBlockModal = ({
                 Close
               </Button>
             </DialogClose>
+
             <Button className="bg-blue-600 hover:bg-blue-700 text-white">
               <Mail className="w-4 h-4 mr-2" />
               Email Credentials
+            </Button>
+            <Button
+              variant="destructiveOutline"
+              onClick={() => setConfirmDeleteOpen(true)}
+              disabled={isPending}
+            >
+              {isPending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Trash2 className="h-3.5 w-3.5" />
+              )}
             </Button>
           </div>
         </DialogFooter>

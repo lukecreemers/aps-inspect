@@ -137,3 +137,10 @@ export const deleteWorkBlock = async (workBlockId: string) => {
     url: `/report-work-blocks/${workBlockId}`,
   });
 };
+
+export const regenerateSecretText = async (workBlockId: string) => {
+  return await request<ReportWorkBlockResponse>({
+    method: "PATCH",
+    url: `/report-work-blocks/${workBlockId}/regenerate-secret-text`,
+  });
+};

@@ -133,3 +133,18 @@ export const useDeleteWorkBlock = (
     },
   });
 };
+
+export const useRegenerateSecretText = (
+  workBlockId: string | undefined,
+  reportId: string | undefined
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => SessionApi.regenerateSecretText(workBlockId ?? ""),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: sessionKeys.reportWorkBlocks(reportId ?? ""),
+      });
+    },
+  });
+};

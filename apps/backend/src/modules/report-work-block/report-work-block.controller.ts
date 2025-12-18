@@ -109,4 +109,12 @@ export class ReportWorkBlockController {
       removeWorkUnitsFromReportWorkBlockDto,
     );
   }
+
+  @Patch(':id/regenerate-secret-text')
+  @ZodResponse(ReportWorkBlockResponseSchema)
+  async regenerateSecretText(
+    @Param('id') id: string,
+  ): Promise<ReportWorkBlock> {
+    return this.reportWorkBlockService.regenerateSecretText(id);
+  }
 }
