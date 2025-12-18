@@ -55,6 +55,20 @@ export class ReportWorkBlockService extends BasePrismaService<
     });
   }
 
+  async delete(id: string): Promise<ReportWorkBlock> {
+    const reportWorkBlock = await this.findOne(id);
+    await this.prisma.$transaction(async (tx) => {
+      await tx.reportWorkUnit.updateMany({
+        where: { reportWorkBlockId: id },
+        data: { status: 'PENDING' },
+      });
+      await tx.reportWorkBlock.delete({
+        where: { id },
+      });
+    });
+    return reportWorkBlock;
+  }
+
   async create(
     createReportWorkBlockDto: CreateReportWorkBlockDto,
   ): Promise<ReportWorkBlock> {
