@@ -22,7 +22,16 @@ import {
 import { useCurrentClient } from "@/features/auth/auth.hooks";
 import { useState } from "react";
 import AssignCheckbox from "./AssignCheckbox";
+import type {
+  ReportStatusBuildingView,
+  ReportStatusLocationView,
+  ReportStatusTypeStatus,
+  ReportTypeAssignment,
+  ReportTypeType,
+} from "@aps/shared-types";
 
+type CheckBoxStatus = "ASSIGNED" | "FULL" | "PARIAL";
+type SelectedWork = Record<string, Set<ReportTypeType>>;
 /**
  * UI-only table for assigning work blocks
  * - Default: only unassigned (PENDING) work
@@ -37,8 +46,27 @@ const WorkBlockSelect = () => {
 
   const [showAll, setShowAll] = useState(false);
   const types = reportTypes ?? [];
+  const [selectedWork, setSelectedWork] = useState<SelectedWork>({});
 
   if (!reportStatus) return null;
+
+  const isSelected = (buildingId: string, type: ReportTypeType) =>
+    selectedWork[buildingId]?.has(type) ?? false;
+
+  const handleCheck = (
+    buildingId: string,
+    type: ReportStatusTypeStatus | undefined,
+    enabled: boolean
+  ) => {
+    setSelectedWork((prev) => {
+      const current = prev[buildingId] ?? new Set();
+      const next = new Set(current);
+      if (type && type.status === "PENDING" && enabled) next.add(type.type);
+      else if (type) next.delete(type.type);
+
+      return { ...prev, [buildingId]: next };
+    });
+  };
 
   const buildingHasPending = (types: { status: string }[]) =>
     types.some((t) => t.status === "PENDING");
@@ -60,6 +88,58 @@ const WorkBlockSelect = () => {
     : reportStatus.unattachedBuildings.filter((b) =>
         buildingHasPending(b.types)
       );
+
+  // Select All
+
+  // Location type is assigned
+  const isLocationAssigned = (
+    location: ReportStatusLocationView,
+    type: ReportTypeType
+  ): boolean => {
+    const unassigned: ReportStatusTypeStatus[] = [];
+    location.buildings.forEach((building) => {
+      const workUnit = building.types.find(
+        (t) => t.type === type && t.status === "PENDING"
+      );
+      if (workUnit) unassigned.push(workUnit);
+    });
+    return unassigned.length === 0 ? true : false;
+  };
+
+  const isLocationFull = (
+    location: ReportStatusLocationView,
+    type: ReportTypeType
+  ): boolean => {
+    const unassigned: string[] = [];
+    location.buildings.forEach((building) => {
+      const workUnit = building.types.find(
+        (t) => t.type === type && t.status === "PENDING"
+      );
+      if (workUnit) unassigned.push(building.building.id);
+    });
+    let isFull = true;
+    unassigned.forEach((building) => {
+      if (!selectedWork[building] || !selectedWork[building].has(type)) {
+        isFull = false;
+      }
+    });
+    return isFull;
+  };
+
+  // Assign Location type
+  const handleCheckLocation = (
+    location: ReportStatusLocationView,
+    type: ReportTypeType,
+    enabled: boolean
+  ) => {
+    location.buildings.forEach((building) => {
+      handleCheck(
+        building.building.id,
+        building.types.find((t) => t.type === type),
+        enabled
+      );
+    });
+  };
 
   return (
     <div className="">
@@ -113,7 +193,23 @@ const WorkBlockSelect = () => {
 
                     {types.map((type) => (
                       <TableCell key={type.id} className="text-center">
-                        <AssignCheckbox isAssigned={true} />
+                        <AssignCheckbox
+                          isAssigned={isLocationAssigned(
+                            { location, buildings },
+                            type.type
+                          )}
+                          checked={isLocationFull(
+                            { location, buildings },
+                            type.type
+                          )}
+                          onChange={(checked) => {
+                            handleCheckLocation(
+                              { location, buildings },
+                              type.type,
+                              checked
+                            );
+                          }}
+                        />
                       </TableCell>
                     ))}
 
@@ -152,7 +248,17 @@ const WorkBlockSelect = () => {
                             return (
                               <TableCell key={type.id} className="w-[96px]">
                                 <div className="flex justify-center">
-                                  <AssignCheckbox isAssigned={!isPending} />
+                                  <AssignCheckbox
+                                    isAssigned={!isPending}
+                                    checked={isSelected(building.id, type.type)}
+                                    onChange={(checked) =>
+                                      handleCheck(
+                                        building.id,
+                                        buildingType,
+                                        checked
+                                      )
+                                    }
+                                  />
                                 </div>
                               </TableCell>
                             );

@@ -23,6 +23,7 @@ import BuildingStatusTable from "./ReportBuildingProgress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BuildingSelect from "./BuildingSelect";
 import WorkBlockSelect from "./WorkBlockSelect";
+import { useState } from "react";
 
 interface CreateWorkBlockModalProps {
   open: boolean;
@@ -34,6 +35,10 @@ export const CreateWorkBlockModal = ({
   setOpen,
 }: CreateWorkBlockModalProps) => {
   const { data: contractors } = useContractors();
+  const [selectedContractor, setSelectedContractor] = useState<
+    string | undefined
+  >(undefined);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-h-[95vh] flex flex-col min-w-xl">
@@ -50,7 +55,10 @@ export const CreateWorkBlockModal = ({
           {/* Non-scrollable inputs */}
           <div className="grid gap-3 shrink-0 w-full">
             <Label>Contractor</Label>
-            <Select>
+            <Select
+              value={selectedContractor}
+              onValueChange={setSelectedContractor}
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="None" />
               </SelectTrigger>
