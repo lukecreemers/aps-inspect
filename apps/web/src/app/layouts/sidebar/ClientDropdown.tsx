@@ -1,4 +1,4 @@
-import { ChevronsUpDown, Plus, Check, Building2 } from "lucide-react";
+import { ChevronsUpDown, Plus, Check } from "lucide-react";
 import {
   useGetClients,
   useSelectClient,
@@ -37,7 +37,7 @@ const ClientDropdown = () => {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground transition-colors"
             >
-              <div className="flex overflow-hidden aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground border border-sidebar-border">
+              <div className="flex overflow-hidden aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground border border-sidebar-border shrink-0">
                 <img
                   src={tempLogo}
                   alt={currentClient?.name}
@@ -45,7 +45,7 @@ const ClientDropdown = () => {
                 />
               </div>
 
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
                 <span className="truncate font-semibold text-foreground">
                   {currentClient?.name}
                 </span>
@@ -54,7 +54,7 @@ const ClientDropdown = () => {
                 </span>
               </div>
 
-              <ChevronsUpDown className="ml-auto size-4 text-muted-foreground/50" />
+              <ChevronsUpDown className="ml-auto size-4 text-muted-foreground/50 group-data-[collapsible=icon]:hidden" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
 
@@ -64,7 +64,7 @@ const ClientDropdown = () => {
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground  tracking-wider font-medium px-2 py-1.5">
+            <DropdownMenuLabel className="text-xs text-muted-foreground uppercase tracking-wider font-medium px-2 py-1.5">
               Switch Client
             </DropdownMenuLabel>
 
@@ -80,11 +80,11 @@ const ClientDropdown = () => {
                     isActive && "bg-accent/50"
                   )}
                 >
-                  <div className="flex size-6 items-center justify-center rounded-sm border bg-background overflow-hidden">
+                  <div className="flex overflow-hidden size-6 items-center justify-center rounded-sm border bg-background overflow-hidden">
                     <img
                       src={tempLogo}
                       alt="logo"
-                      className="size-4 object-contain  scale-280"
+                      className="size-4 object-contain scale-280"
                     />
                   </div>
 
