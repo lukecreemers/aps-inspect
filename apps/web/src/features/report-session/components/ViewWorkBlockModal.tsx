@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,16 +15,19 @@ import { Separator } from "@/components/ui/separator";
 import {
   Mail,
   Copy,
-  CheckCircle2,
-  User,
+  Check,
   Building2,
   KeyRound,
   RefreshCw,
   Clock,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import type { ReportWorkBlockOverviewResponse } from "@aps/shared-types";
 import { formatTimeAgo } from "@/utils/date.util";
 import WorkBlockState from "@/components/WorkBlockState";
+import { cn } from "@/lib/utils";
+import { getInitials, toTitleCase } from "@/utils/text.util";
 
 // --- DUMMY DATA ---
 const DUMMY_DATA = {
@@ -72,22 +75,29 @@ const ViewWorkBlockModal = ({
   setOpen,
   workBlock,
 }: ViewWorkBlockModalProps) => {
-  // No state implementation as requested.
-  // We assume the modal is controlled by a parent or open for dev purposes.
+  const [showCredential, setShowCredential] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!open) {
+      setShowCredential(false);
+      setCopied(false);
+    }
+  }, [open]);
+
   const handleClose = () => {
     setOpen(false);
   };
 
-  const initials = workBlock.contractorName
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(workBlock.loginSecretText);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[95vh] flex flex-col min-w-xl sm:max-w-[600px] p-8 py-10">
+      <DialogContent className="max-h-[95vh] flex flex-col min-w-xl sm:max-w-[600px] p-8 pt-10">
         {/* --- 1. Header (Context & Reassurance) --- */}
         <DialogHeader className="space-y-4 pb-2">
           <div className="flex items-start justify-between">
@@ -107,7 +117,7 @@ const ViewWorkBlockModal = ({
           <div className="flex items-center justify-between p-3 bg-muted/40 rounded-lg border">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                {initials}
+                {getInitials(workBlock.contractorName)}
               </div>
               <div>
                 <p className="text-sm font-medium leading-none">
@@ -123,7 +133,7 @@ const ViewWorkBlockModal = ({
         <Separator />
 
         {/* --- Body (Scrollable Content) --- */}
-        <div className="flex-1 min-h-0 overflow-y-auto py-4 space-y-6">
+        <div className="flex-1 min-h-0 overflow-y-auto  space-y-6">
           {/* --- 2. Assigned Buildings (Core Content) --- */}
           <div className="space-y-3 px-1">
             <div className="flex items-center gap-2 mb-2">
@@ -134,23 +144,30 @@ const ViewWorkBlockModal = ({
             </div>
 
             {/* Flat List - Optimised for scanning */}
-            <div className="grid gap-3">
-              {DUMMY_DATA.buildings.map((building) => (
+            <div className="grid border-1 rounded-md overflow-hidden">
+              {workBlock.buildings.map((building) => (
                 <div
                   key={building.id}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-md border bg-card hover:bg-accent/5 transition-colors"
+                  // Applied bg-muted/10 and specific padding (p-3 pl-4) from target styling.
+                  // Kept rounded-md and border for separation in this list view.
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-3 pl-4  border-b bg-muted/10 transition-colors last:border-b-0"
                 >
-                  <span className="font-medium text-sm mb-2 sm:mb-0">
-                    {building.name}
-                  </span>
-                  <div className="flex flex-wrap gap-1.5 justify-end">
-                    {building.reports.map((report) => (
+                  {/* Added Icon and wrapped in flex gap-4 to match target styling */}
+                  <div className="flex items-center gap-4 mb-2 sm:mb-0">
+                    <span className=" text-sm text-foreground">
+                      {building.name}
+                    </span>
+                  </div>
+
+                  {/* Existing badge content */}
+                  <div className="flex flex-wrap gap-1.5 justify-end ml-4">
+                    {building.types.map((type) => (
                       <Badge
-                        key={report}
+                        key={type}
                         variant="secondary"
                         className="text-xs font-normal text-muted-foreground bg-muted"
                       >
-                        {report}
+                        {toTitleCase(type)}
                       </Badge>
                     ))}
                   </div>
@@ -171,23 +188,53 @@ const ViewWorkBlockModal = ({
             <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900 border border-dashed border-slate-300 dark:border-slate-700">
               <div className="flex flex-col gap-3">
                 <Label className="text-xs text-muted-foreground uppercase tracking-wider">
-                  One-time Access Token
+                  Access Token
                 </Label>
 
                 <div className="flex gap-2">
                   <div className="flex-1 relative">
                     <input
                       readOnly
-                      value={DUMMY_DATA.credentials.token}
-                      className="w-full h-10 px-3 py-2 text-sm font-mono rounded-md border bg-background text-muted-foreground"
+                      autoFocus={false}
+                      value={
+                        showCredential
+                          ? workBlock.loginSecretText
+                          : "••••••••••••"
+                      }
+                      tabIndex={-1}
+                      className={cn(
+                        "w-full h-10 px-3 pr-10 py-2 text-sm font-mono rounded-md border bg-background",
+                        showCredential
+                          ? "text-foreground"
+                          : "text-muted-foreground/50 tracking-widest"
+                      )}
                     />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-10 w-10 rounded-md text-muted-foreground hover:text-foreground"
+                      onClick={() => setShowCredential(!showCredential)}
+                      title={showCredential ? "Hide token" : "Show token"}
+                    >
+                      {showCredential ? (
+                        <Eye className="w-4 h-4" />
+                      ) : (
+                        <EyeOff className="w-4 h-4" />
+                      )}
+                    </Button>
                   </div>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="icon"
+                    className="h-10 w-10 rounded-md text-muted-foreground hover:text-foreground"
+                    onClick={handleCopy}
                     title="Copy to clipboard"
                   >
-                    <Copy className="w-4 h-4" />
+                    {copied ? (
+                      <Check className="w-4 h-4 text-primary" />
+                    ) : (
+                      <Copy className="w-4 h-4" />
+                    )}
                   </Button>
                   <Button variant="ghost" size="icon" title="Regenerate token">
                     <RefreshCw className="w-4 h-4 text-muted-foreground" />
@@ -204,25 +251,17 @@ const ViewWorkBlockModal = ({
         </div>
 
         {/* --- Footer (Fixed Actions) --- */}
-        <DialogFooter className="shrink-0 pt-2 gap-2 sm:gap-0">
-          <div className="flex w-full sm:justify-between items-center">
-            {/* Secondary / Destructive could go here left aligned */}
+        <DialogFooter className="shrink-0  gap-2 sm:gap-0">
+          <div className="flex w-full justify-end items-center gap-2">
             <DialogClose asChild>
               <Button variant="outline" type="button">
                 Close
               </Button>
             </DialogClose>
-
-            <div className="flex gap-2 w-full sm:w-auto">
-              <Button variant="outline" className="hidden sm:flex">
-                <Copy className="w-4 h-4 mr-2" />
-                Copy Details
-              </Button>
-              <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white">
-                <Mail className="w-4 h-4 mr-2" />
-                Email Credentials
-              </Button>
-            </div>
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Mail className="w-4 h-4 mr-2" />
+              Email Credentials
+            </Button>
           </div>
         </DialogFooter>
       </DialogContent>

@@ -1,4 +1,5 @@
 import {
+  BuildingResponseSchema,
   ReportTypeType,
   ReportWorkBlockOverviewResponse,
 } from '@aps/shared-types';
@@ -22,21 +23,51 @@ export class ReportWorkBlockOverviewService {
       },
     });
 
-    return workBlocks.map((wb) => {
-      const uniqueBuildings = new Set<string>(
-        wb.reportWorkUnits.map((wu) => wu.reportBuildingId),
-      );
+    return await Promise.all(
+      workBlocks.map(async (wb) => {
+        // Group work units by building ID to collect types per building
+        const buildingTypesMap = new Map<string, Set<ReportTypeType>>();
+        const uniqueBuildings = new Set<string>();
+        const allTypes = new Set<ReportTypeType>();
 
-      const types = new Set<ReportTypeType>(
-        wb.reportWorkUnits.map((wu) => wu.type),
-      );
+        wb.reportWorkUnits.forEach((wu) => {
+          uniqueBuildings.add(wu.reportBuildingId);
+          allTypes.add(wu.type);
 
-      return {
-        ...wb,
-        buildingCount: uniqueBuildings.size,
-        types: Array.from(types),
-        contractorName: `${wb.contractor.firstName} ${wb.contractor.lastName}`,
-      };
-    });
+          if (!buildingTypesMap.has(wu.reportBuildingId)) {
+            buildingTypesMap.set(wu.reportBuildingId, new Set());
+          }
+          buildingTypesMap.get(wu.reportBuildingId)!.add(wu.type);
+        });
+
+        const reportBuildings = await this.prisma.reportBuilding.findMany({
+          where: {
+            id: { in: Array.from(uniqueBuildings) },
+          },
+          include: {
+            building: true,
+          },
+        });
+
+        const buildingResponses = reportBuildings.map((rb) => {
+          const buildingResponse = BuildingResponseSchema.parse(rb.building);
+          const types = Array.from(
+            buildingTypesMap.get(rb.id) || new Set<ReportTypeType>(),
+          );
+          return {
+            ...buildingResponse,
+            types,
+          };
+        });
+
+        return {
+          ...wb,
+          buildingCount: uniqueBuildings.size,
+          types: Array.from(allTypes),
+          contractorName: `${wb.contractor.firstName} ${wb.contractor.lastName}`,
+          buildings: buildingResponses,
+        };
+      }),
+    );
   }
 }

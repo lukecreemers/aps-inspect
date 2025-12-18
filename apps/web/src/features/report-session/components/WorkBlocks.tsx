@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import CreateWorkBlockModal from "./CreateWorkBlockModal";
-import ViewWorkBlockModal from "./ViewWorkBlockModal";
 
 type FilterType = "active" | "submitted" | "all";
 
@@ -18,7 +17,6 @@ const WorkBlocks = () => {
 
   const [filter, setFilter] = useState<FilterType>("active");
   const [open, setOpen] = useState(false);
-  const [viewWorkBlockOpen, setViewWorkBlockOpen] = useState(false);
 
   const counts = useMemo(() => {
     if (!workBlocks) return { active: 0, submitted: 0, all: 0 };

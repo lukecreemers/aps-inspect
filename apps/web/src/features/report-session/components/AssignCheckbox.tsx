@@ -9,12 +9,6 @@ interface AssignCheckboxProps {
   className?: string;
 }
 
-/**
- * AssignCheckbox
- *
- * - Assignable → checkbox
- * - Assigned → locked badge (no checkbox)
- */
 const AssignCheckbox = ({
   isAssigned,
   checked,
