@@ -15,6 +15,7 @@ import {
   type ReportWorkBlockOverviewResponse,
   type ContractorResponse,
   type CreateReportWorkBlockDto,
+  type EmailReportWorkBlockDto,
 } from "@aps/shared-types";
 
 export const getCurrentReport = async (clientId: string) => {
@@ -142,5 +143,15 @@ export const regenerateSecretText = async (workBlockId: string) => {
   return await request<ReportWorkBlockResponse>({
     method: "PATCH",
     url: `/report-work-blocks/${workBlockId}/regenerate-secret-text`,
+  });
+};
+
+export const emailCredentials = async (
+  dto: EmailReportWorkBlockDto & { workBlockId: string }
+) => {
+  return await request<void>({
+    method: "POST",
+    url: `/report-work-blocks/${dto.workBlockId}/email-credentials`,
+    data: dto,
   });
 };

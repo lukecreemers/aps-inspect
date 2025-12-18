@@ -148,3 +148,9 @@ export const useRegenerateSecretText = (
     },
   });
 };
+
+export const useEmailCredentials = () => {
+  return useMutation({
+    mutationFn: SessionApi.emailCredentials,
+  });
+};

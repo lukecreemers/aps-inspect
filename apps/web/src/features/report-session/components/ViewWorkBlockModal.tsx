@@ -30,8 +30,13 @@ import { formatTimeAgo } from "@/utils/date.util";
 import WorkBlockState from "@/components/WorkBlockState";
 import { cn } from "@/lib/utils";
 import { getInitials, toTitleCase } from "@/utils/text.util";
-import { useDeleteWorkBlock, useRegenerateSecretText } from "../session.hooks";
+import {
+  useDeleteWorkBlock,
+  useEmailCredentials,
+  useRegenerateSecretText,
+} from "../session.hooks";
 import ConfirmDialog from "@/components/ConfirmDialog";
+import { toast } from "sonner";
 
 interface ViewWorkBlockModalProps {
   open: boolean;
@@ -46,16 +51,21 @@ const ViewWorkBlockModal = ({
 }: ViewWorkBlockModalProps) => {
   const [showCredential, setShowCredential] = useState(false);
   const [copied, setCopied] = useState(false);
-  const { mutate: regenerateSecretText, isPending } = useRegenerateSecretText(
-    workBlock.id,
-    workBlock.reportId
-  );
-  const { mutate: deleteWorkBlock, isPending: isDeleting } = useDeleteWorkBlock(
-    workBlock.id,
-    workBlock.reportId
-  );
+  const { mutate: regenerateSecretText, isPending: isRegenerating } =
+    useRegenerateSecretText(workBlock.id, workBlock.reportId);
+  const {
+    mutate: deleteWorkBlock,
+    isPending: isDeleting,
+    isSuccess: isDeleteSuccess,
+  } = useDeleteWorkBlock(workBlock.id, workBlock.reportId);
+  const {
+    mutate: emailCredentials,
+    isPending: isEmailing,
+    isSuccess: isEmailSuccess,
+  } = useEmailCredentials();
   const [confirmRefreshOpen, setConfirmRefreshOpen] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [confirmEmailOpen, setConfirmEmailOpen] = useState(false);
   useEffect(() => {
     if (!open) {
       setShowCredential(false);
@@ -73,12 +83,34 @@ const ViewWorkBlockModal = ({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleEmailCredentials = () => {
+    emailCredentials({
+      workBlockId: workBlock.id,
+      contractorId: workBlock.contractorId,
+      buildings: workBlock.buildings.map((building) => building.id),
+    });
+  };
+
+  useEffect(() => {
+    if (isEmailSuccess) {
+      toast.success("Credentials emailed successfully");
+    }
+  }, [isEmailSuccess]);
+
+  useEffect(() => {
+    if (isDeleteSuccess) {
+      toast.success("Work block deleted successfully");
+      handleClose();
+    }
+  }, [isDeleteSuccess]);
+
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <ConfirmDialog
         open={confirmRefreshOpen}
         setOpen={setConfirmRefreshOpen}
         onConfirm={regenerateSecretText}
+        header="Regenerate Secret Text"
         description="This will regenerate the secret text for the work block. The old secret text will no longer work."
         confirmText="Regenerate"
         cancelText="Cancel"
@@ -91,6 +123,15 @@ const ViewWorkBlockModal = ({
         confirmText="Delete"
         cancelText="Cancel"
         variant="destructive"
+      />
+      <ConfirmDialog
+        open={confirmEmailOpen}
+        setOpen={setConfirmEmailOpen}
+        onConfirm={handleEmailCredentials}
+        header="Email Credentials"
+        description="This will email the credentials to the contractor they will need it to log in to the mobile app."
+        confirmText="Email"
+        cancelText="Cancel"
       />
       <DialogContent className="max-h-[95vh] flex flex-col min-w-xl sm:max-w-[600px] p-8 pt-10">
         {/* --- 1. Header (Context & Reassurance) --- */}
@@ -239,7 +280,7 @@ const ViewWorkBlockModal = ({
                     title="Regenerate token"
                     onClick={() => setConfirmRefreshOpen(true)}
                   >
-                    {isPending ? (
+                    {isRegenerating ? (
                       <Loader2 className="w-4 h-4 text-muted-foreground animate-spin" />
                     ) : (
                       <RefreshCw className="w-4 h-4 text-muted-foreground" />
@@ -265,16 +306,24 @@ const ViewWorkBlockModal = ({
               </Button>
             </DialogClose>
 
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <Mail className="w-4 h-4 mr-2" />
+            <Button
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => setConfirmEmailOpen(true)}
+              disabled={isEmailing}
+            >
+              {isEmailing ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Mail className="w-3.5 h-3.5" />
+              )}
               Email Credentials
             </Button>
             <Button
               variant="destructiveOutline"
               onClick={() => setConfirmDeleteOpen(true)}
-              disabled={isPending}
+              disabled={isDeleting}
             >
-              {isPending ? (
+              {isDeleting ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
                 <Trash2 className="h-3.5 w-3.5" />
