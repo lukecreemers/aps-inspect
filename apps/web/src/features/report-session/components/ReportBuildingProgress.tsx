@@ -155,20 +155,16 @@ const BuildingStatusTable = () => {
                     <TableRow
                       className={cn(
                         "transition-colors border-b border-border/40 group",
-                        // 1. IN PROGRESS: Amber background + Amber border
                         status === "in-progress" &&
                           "bg-amber-50/60 hover:bg-amber-50/80 border-l-[4px] border-l-amber-400",
-                        // 2. COMPLETE: Primary (Clean) + Primary border
                         status === "complete" &&
                           "hover:bg-muted/20 border-l-[4px] border-l-primary",
-                        // 3. PENDING: Default
                         status === "pending" &&
                           "hover:bg-muted/30 border-l-[4px] border-l-transparent"
                       )}
                     >
                       <TableCell className="font-medium p-4 pl-5">
                         <div className="flex items-center gap-3 text-[16px]">
-                          {/* Icon Logic: Always MapPin, color changes */}
                           <div
                             className={cn(
                               "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
@@ -214,13 +210,10 @@ const BuildingStatusTable = () => {
                                 "mx-auto w-fit px-2.5 py-1 rounded-md text-xs font-medium border",
                                 isEmpty &&
                                   "border-transparent text-muted-foreground/30",
-                                // Done = Primary
                                 isDone &&
                                   "bg-primary/10 text-primary border-primary/20",
-                                // Partial = Amber
                                 isPartial &&
                                   "bg-amber-100/80 text-amber-800 border-amber-200",
-                                // Pending = Muted
                                 !isEmpty &&
                                   !isDone &&
                                   !isPartial &&
@@ -260,7 +253,6 @@ const BuildingStatusTable = () => {
                               key={building.id}
                               className={cn(
                                 "border-b border-border/30",
-                                // Same logic for buildings
                                 bStatus === "in-progress" &&
                                   "bg-amber-50/30 border-l-[4px] border-l-amber-200",
                                 bStatus === "complete" &&
@@ -270,7 +262,6 @@ const BuildingStatusTable = () => {
                               )}
                             >
                               <TableCell className="flex gap-4 p-3 pl-[3.5rem] text-foreground items-center">
-                                {/* Always Building2 icon */}
                                 <Building2
                                   className={cn(
                                     "h-4 w-4 shrink-0",

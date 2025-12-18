@@ -264,7 +264,6 @@ const WorkBlockSelect = ({
 
                     {types.map((type) => (
                       <TableCell key={type.id} className="text-center p-2">
-                        {/* Added h-full and items-center for vertical alignment */}
                         <div className="flex justify-center items-center h-full">
                           <AssignCheckbox
                             isAssigned={isLocationAssigned(
@@ -310,8 +309,6 @@ const WorkBlockSelect = ({
                       {buildings.map(({ building, types: buildingTypes }) => (
                         <TableRow
                           key={building.id}
-                          // Removed bg-muted/5 to stop it looking disabled.
-                          // Added hover:bg-muted/5 to match unattached behavior.
                           className="border-b border-border/30 hover:bg-muted/5"
                         >
                           <TableCell className="flex gap-3 p-3 pl-[3.5rem] items-center">
@@ -333,7 +330,6 @@ const WorkBlockSelect = ({
                                 key={type.id}
                                 className="w-[100px] p-2"
                               >
-                                {/* Added h-full and items-center for vertical alignment */}
                                 <div className="flex justify-center items-center h-full">
                                   <AssignCheckbox
                                     isAssigned={!isPending}
@@ -392,7 +388,6 @@ const WorkBlockSelect = ({
 
                     return (
                       <TableCell key={type.id} className="p-2">
-                        {/* Added h-full and items-center for vertical alignment */}
                         <div className="flex justify-center items-center h-full">
                           <AssignCheckbox
                             isAssigned={!isPending}

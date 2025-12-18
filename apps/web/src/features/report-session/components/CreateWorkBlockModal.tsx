@@ -102,7 +102,6 @@ export const CreateWorkBlockModal = ({
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-h-[95vh] flex flex-col min-w-xl">
-        {/* Header (fixed height) */}
         <DialogHeader>
           <DialogTitle>Create Work Block</DialogTitle>
           <DialogDescription>
@@ -110,7 +109,6 @@ export const CreateWorkBlockModal = ({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Body (takes remaining space) */}
         <form
           onSubmit={handleSubmit}
           className="flex-1 min-h-0 flex flex-col gap-4"
@@ -146,7 +144,6 @@ export const CreateWorkBlockModal = ({
             />
           </div>
 
-          {/* Scrolls ONLY when it must */}
           <div className="flex-1 min-h-0 overflow-y-auto relative">
             <WorkBlockSelect
               selectedWork={selectedWork}
@@ -169,7 +166,6 @@ export const CreateWorkBlockModal = ({
             />
           </div>
 
-          {/* Footer (fixed height) */}
           <DialogFooter className="shrink-0 mt-2">
             <DialogClose asChild>
               <Button variant="outline" type="button">
