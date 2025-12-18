@@ -18,6 +18,7 @@ const WorkBlocks = () => {
 
   const [filter, setFilter] = useState<FilterType>("active");
   const [open, setOpen] = useState(false);
+  const [viewWorkBlockOpen, setViewWorkBlockOpen] = useState(false);
 
   const counts = useMemo(() => {
     if (!workBlocks) return { active: 0, submitted: 0, all: 0 };
@@ -50,7 +51,7 @@ const WorkBlocks = () => {
         open={open}
         setOpen={(value: boolean) => setOpen(value)}
       />
-      <ViewWorkBlockModal />
+
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row items-end sm:items-end justify-between gap-4 ">
         <div>

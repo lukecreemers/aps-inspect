@@ -24,6 +24,8 @@ import type {
 import { formatTimeAgo } from "@/utils/date.util";
 import { useDeleteWorkBlock } from "../session.hooks";
 import ConfirmDelete from "@/components/ConfirmDelete";
+import ViewWorkBlockModal from "./ViewWorkBlockModal";
+import WorkBlockState from "@/components/WorkBlockState";
 
 // Mock Types
 
@@ -38,6 +40,7 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
   const buildingCount = workBlock.buildingCount;
   const state: WorkBlockStatusType = workBlock.status;
   const credential = workBlock.loginSecretText;
+  const [viewWorkBlockOpen, setViewWorkBlockOpen] = useState(false);
 
   const [showCredential, setShowCredential] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -62,19 +65,13 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const formattedState = (state: WorkBlockStatusType) => {
-    switch (state) {
-      case "ASSIGNED":
-        return "ASSIGNED";
-      case "IN_PROGRESS":
-        return "IN PROGRESS";
-      case "SUBMITTED":
-        return "SUBMITTED";
-    }
-  };
-
   return (
     <Card className="p-4 hover:border-border transition-colors">
+      <ViewWorkBlockModal
+        open={viewWorkBlockOpen}
+        setOpen={(value: boolean) => setViewWorkBlockOpen(value)}
+        workBlock={workBlock}
+      />
       <ConfirmDelete
         open={confirmDeleteOpen}
         setOpen={setConfirmDeleteOpen}
@@ -129,17 +126,7 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
               <Clock className="h-3 w-3" />
               {formatTimeAgo(time)}
             </span>
-            <Badge
-              className={cn(
-                "rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide border",
-                state === "ASSIGNED" &&
-                  "bg-card text-foreground border-border shadow-sm",
-                state === "IN_PROGRESS" &&
-                  "bg-amber-500/10 text-amber-500 border-amber-500 shadow-sm"
-              )}
-            >
-              {formattedState(state)}
-            </Badge>
+            <WorkBlockState state={state} />
           </div>
 
           {/* Row 2: Credentials + View Button */}
@@ -195,7 +182,11 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
             </div>
 
             {/* View Button - Matches h-9 height */}
-            <Button size="sm" className="h-9 px-4 text-xs shadow-sm ">
+            <Button
+              size="sm"
+              className="h-9 px-4 text-xs shadow-sm "
+              onClick={() => setViewWorkBlockOpen(true)}
+            >
               View
               <ChevronRight className="ml-1 h-3 w-3 opacity-70" />
             </Button>

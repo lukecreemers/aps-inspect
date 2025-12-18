@@ -22,6 +22,9 @@ import {
   RefreshCw,
   Clock,
 } from "lucide-react";
+import type { ReportWorkBlockOverviewResponse } from "@aps/shared-types";
+import { formatTimeAgo } from "@/utils/date.util";
+import WorkBlockState from "@/components/WorkBlockState";
 
 // --- DUMMY DATA ---
 const DUMMY_DATA = {
@@ -58,11 +61,29 @@ const DUMMY_DATA = {
   },
 };
 
-const ViewWorkBlockModal = () => {
+interface ViewWorkBlockModalProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  workBlock: ReportWorkBlockOverviewResponse;
+}
+
+const ViewWorkBlockModal = ({
+  open,
+  setOpen,
+  workBlock,
+}: ViewWorkBlockModalProps) => {
   // No state implementation as requested.
   // We assume the modal is controlled by a parent or open for dev purposes.
-  const open = true;
-  const handleClose = () => {};
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const initials = workBlock.contractorName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -76,9 +97,9 @@ const ViewWorkBlockModal = () => {
                 Confirm assignment details and handoff credentials.
               </DialogDescription>
             </div>
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Clock className="w-4 h-4 text-muted-foreground" />
-              <span>{DUMMY_DATA.contractor.assignedAt}</span>
+              <span>{formatTimeAgo(workBlock.createdAt)}</span>
             </div>
           </div>
 
@@ -86,21 +107,16 @@ const ViewWorkBlockModal = () => {
           <div className="flex items-center justify-between p-3 bg-muted/40 rounded-lg border">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                {DUMMY_DATA.contractor.initials}
+                {initials}
               </div>
               <div>
                 <p className="text-sm font-medium leading-none">
-                  {DUMMY_DATA.contractor.name}
+                  {workBlock.contractorName}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">Contractor</p>
               </div>
             </div>
-            <Badge
-              variant="default"
-              className="bg-green-600 hover:bg-green-700"
-            >
-              {DUMMY_DATA.contractor.status}
-            </Badge>
+            <WorkBlockState state={workBlock.status} />
           </div>
         </DialogHeader>
 
