@@ -9,7 +9,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { useContractors, useCreateWorkBlock } from "../session.hooks";
+import {
+  useContractors,
+  useCreateWorkBlock,
+  useCurrentReport,
+} from "../session.hooks";
 import {
   Select,
   SelectContent,
@@ -22,8 +26,9 @@ import { useState, useRef, useEffect } from "react";
 import type { ReportTypeType } from "@aps/shared-types";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useCurrentClient } from "@/features/auth/auth.hooks";
 
-type SelectedWork = Record<string, Set<ReportTypeType>>;
+export type WorkBlockSelectedWork = Record<string, Set<ReportTypeType>>;
 
 interface CreateWorkBlockModalProps {
   open: boolean;
@@ -38,13 +43,16 @@ export const CreateWorkBlockModal = ({
   const [selectedContractor, setSelectedContractor] = useState<
     string | undefined
   >(undefined);
+  const currentClient = useCurrentClient();
+  const { data: currentReport } = useCurrentReport(currentClient?.id ?? "");
   const {
     mutate: createWorkBlock,
     isSuccess,
     isError,
     isPending,
   } = useCreateWorkBlock();
-  const [selectedWork, setSelectedWork] = useState<SelectedWork>({});
+  const [selectedWork, setSelectedWork] = useState<WorkBlockSelectedWork>({});
+  const [workUnitIds, setWorkUnitIds] = useState<Set<string>>(new Set());
 
   const hasWorkUnits = Object.values(selectedWork).some((set) => set.size > 0);
   const contractorValidationRef = useRef<HTMLInputElement>(null);
@@ -54,6 +62,7 @@ export const CreateWorkBlockModal = ({
     setOpen(false);
     setSelectedContractor(undefined);
     setSelectedWork({});
+    setWorkUnitIds(new Set());
   };
 
   useEffect(() => {
@@ -85,8 +94,11 @@ export const CreateWorkBlockModal = ({
     e.preventDefault();
     // Form validation will be handled by the browser via the hidden required inputs
     // If we get here, the form is valid
-    console.log("Form submitted", { selectedContractor, selectedWork });
-    createWorkBlock();
+    createWorkBlock({
+      reportId: currentReport?.id ?? "",
+      contractorId: selectedContractor ?? "",
+      reportWorkUnitIds: Array.from(workUnitIds),
+    });
   };
 
   return (
@@ -140,6 +152,8 @@ export const CreateWorkBlockModal = ({
             <WorkBlockSelect
               selectedWork={selectedWork}
               setSelectedWork={setSelectedWork}
+              workUnitIds={workUnitIds}
+              setWorkUnitIds={setWorkUnitIds}
             />
             <input
               ref={workUnitsValidationRef}

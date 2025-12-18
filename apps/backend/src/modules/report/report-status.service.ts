@@ -30,6 +30,7 @@ export class ReportStatusService {
         types: rb.reportWorkUnits.map((rwu) => ({
           type: rwu.type,
           status: rwu.status,
+          workUnitId: rwu.id,
         })),
       }),
     );

@@ -26,27 +26,23 @@ import type {
   ReportStatusBuildingView,
   ReportStatusLocationView,
   ReportStatusTypeStatus,
-  ReportTypeAssignment,
   ReportTypeType,
 } from "@aps/shared-types";
 
-type CheckBoxStatus = "ASSIGNED" | "FULL" | "PARIAL";
 type SelectedWork = Record<string, Set<ReportTypeType>>;
 
 interface WorkBlockSelectProps {
   selectedWork: SelectedWork;
   setSelectedWork: React.Dispatch<React.SetStateAction<SelectedWork>>;
+  workUnitIds: Set<string>;
+  setWorkUnitIds: React.Dispatch<React.SetStateAction<Set<string>>>;
 }
 
-/**
- * UI-only table for assigning work blocks
- * - Default: only unassigned (PENDING) work
- * - Optional toggle to show all buildings
- * - Checkboxes are NOT wired to state
- */
 const WorkBlockSelect = ({
   selectedWork,
   setSelectedWork,
+  workUnitIds,
+  setWorkUnitIds,
 }: WorkBlockSelectProps) => {
   const currentClient = useCurrentClient();
   const { data: currentReport } = useCurrentReport(currentClient?.id);
@@ -57,7 +53,7 @@ const WorkBlockSelect = ({
   const types = reportTypes ?? [];
 
   if (!reportStatus) return null;
-
+  console.log(workUnitIds);
   const isSelected = (buildingId: string, type: ReportTypeType) =>
     selectedWork[buildingId]?.has(type) ?? false;
 
@@ -66,11 +62,31 @@ const WorkBlockSelect = ({
     type: ReportStatusTypeStatus | undefined,
     enabled: boolean
   ) => {
+    if (!type) return;
+
+    const shouldAdd = type.status === "PENDING" && enabled;
+
+    setWorkUnitIds((prev) => {
+      const next = new Set(prev);
+
+      if (shouldAdd) {
+        next.add(type.workUnitId);
+      } else {
+        next.delete(type.workUnitId);
+      }
+
+      return next;
+    });
+
     setSelectedWork((prev) => {
       const current = prev[buildingId] ?? new Set();
       const next = new Set(current);
-      if (type && type.status === "PENDING" && enabled) next.add(type.type);
-      else if (type) next.delete(type.type);
+
+      if (shouldAdd) {
+        next.add(type.type);
+      } else {
+        next.delete(type.type);
+      }
 
       return { ...prev, [buildingId]: next };
     });
@@ -168,14 +184,12 @@ const WorkBlockSelect = ({
 
   const isAllSelected = (): boolean => {
     const pendingUnits = getAllPendingUnits();
-    console.log(pendingUnits);
     if (pendingUnits.length === 0) return false;
 
     const value = pendingUnits.every(({ buildingId, type }) =>
       selectedWork[buildingId]?.has(type.type)
     );
 
-    console.log(value);
     return value;
   };
 

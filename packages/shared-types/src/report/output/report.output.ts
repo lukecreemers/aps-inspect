@@ -19,6 +19,7 @@ export type ReportResponse = z.infer<typeof ReportResponseSchema>;
 export const ReportStatusTypeStatusSchema = z.object({
   type: ReportTypeSchema,
   status: WorkUnitStatusSchema,
+  workUnitId: z.string(),
 });
 
 export type ReportStatusTypeStatus = z.infer<

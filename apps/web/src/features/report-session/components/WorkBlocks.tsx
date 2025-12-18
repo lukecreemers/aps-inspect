@@ -6,7 +6,6 @@ import { CheckCircle2, Circle, LayoutList, Inbox, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import CreateWorkBlockModal from "./CreateWorkBlockModal";
 
 type FilterType = "active" | "submitted" | "all";

@@ -14,7 +14,9 @@ import {
   type ReportWorkBlockResponse,
   type ReportWorkBlockOverviewResponse,
   type ContractorResponse,
+  type CreateReportWorkBlockDto,
 } from "@aps/shared-types";
+import type { WorkBlockSelectedWork } from "./components/CreateWorkBlockModal";
 
 export const getCurrentReport = async (clientId: string) => {
   const reports = await request<ReportResponse[]>({
@@ -122,7 +124,10 @@ export const getContractors = async () => {
   });
 };
 
-export const createWorkBlock = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  throw new Error("createWorkBlock is not implemented.");
+export const createWorkBlock = async (dto: CreateReportWorkBlockDto) => {
+  return await request<ReportWorkBlockResponse>({
+    method: "POST",
+    url: "/report-work-blocks",
+    data: dto,
+  });
 };
