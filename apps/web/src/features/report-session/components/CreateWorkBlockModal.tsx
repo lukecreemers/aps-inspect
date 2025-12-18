@@ -142,6 +142,7 @@ export const CreateWorkBlockModal = ({
               onInvalid={(e) =>
                 e.currentTarget.setCustomValidity("Please select a contractor")
               }
+              onChange={() => {}}
             />
           </div>
 
@@ -164,6 +165,7 @@ export const CreateWorkBlockModal = ({
                   "Please select at least one work unit"
                 )
               }
+              onChange={() => {}}
             />
           </div>
 
