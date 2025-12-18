@@ -90,6 +90,7 @@ const ViewWorkBlockModal = ({
         description="This will delete the work block. All contractor progress will be lost."
         confirmText="Delete"
         cancelText="Cancel"
+        variant="destructive"
       />
       <DialogContent className="max-h-[95vh] flex flex-col min-w-xl sm:max-w-[600px] p-8 pt-10">
         {/* --- 1. Header (Context & Reassurance) --- */}
@@ -155,15 +156,17 @@ const ViewWorkBlockModal = ({
 
                   {/* Existing badge content */}
                   <div className="flex flex-wrap gap-1.5 justify-end ml-4">
-                    {building.types.map((type) => (
-                      <Badge
-                        key={type}
-                        variant="secondary"
-                        className="text-xs font-normal text-muted-foreground bg-muted"
-                      >
-                        {toTitleCase(type)}
-                      </Badge>
-                    ))}
+                    {[...building.types]
+                      .sort((a, b) => a.localeCompare(b))
+                      .map((type) => (
+                        <Badge
+                          key={type}
+                          variant="secondary"
+                          className="text-xs font-normal text-muted-foreground bg-muted"
+                        >
+                          {toTitleCase(type)}
+                        </Badge>
+                      ))}
                   </div>
                 </div>
               ))}
@@ -262,7 +265,7 @@ const ViewWorkBlockModal = ({
               </Button>
             </DialogClose>
 
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button className="bg-blue-600 hover:bg-blue-700">
               <Mail className="w-4 h-4 mr-2" />
               Email Credentials
             </Button>

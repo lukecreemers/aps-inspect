@@ -46,7 +46,7 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
   const [copied, setCopied] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
-  const { mutate: deleteWorkBlockMutation, isPending } = useDeleteWorkBlock(
+  const { mutate: deleteWorkBlock, isPending } = useDeleteWorkBlock(
     workBlock.id,
     workBlock.reportId
   );
@@ -75,7 +75,11 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
       <ConfirmDialog
         open={confirmDeleteOpen}
         setOpen={setConfirmDeleteOpen}
-        onConfirm={deleteWorkBlockMutation}
+        onConfirm={deleteWorkBlock}
+        description="This will delete the work block. All contractor progress will be lost."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
       />
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
         {/* LEFT STACK */}
