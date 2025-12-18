@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import CreateWorkBlockModal from "./CreateWorkBlockModal";
+import ViewWorkBlockModal from "./ViewWorkBlockModal";
 
 type FilterType = "active" | "submitted" | "all";
 
@@ -49,6 +50,7 @@ const WorkBlocks = () => {
         open={open}
         setOpen={(value: boolean) => setOpen(value)}
       />
+      <ViewWorkBlockModal />
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row items-end sm:items-end justify-between gap-4 ">
         <div>
@@ -165,7 +167,7 @@ const WorkBlocks = () => {
             <h3 className="text-sm font-semibold text-foreground">
               No {filter === "all" ? "" : filter} work blocks found
             </h3>
-            <p className="text-sm text-muted-foreground mt-1 max-w-xs">
+            <p className="text-sm text-muted-foreground mt-1 max-w-s">
               {filter === "active"
                 ? "All assigned work has been submitted."
                 : filter === "submitted"
