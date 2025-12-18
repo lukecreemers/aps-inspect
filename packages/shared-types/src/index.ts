@@ -11,6 +11,8 @@ export interface ApiResponse<T> {
   data?: T;
   details?: unknown;
 }
+export const EmailTemplateSchema = z.enum(["credentials"]);
+export type EmailTemplate = z.infer<typeof EmailTemplateSchema>;
 
 export type ConditionType = 1 | 2 | 3 | 4 | 5;
 
