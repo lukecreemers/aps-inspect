@@ -19,6 +19,7 @@ import type {
   ReportWorkBlockOverviewResponse,
   WorkBlockStatusType,
 } from "@aps/shared-types";
+import { formatTimeAgo } from "@/utils/date.util";
 
 // Mock Types
 
@@ -28,7 +29,7 @@ interface WorkBlockRowProps {
 
 const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
   const contractor = workBlock.contractorName;
-  const data = "2 days ago";
+  const time = workBlock.createdAt;
   const types: ReportTypeType[] = workBlock.types;
   const buildingCount = workBlock.buildingCount;
   const state: WorkBlockStatusType = workBlock.status;
@@ -49,6 +50,17 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
     navigator.clipboard.writeText(credential);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const formattedState = (state: WorkBlockStatusType) => {
+    switch (state) {
+      case "ASSIGNED":
+        return "ASSIGNED";
+      case "IN_PROGRESS":
+        return "IN PROGRESS";
+      case "SUBMITTED":
+        return "SUBMITTED";
+    }
   };
 
   return (
@@ -100,16 +112,18 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
           <div className="flex items-center justify-between sm:justify-end w-full gap-3">
             <span className="text-xs text-muted-foreground flex items-center gap-1 font-medium">
               <Clock className="h-3 w-3" />
-              {data}
+              {formatTimeAgo(time)}
             </span>
             <Badge
               className={cn(
                 "rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide border",
                 state === "ASSIGNED" &&
-                  "bg-card text-foreground border-border shadow-sm"
+                  "bg-card text-foreground border-border shadow-sm",
+                state === "IN_PROGRESS" &&
+                  "bg-amber-500/10 text-amber-500 border-amber-500 shadow-sm"
               )}
             >
-              {state}
+              {formattedState(state)}
             </Badge>
           </div>
 
