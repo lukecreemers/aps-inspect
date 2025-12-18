@@ -8,6 +8,8 @@ import {
   KeyRound,
   Copy,
   Check,
+  Trash2,
+  Loader2,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -20,6 +22,8 @@ import type {
   WorkBlockStatusType,
 } from "@aps/shared-types";
 import { formatTimeAgo } from "@/utils/date.util";
+import { useDeleteWorkBlock } from "../session.hooks";
+import ConfirmDelete from "@/components/ConfirmDelete";
 
 // Mock Types
 
@@ -37,6 +41,12 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
 
   const [showCredential, setShowCredential] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+
+  const { mutate: deleteWorkBlockMutation, isPending } = useDeleteWorkBlock(
+    workBlock.id,
+    workBlock.reportId
+  );
 
   // Helper for initials
   const initials = contractor
@@ -65,6 +75,11 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
 
   return (
     <Card className="p-4 hover:border-border transition-colors">
+      <ConfirmDelete
+        open={confirmDeleteOpen}
+        setOpen={setConfirmDeleteOpen}
+        onConfirm={deleteWorkBlockMutation}
+      />
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
         {/* LEFT STACK */}
         <div className="flex flex-col gap-3 w-full sm:w-auto">
@@ -183,6 +198,17 @@ const WorkBlockRow = ({ workBlock }: WorkBlockRowProps) => {
             <Button size="sm" className="h-9 px-4 text-xs shadow-sm ">
               View
               <ChevronRight className="ml-1 h-3 w-3 opacity-70" />
+            </Button>
+            <Button
+              variant="destructiveOutline"
+              onClick={() => setConfirmDeleteOpen(true)}
+              disabled={isPending}
+            >
+              {isPending ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Trash2 className="h-3.5 w-3.5" />
+              )}
             </Button>
           </div>
         </div>

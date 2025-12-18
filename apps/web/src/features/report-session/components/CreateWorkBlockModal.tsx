@@ -92,8 +92,6 @@ export const CreateWorkBlockModal = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Form validation will be handled by the browser via the hidden required inputs
-    // If we get here, the form is valid
     createWorkBlock({
       reportId: currentReport?.id ?? "",
       contractorId: selectedContractor ?? "",

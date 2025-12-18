@@ -116,3 +116,20 @@ export const useCreateWorkBlock = () => {
     },
   });
 };
+
+export const useDeleteWorkBlock = (
+  workBlockId: string | undefined,
+  reportId: string | undefined
+) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => SessionApi.deleteWorkBlock(workBlockId ?? ""),
+    onSuccess: () => {
+      if (reportId) {
+        queryClient.invalidateQueries({
+          queryKey: sessionKeys.reportWorkBlocks(reportId),
+        });
+      }
+    },
+  });
+};

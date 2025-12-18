@@ -16,7 +16,6 @@ import {
   type ContractorResponse,
   type CreateReportWorkBlockDto,
 } from "@aps/shared-types";
-import type { WorkBlockSelectedWork } from "./components/CreateWorkBlockModal";
 
 export const getCurrentReport = async (clientId: string) => {
   const reports = await request<ReportResponse[]>({
@@ -129,5 +128,12 @@ export const createWorkBlock = async (dto: CreateReportWorkBlockDto) => {
     method: "POST",
     url: "/report-work-blocks",
     data: dto,
+  });
+};
+
+export const deleteWorkBlock = async (workBlockId: string) => {
+  return await request<void>({
+    method: "DELETE",
+    url: `/report-work-blocks/${workBlockId}`,
   });
 };
