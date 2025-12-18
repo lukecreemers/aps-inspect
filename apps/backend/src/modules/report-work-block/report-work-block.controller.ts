@@ -17,6 +17,8 @@ import {
   AddWorkUnitsToReportWorkBlockSchema,
   CreateReportWorkBlockDto,
   CreateReportWorkBlockSchema,
+  EmailReportWorkBlockDto,
+  EmailReportWorkBlockSchema,
   GetReportWorkBlocksQueryDto,
   GetReportWorkBlocksQuerySchema,
   RemoveWorkUnitsFromReportWorkBlockDto,
@@ -116,5 +118,17 @@ export class ReportWorkBlockController {
     @Param('id') id: string,
   ): Promise<ReportWorkBlock> {
     return this.reportWorkBlockService.regenerateSecretText(id);
+  }
+
+  @Post(':id/email-credentials')
+  @UsePipes(new ZodValidationPipe(EmailReportWorkBlockSchema))
+  async emailCredentials(
+    @Param('id') id: string,
+    @Body() emailReportWorkBlockDto: EmailReportWorkBlockDto,
+  ): Promise<void> {
+    return this.reportWorkBlockService.emailCredentials(
+      id,
+      emailReportWorkBlockDto,
+    );
   }
 }
