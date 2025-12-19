@@ -9,10 +9,7 @@ import { BuildingBundleSchema } from "../../controller-pull";
 import { LocationResponseSchema } from "../../location";
 import { BuildingResponseSchema } from "../../client";
 
-export const ReportResponseSchema = ReportSchema.omit({
-  createdAt: true,
-  updatedAt: true,
-});
+export const ReportResponseSchema = ReportSchema;
 
 export type ReportResponse = z.infer<typeof ReportResponseSchema>;
 
