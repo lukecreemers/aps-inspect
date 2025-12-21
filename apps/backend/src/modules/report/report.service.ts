@@ -4,6 +4,7 @@ import {
   GetReportsQueryDto,
   Report,
   ReportStatusResponse,
+  ReportViewerOutput,
   UpdateReportDto,
 } from '@aps/shared-types';
 import { Injectable } from '@nestjs/common';
@@ -14,6 +15,7 @@ import {
 import { PrismaService } from 'src/database/prisma.service';
 import { ReportCreatorService } from './report-creator.service';
 import { ReportStatusService } from './report-status.service';
+import { ReportViewerService } from './report-viewer.service';
 
 @Injectable()
 export class ReportService extends BasePrismaService<
@@ -25,6 +27,7 @@ export class ReportService extends BasePrismaService<
     private prisma: PrismaService,
     private reportCreator: ReportCreatorService,
     private reportStatusService: ReportStatusService,
+    private reportViewerService: ReportViewerService,
   ) {
     super(
       prisma.report as unknown as PrismaDelegate<
@@ -68,5 +71,9 @@ export class ReportService extends BasePrismaService<
 
   async getReportStatus(id: string): Promise<ReportStatusResponse> {
     return this.reportStatusService.getReportStatus(id, this.prisma);
+  }
+
+  async getReportViewerOutput(id: string): Promise<ReportViewerOutput> {
+    return this.reportViewerService.getReportView(id);
   }
 }

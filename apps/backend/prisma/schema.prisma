@@ -428,6 +428,7 @@ model Contractor {
 
   // Relations
   reportWorkBlocks  ReportWorkBlock[]
+  reportWorkUnits   ReportWorkUnit[]
 
   @@map("contractors")
 }
@@ -451,6 +452,7 @@ model ReportWorkUnit {
   // Relations
   reportBuilding    ReportBuilding    @relation(fields: [reportBuildingId], references: [id], onDelete: Cascade)
   reportWorkBlock   ReportWorkBlock?  @relation(fields: [reportWorkBlockId], references: [id], onDelete: SetNull)
+  contractor        Contractor?       @relation(fields: [contractorId], references: [id], onDelete: SetNull)
   roofInspections                     RoofInspection[]
   gutterInspections                   GutterInspection[]
   windowInspections                   WindowInspection[]

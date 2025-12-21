@@ -5,18 +5,24 @@ import { ReportWorkUnitResponseSchema } from "../../report-work-unit";
 import { ContractorResponseSchema } from "../../contractor";
 import { LocationResponseSchema } from "../../location";
 
-const ViewerWorkUnitSchema = ReportWorkUnitResponseSchema.extend({
+export const ViewerWorkUnitSchema = ReportWorkUnitResponseSchema.extend({
   contractor: ContractorResponseSchema.optional(),
   issueCount: z.number(),
 });
 
-const ViewerBuildingSchema = BuildingResponseSchema.extend({
+export type ViewerWorkUnit = z.infer<typeof ViewerWorkUnitSchema>;
+
+export const ViewerBuildingSchema = BuildingResponseSchema.extend({
   workUnits: z.array(ViewerWorkUnitSchema),
 });
 
-const ViewerLocationSchema = LocationResponseSchema.extend({
+export type ViewerBuilding = z.infer<typeof ViewerBuildingSchema>;
+
+export const ViewerLocationSchema = LocationResponseSchema.extend({
   buildings: z.array(ViewerBuildingSchema),
 });
+
+export type ViewerLocation = z.infer<typeof ViewerLocationSchema>;
 
 export const ReportViewerOutputSchema = ReportSchema.extend({
   locations: z.array(ViewerLocationSchema),

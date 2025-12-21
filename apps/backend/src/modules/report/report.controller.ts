@@ -20,6 +20,8 @@ import {
   ReportResponseSchema,
   ReportStatusResponse,
   ReportStatusResponseSchema,
+  ReportViewerOutput,
+  ReportViewerOutputSchema,
   UpdateReportDto,
   UpdateReportSchema,
 } from '@aps/shared-types';
@@ -82,5 +84,13 @@ export class ReportController {
   @ZodResponse(ReportResponseSchema)
   async delete(@Param('id') id: string): Promise<Report> {
     return this.reportService.delete(id);
+  }
+
+  @Get('view/:id')
+  @ZodResponse(ReportViewerOutputSchema)
+  async getReportViewerOutput(
+    @Param('id') id: string,
+  ): Promise<ReportViewerOutput> {
+    return this.reportService.getReportViewerOutput(id);
   }
 }
